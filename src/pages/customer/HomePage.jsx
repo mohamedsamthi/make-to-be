@@ -1,0 +1,358 @@
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { FiArrowRight, FiShoppingBag, FiTruck, FiShield, FiStar, FiChevronLeft, FiChevronRight } from 'react-icons/fi'
+import { FaWhatsapp, FaStar, FaQuoteLeft } from 'react-icons/fa'
+import { MdLocalOffer, MdVerified } from 'react-icons/md'
+import ProductCard from '../../components/product/ProductCard'
+import { shopInfo } from '../../data/demoData'
+import { useProducts } from '../../context/ProductContext'
+
+export default function HomePage() {
+  const { featuredProducts, discountedProducts, categories, reviews, promotions } = useProducts()
+  const [currentPromo, setCurrentPromo] = useState(0)
+
+  // Auto rotate promotions
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentPromo(prev => (prev + 1) % promotions.length)
+    }, 4000)
+    return () => clearInterval(timer)
+  }, [])
+
+  return (
+    <div>
+      {/* ===== HERO SECTION ===== */}
+      <section className="relative min-h-screen flex items-center overflow-hidden">
+        {/* Background */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-surface)] via-[var(--color-primary)] to-[var(--color-surface)]" />
+          <div className="absolute top-20 right-10 w-96 h-96 bg-[var(--color-accent)]/10 rounded-full blur-3xl animate-pulse-soft" />
+          <div className="absolute bottom-20 left-10 w-80 h-80 bg-[var(--color-gold)]/10 rounded-full blur-3xl animate-pulse-soft" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-3xl" />
+        </div>
+
+        <div className="container-custom relative z-10 pt-24 pb-12">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="animate-fadeInUp">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-light mb-6">
+                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-xs font-medium text-[var(--color-text-secondary)]">Now Open for Online Orders</span>
+              </div>
+
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black font-[var(--font-family-heading)] leading-tight mb-6">
+                Discover Your
+                <br />
+                <span className="gradient-text">Perfect Style</span>
+                <br />
+                at <span className="text-[var(--color-accent)]">Make To Be</span>
+              </h1>
+
+              <p className="text-lg text-[var(--color-text-secondary)] mb-8 max-w-lg leading-relaxed">
+                Premium watches, designer dresses, and luxury accessories.
+                Shop from Kalmunai's finest collection with exclusive deals and doorstep delivery.
+              </p>
+
+              <div className="flex flex-wrap gap-4 mb-10">
+                <Link to="/products" className="btn-primary text-base px-8 py-3.5">
+                  <FiShoppingBag size={20} /> Shop Now <FiArrowRight size={18} />
+                </Link>
+                <a href={shopInfo.socialMedia.whatsapp} target="_blank" rel="noreferrer"
+                  className="btn-outline text-base px-8 py-3.5 border-green-500 text-green-400 hover:bg-green-500 hover:text-white">
+                  <FaWhatsapp size={20} /> WhatsApp Us
+                </a>
+              </div>
+
+              {/* Stats */}
+              <div className="flex gap-8">
+                {[
+                  { value: '500+', label: 'Products' },
+                  { value: '2K+', label: 'Happy Customers' },
+                  { value: '4.8', label: 'Avg Rating' }
+                ].map((stat, i) => (
+                  <div key={i} className="text-center">
+                    <p className="text-2xl font-bold gradient-text">{stat.value}</p>
+                    <p className="text-xs text-[var(--color-text-muted)]">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right - Featured Product Showcase */}
+            <div className="hidden lg:block animate-slideInRight">
+              <div className="relative">
+                <div className="absolute inset-0 gradient-accent rounded-3xl blur-3xl opacity-20 animate-pulse-soft" />
+                <div className="relative glass rounded-3xl p-6 overflow-hidden">
+                  <div className="grid grid-cols-2 gap-4">
+                    {featuredProducts.slice(0, 4).map((product, i) => (
+                      <Link
+                        key={product.id}
+                        to={`/products/${product.id}`}
+                        className="group relative aspect-square rounded-2xl overflow-hidden"
+                        style={{ animationDelay: `${i * 0.1}s` }}
+                      >
+                        <img
+                          src={product.image_url}
+                          alt={product.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <div className="absolute bottom-2 left-2 right-2">
+                          <p className="text-xs font-semibold truncate">{product.name}</p>
+                          <p className="text-xs text-[var(--color-accent)]">
+                            LKR {(product.discount_price || product.price).toLocaleString()}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-float">
+          <div className="w-6 h-10 rounded-full border-2 border-[var(--color-text-muted)] flex items-start justify-center p-1.5">
+            <div className="w-1.5 h-3 rounded-full bg-[var(--color-accent)] animate-pulse" />
+          </div>
+        </div>
+      </section>
+
+      {/* ===== SCROLLING PROMOTIONS BAR ===== */}
+      <section className="py-3 bg-[var(--color-accent)] overflow-hidden">
+        <div className="animate-scroll-left whitespace-nowrap">
+          {[...Array(3)].map((_, repeat) => (
+            <span key={repeat} className="inline-block">
+              {promotions.map((promo, i) => (
+                <span key={i} className="inline-flex items-center gap-3 mx-8 text-sm font-semibold">
+                  <MdLocalOffer size={16} />
+                  {promo.title} - {promo.description}
+                  <span className="mx-4">•</span>
+                </span>
+              ))}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      {/* ===== CATEGORIES ===== */}
+      <section className="section-padding">
+        <div className="container-custom">
+          <div className="text-center mb-12">
+            <p className="text-[var(--color-accent)] text-sm font-semibold uppercase tracking-widest mb-2">Browse</p>
+            <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)]">Shop by Category</h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {categories.map((cat, i) => (
+              <Link
+                key={cat.id}
+                to={`/products?category=${cat.slug}`}
+                className="group relative overflow-hidden rounded-2xl bg-[var(--color-surface-card)] border border-[var(--color-border)] hover:border-[var(--color-accent)]/30 card-hover p-8 text-center"
+                style={{ animationDelay: `${i * 0.1}s` }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-accent)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative">
+                  <span className="text-5xl mb-4 block">{cat.icon}</span>
+                  <h3 className="text-xl font-bold mb-1">{cat.name}</h3>
+                  <p className="text-sm text-[var(--color-text-muted)]">{cat.product_count} Products</p>
+                  <span className="inline-flex items-center gap-1 mt-4 text-sm text-[var(--color-accent)] font-medium opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                    Explore <FiArrowRight size={14} />
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== FEATURED PRODUCTS ===== */}
+      <section className="section-padding bg-[var(--color-primary)]">
+        <div className="container-custom">
+          <div className="flex items-end justify-between mb-12">
+            <div>
+              <p className="text-[var(--color-gold)] text-sm font-semibold uppercase tracking-widest mb-2">⭐ Handpicked</p>
+              <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)]">Featured Products</h2>
+            </div>
+            <Link to="/products" className="hidden sm:flex items-center gap-2 text-sm text-[var(--color-accent)] font-medium hover:gap-3 transition-all">
+              View All <FiArrowRight size={16} />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featuredProducts.map((product, i) => (
+              <div key={product.id} className="animate-fadeInUp" style={{ animationDelay: `${i * 0.1}s` }}>
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+
+          <div className="sm:hidden text-center mt-8">
+            <Link to="/products" className="btn-outline">
+              View All Products <FiArrowRight size={16} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== PROMOTION BANNER ===== */}
+      <section className="section-padding">
+        <div className="container-custom">
+          <div className="relative overflow-hidden rounded-3xl p-8 sm:p-12" style={{ background: promotions[currentPromo]?.banner_color }}>
+            <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+
+            <div className="relative z-10 max-w-lg">
+              <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-sm font-bold mb-4">
+                {promotions[currentPromo]?.discount_percentage}% OFF
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+                {promotions[currentPromo]?.title}
+              </h2>
+              <p className="text-lg mb-6 opacity-90">
+                {promotions[currentPromo]?.description}
+              </p>
+              <Link to="/products" className="inline-flex items-center gap-2 bg-white text-[var(--color-surface)] px-6 py-3 rounded-xl font-bold hover:bg-white/90 transition-all">
+                Shop Now <FiArrowRight />
+              </Link>
+            </div>
+
+            {/* Dots */}
+            <div className="flex gap-2 mt-8 relative z-10">
+              {promotions.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPromo(i)}
+                  className={`w-2.5 h-2.5 rounded-full transition-all ${
+                    i === currentPromo ? 'bg-white w-8' : 'bg-white/40'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== DEALS & DISCOUNTS ===== */}
+      <section className="section-padding bg-[var(--color-primary)]">
+        <div className="container-custom">
+          <div className="flex items-end justify-between mb-12">
+            <div>
+              <p className="text-[var(--color-accent)] text-sm font-semibold uppercase tracking-widest mb-2">🔥 Hot Deals</p>
+              <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)]">Discounted Products</h2>
+            </div>
+            <Link to="/products?discount=true" className="hidden sm:flex items-center gap-2 text-sm text-[var(--color-accent)] font-medium hover:gap-3 transition-all">
+              View All Deals <FiArrowRight size={16} />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {discountedProducts.slice(0, 4).map((product, i) => (
+              <div key={product.id} className="animate-fadeInUp" style={{ animationDelay: `${i * 0.1}s` }}>
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== WHY CHOOSE US ===== */}
+      <section className="section-padding">
+        <div className="container-custom">
+          <div className="text-center mb-12">
+            <p className="text-[var(--color-accent)] text-sm font-semibold uppercase tracking-widest mb-2">Why Us</p>
+            <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)]">Why Choose Make To Be?</h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: <MdVerified size={32} />, title: 'Authentic Products', desc: '100% genuine products with quality guarantee' },
+              { icon: <FiTruck size={32} />, title: 'Fast Delivery', desc: 'Quick delivery across Sri Lanka' },
+              { icon: <FiShield size={32} />, title: 'Secure Payment', desc: 'Safe bank transfer payment method' },
+              { icon: <FiStar size={32} />, title: 'Top Rated', desc: '4.8★ average rating from 2000+ customers' }
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="text-center p-6 rounded-2xl glass-light card-hover"
+              >
+                <div className="w-16 h-16 rounded-2xl gradient-accent flex items-center justify-center mx-auto mb-4">
+                  {item.icon}
+                </div>
+                <h3 className="font-semibold mb-2">{item.title}</h3>
+                <p className="text-sm text-[var(--color-text-secondary)]">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== CUSTOMER REVIEWS ===== */}
+      <section className="section-padding bg-[var(--color-primary)]">
+        <div className="container-custom">
+          <div className="text-center mb-12">
+            <p className="text-[var(--color-gold)] text-sm font-semibold uppercase tracking-widest mb-2">Testimonials</p>
+            <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)]">What Customers Say</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {reviews.filter(r => r.rating >= 4).slice(0, 3).map((review, i) => (
+              <div key={review.id} className="p-6 rounded-2xl glass-light card-hover relative">
+                <FaQuoteLeft className="text-[var(--color-accent)]/20 absolute top-4 right-4" size={30} />
+                <div className="flex items-center gap-1 mb-3">
+                  {[...Array(5)].map((_, j) => (
+                    <FaStar key={j} size={14} className={j < review.rating ? 'text-[var(--color-gold)]' : 'text-[var(--color-text-muted)]'} />
+                  ))}
+                </div>
+                <p className="text-sm text-[var(--color-text-secondary)] mb-4 leading-relaxed">"{review.comment}"</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full gradient-accent flex items-center justify-center font-bold text-sm">
+                    {review.user_name[0]}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold">{review.user_name}</p>
+                    <p className="text-xs text-[var(--color-text-muted)]">Verified Buyer</p>
+                  </div>
+                </div>
+                {review.admin_reply && (
+                  <div className="mt-4 pl-4 border-l-2 border-[var(--color-accent)]">
+                    <p className="text-xs text-[var(--color-text-muted)] mb-1">Reply from Make To Be:</p>
+                    <p className="text-sm text-[var(--color-text-secondary)]">{review.admin_reply}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== CTA SECTION ===== */}
+      <section className="section-padding">
+        <div className="container-custom">
+          <div className="text-center rounded-3xl glass p-10 sm:p-16 relative overflow-hidden">
+            <div className="absolute top-0 left-1/4 w-64 h-64 bg-[var(--color-accent)]/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-[var(--color-gold)]/10 rounded-full blur-3xl" />
+            <div className="relative z-10">
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4 font-[var(--font-family-heading)]">
+                Ready to Upgrade Your Style?
+              </h2>
+              <p className="text-[var(--color-text-secondary)] mb-8 max-w-md mx-auto">
+                Browse our collection of premium watches, dresses, and accessories. Order now and get free delivery!
+              </p>
+              <div className="flex flex-wrap gap-4 justify-center">
+                <Link to="/products" className="btn-primary text-base px-8 py-3.5">
+                  <FiShoppingBag size={20} /> Start Shopping
+                </Link>
+                <a href={shopInfo.socialMedia.whatsapp} target="_blank" rel="noreferrer"
+                  className="btn-outline text-base px-8 py-3.5 border-green-500 text-green-400 hover:bg-green-500 hover:text-white">
+                  <FaWhatsapp size={20} /> Contact Us
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}
