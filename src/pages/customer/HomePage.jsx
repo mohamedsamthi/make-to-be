@@ -249,38 +249,38 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Right Side - Scrolling Images (Fake/Visual) */}
-              <div className="hidden lg:block relative h-full min-h-[500px] bg-[#111122]/50">
-                <div className="absolute inset-0 grid grid-cols-2 gap-4 p-6 overflow-hidden">
+              {/* Right Side - Scrolling Images (Horizontal rows) */}
+              <div className="hidden lg:block relative h-full min-h-[500px] bg-[#111122]/30">
+                <div className="absolute inset-0 flex flex-col justify-center gap-6 p-8 overflow-hidden">
                   
-                  {/* Column 1 - Downward */}
-                  <div className="flex flex-col gap-4 animate-vertical-scroll-slow">
+                  {/* Row 1 - Left to Right */}
+                  <div className="flex gap-6 animate-scroll-left whitespace-nowrap">
                     {[1, 2, 3, 1, 2, 3].map((num, i) => (
-                      <div key={i} className="aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl border border-white/5">
+                      <div key={i} className="w-[180px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border border-white/5 shrink-0">
                         <img 
                           src={`https://images.unsplash.com/photo-${num === 1 ? '1523275335684-37898b6baf30' : (num === 2 ? '1508057198894-247b23fe5acc' : '1491553895911-0055eca6402d')}?auto=format&fit=crop&w=600&q=80`}
                           alt="Premium Item" 
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover grayscale-[30%] hover:grayscale-0 transition-all duration-500"
                         />
                       </div>
                     ))}
                   </div>
 
-                  {/* Column 2 - Upward */}
-                  <div className="flex flex-col gap-4 animate-vertical-scroll-reverse">
+                  {/* Row 2 - Right to Left */}
+                  <div className="flex gap-6 animate-scroll-right whitespace-nowrap">
                     {[4, 5, 2, 4, 5, 2].map((num, i) => (
-                      <div key={i} className="aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl border border-white/5">
+                      <div key={i} className="w-[180px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border border-white/5 shrink-0">
                         <img 
                           src={`https://images.unsplash.com/photo-${num === 4 ? '1491633715181-67a40c0d87a5' : (num === 5 ? '1542291026-7eec264c27ff' : '1505740420928-5e560c06d30e')}?auto=format&fit=crop&w=600&q=80`}
-                          alt="Luxury Accessary" 
-                          className="w-full h-full object-cover"
+                          alt="Luxury Accessory" 
+                          className="w-full h-full object-cover grayscale-[30%] hover:grayscale-0 transition-all duration-500"
                         />
                       </div>
                     ))}
                   </div>
 
-                  {/* Overlays */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a2e] via-transparent to-[#1a1a2e] z-10 pointer-events-none" />
+                  {/* Glassy Overlays for depth */}
+                  <div className="absolute inset-0 bg-gradient-to-l from-[#1a1a2e] via-transparent to-[#1a1a2e] z-10 pointer-events-none" />
                   <div className="absolute inset-0 bg-gradient-to-r from-[#1a1a2e] via-transparent to-transparent z-10 pointer-events-none" />
                 </div>
               </div>
