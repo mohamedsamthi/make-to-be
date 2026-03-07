@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
+import { supabase } from '../lib/supabase'
 import { demoProducts, demoCategories, demoOrders, demoReviews, demoPromotions } from '../data/demoData'
 
 const ProductContext = createContext()
@@ -14,25 +15,68 @@ export function ProductProvider({ children }) {
   const [reviews, setReviews] = useState(demoReviews)
   const [promotions, setPromotions] = useState(demoPromotions)
 
+  // Fetch from Supabase on mount
+  useEffect(() => {
+    const fetchRealData = async () => {
+      try {
+        const { data: dbProducts, error } = await supabase.from('products').select('*').order('created_at', { ascending: false })
+        if (!error && dbProducts && dbProducts.length > 0) {
+          setProducts(dbProducts)
+        }
+      } catch (err) {
+        console.error('Error fetching Supabase products:', err)
+      }
+    }
+    fetchRealData()
+  }, [])
+
   // ===== PRODUCT OPERATIONS =====
-  const addProduct = (product) => {
+  const addProduct = async (product) => {
+    const tempId = String(Date.now())
     const newProduct = {
       ...product,
-      id: String(Date.now()),
+      id: tempId,
       rating: 0,
       review_count: 0,
-      created_at: new Date().toISOString().slice(0, 10)
+      created_at: new Date().toISOString()
     }
+    // Optimistic UI update
     setProducts(prev => [newProduct, ...prev])
+
+    // Save to database
+    try {
+      const { data, error } = await supabase.from('products').insert([product]).select().single()
+      if (!error && data) {
+        setProducts(prev => prev.map(p => p.id === tempId ? data : p)) // replace temp ID with real DB UUID
+      }
+    } catch (err) {
+      console.error('Failed to add product to db:', err)
+    }
     return newProduct
   }
 
-  const updateProduct = (id, updatedData) => {
+  const updateProduct = async (id, updatedData) => {
+    // Optimistic update
     setProducts(prev => prev.map(p => p.id === id ? { ...p, ...updatedData } : p))
+    
+    try {
+      if (!id.toString().includes(Date.now().toString().slice(0, 5))) { // Don't try saving temp IDs
+        await supabase.from('products').update(updatedData).eq('id', id)
+      }
+    } catch (err) {
+      console.error('Failed to update product in db:', err)
+    }
   }
 
-  const deleteProduct = (id) => {
+  const deleteProduct = async (id) => {
+    // Optimistic update
     setProducts(prev => prev.filter(p => p.id !== id))
+    
+    try {
+      await supabase.from('products').delete().eq('id', id)
+    } catch (err) {
+      console.error('Failed to delete product in db:', err)
+    }
   }
 
   // ===== ORDER OPERATIONS =====
