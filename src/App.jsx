@@ -40,6 +40,7 @@ function App() {
           <div className="min-h-screen bg-[var(--color-surface)] text-[var(--color-text-primary)]">
             <Navbar />
 
+          <main className="min-h-screen pt-[72px]">
             <Routes>
               {/* Customer Routes */}
               <Route path="/" element={<><HomePage /><Footer /></>} />
@@ -50,7 +51,7 @@ function App() {
               <Route path="/contact" element={<><ContactPage /><Footer /></>} />
               <Route path="/profile" element={<><ProfilePage /><Footer /></>} />
               <Route path="/orders" element={<><OrderTrackingPage /><Footer /></>} />
-              <Route path="/about" element={<AboutPage />} />
+              <Route path="/about" element={<><AboutPage /><Footer /></>} />
 
               {/* Auth Routes */}
               <Route path="/login" element={<LoginPage />} />
@@ -79,6 +80,7 @@ function App() {
                 </div>
               } />
             </Routes>
+          </main>
 
             {/* Toast Notifications */}
             <Toaster
