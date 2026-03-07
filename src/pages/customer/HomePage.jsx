@@ -364,22 +364,24 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: <MdVerified size={32} />, title: 'Authentic Products', desc: '100% genuine products with quality guarantee' },
-              { icon: <FiTruck size={32} />, title: 'Fast Delivery', desc: 'Quick delivery across Sri Lanka' },
-              { icon: <FiShield size={32} />, title: 'Secure Payment', desc: 'Safe bank transfer payment method' },
-              { icon: <FiStar size={32} />, title: 'Top Rated', desc: '4.8★ average rating from 2000+ customers' }
+              { icon: <MdVerified size={28} />, title: 'Authentic Products', desc: '100% genuine products with quality guarantee' },
+              { icon: <FiTruck size={28} />, title: 'Fast Delivery', desc: 'Quick delivery across Sri Lanka' },
+              { icon: <FiShield size={28} />, title: 'Secure Payment', desc: 'Safe bank transfer payment method' },
+              { icon: <FiStar size={28} />, title: 'Top Rated', desc: '4.8★ average rating from 2000+ customers' }
             ].map((item, i) => (
               <div
                 key={i}
-                className="text-center p-6 rounded-2xl glass-light card-hover"
+                className="flex flex-col items-center text-center p-7 rounded-2xl bg-[var(--color-surface-card)] border border-[var(--color-border)] hover:border-[var(--color-accent)]/40 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-[var(--color-accent)]/10"
               >
-                <div className="w-16 h-16 rounded-2xl gradient-accent flex items-center justify-center mx-auto mb-4">
+                {/* Icon box - centered */}
+                <div className="w-14 h-14 rounded-2xl gradient-accent flex items-center justify-center mb-5 text-white shadow-lg shadow-[var(--color-accent)]/30">
                   {item.icon}
                 </div>
-                <h3 className="font-semibold mb-2">{item.title}</h3>
-                <p className="text-sm text-[var(--color-text-secondary)]">{item.desc}</p>
+                <h3 className="text-base font-bold mb-2">{item.title}</h3>
+                <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">{item.desc}</p>
               </div>
             ))}
+          </div>
           </div>
         </div>
       </section>
