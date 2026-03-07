@@ -40,7 +40,7 @@ function App() {
           <div className="min-h-screen bg-[var(--color-surface)] text-[var(--color-text-primary)]">
             <Navbar />
 
-          <main className="min-h-screen pt-[66px] md:pt-[100px]">
+          <main className="min-h-screen pt-14 md:pt-[104px]">
             <Routes>
               {/* Customer Routes */}
               <Route path="/" element={<><HomePage /><Footer /></>} />

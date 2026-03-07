@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { FiShoppingCart, FiSearch, FiUser, FiMenu, FiX, FiLogOut, FiPackage, FiChevronDown } from 'react-icons/fi'
+import { FiShoppingCart, FiSearch, FiUser, FiMenu, FiX, FiLogOut, FiPackage } from 'react-icons/fi'
 import { MdDashboard } from 'react-icons/md'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
@@ -9,27 +9,37 @@ export default function Navbar() {
   const [scrolled, setScrolled]         = useState(false)
   const [menuOpen, setMenuOpen]         = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const [searchOpen, setSearchOpen]     = useState(false)
   const [searchQuery, setSearchQuery]   = useState('')
   const { user, isAdmin, signOut, profile } = useAuth()
   const { cartCount } = useCart()
-  const navigate = useNavigate()
-  const location = useLocation()
+  const navigate   = useNavigate()
+  const location   = useLocation()
   const userMenuRef = useRef(null)
+  const searchRef   = useRef(null)
 
   const isAdminPage = location.pathname.startsWith('/admin')
   if (isAdminPage) return null
 
+  // Scroll detection
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
-    window.addEventListener('scroll', onScroll)
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  useEffect(() => { setMenuOpen(false); setUserMenuOpen(false) }, [location])
+  // Close everything on route change
+  useEffect(() => {
+    setMenuOpen(false)
+    setUserMenuOpen(false)
+    setSearchOpen(false)
+  }, [location])
 
   // Close user menu on outside click
   useEffect(() => {
-    const handler = (e) => { if (userMenuRef.current && !userMenuRef.current.contains(e.target)) setUserMenuOpen(false) }
+    const handler = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) setUserMenuOpen(false)
+    }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [])
@@ -39,132 +49,133 @@ export default function Navbar() {
     if (searchQuery.trim()) {
       navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`)
       setSearchQuery('')
+      setSearchOpen(false)
     }
   }
 
   const navLinks = [
-    { name: 'Home', path: '/' },
+    { name: 'Home',     path: '/' },
     { name: 'Products', path: '/products' },
-    { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact' },
+    { name: 'About',    path: '/about' },
+    { name: 'Contact',  path: '/contact' },
   ]
 
   const categories = [
-    { name: 'Watches',     path: '/products?category=watches',     emoji: '⌚' },
-    { name: 'Dresses',     path: '/products?category=dresses',     emoji: '👗' },
-    { name: 'Shoes',       path: '/products?category=shoes',       emoji: '👟' },
-    { name: 'Accessories', path: '/products?category=accessories', emoji: '💍' },
-    { name: '🔥 Hot Deals', path: '/products?discount=true',       emoji: '' },
+    { name: 'Watches',     path: '/products?category=watches' },
+    { name: 'Dresses',     path: '/products?category=dresses' },
+    { name: 'Shoes',       path: '/products?category=shoes' },
+    { name: 'Accessories', path: '/products?category=accessories' },
+    { name: '🔥 Hot Deals', path: '/products?discount=true' },
   ]
 
   return (
     <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? 'shadow-xl shadow-black/30' : ''
-        }`}
-      >
-        {/* ── TOP ROW: Logo + Search + Actions ── */}
+      <header className={`fixed top-0 left-0 right-0 z-50 ${scrolled ? 'shadow-xl shadow-black/20' : ''}`}>
+
+        {/* ─────────────────────────────────────────────────────────
+            TOP ROW — Logo | [Search desktop only] | Icons
+        ───────────────────────────────────────────────────────── */}
         <div className="bg-[var(--color-primary)] border-b border-white/5">
-          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 py-3 flex items-center gap-3 sm:gap-5">
+          <div className="max-w-[1280px] mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center gap-2 sm:gap-4">
 
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2.5 shrink-0 group" aria-label="Home">
-              <div className="w-10 h-10 rounded-xl gradient-accent flex items-center justify-center font-black text-lg shadow-lg shadow-[var(--color-accent)]/30 group-hover:scale-105 transition-transform">
+            <Link to="/" className="flex items-center gap-2 shrink-0 group" aria-label="Home">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl gradient-accent flex items-center justify-center font-black text-base sm:text-lg shadow-md group-hover:scale-105 transition-transform">
                 M
               </div>
-              <div className="hidden sm:block">
-                <p className="text-base font-black leading-tight font-[var(--font-family-heading)]">Make To Be</p>
-                <p className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-widest leading-none">Premium Shop</p>
-              </div>
+              <span className="hidden sm:block font-black text-base leading-tight font-[var(--font-family-heading)]">
+                Make To Be
+              </span>
             </Link>
 
-            {/* ── SEARCH BAR (centre, fully visible) ── */}
-            <form onSubmit={handleSearch} className="flex-1 flex items-center gap-0" id="navbar-search-form">
-              <div className="flex w-full rounded-xl overflow-hidden border border-[var(--color-border)] focus-within:border-[var(--color-accent)] focus-within:shadow-[0_0_0_3px_rgba(124,58,237,0.15)] transition-all bg-[var(--color-surface-light)]">
-                <FiSearch className="ml-4 shrink-0 text-[var(--color-text-muted)] self-center" size={17} />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search watches, dresses, shoes..."
-                  className="flex-1 bg-transparent py-2.5 px-3 text-sm text-white placeholder:text-[var(--color-text-muted)] outline-none"
-                  id="search-input"
-                />
-                <button
-                  type="submit"
-                  id="search-submit"
-                  className="bg-[var(--color-accent)] hover:bg-[var(--color-accent-dark)] text-white px-5 py-2.5 text-sm font-semibold transition-colors shrink-0"
-                >
-                  Search
-                </button>
-              </div>
+            {/* Desktop Search (hidden on mobile) */}
+            <form
+              onSubmit={handleSearch}
+              className="hidden md:flex flex-1 items-center rounded-xl overflow-hidden border border-[var(--color-border)] focus-within:border-[var(--color-accent)] focus-within:shadow-[0_0_0_2px_rgba(124,58,237,0.2)] bg-[var(--color-surface-light)] transition-all"
+              id="navbar-search-form"
+            >
+              <FiSearch className="ml-3 shrink-0 text-[var(--color-text-muted)]" size={15} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search watches, dresses, shoes..."
+                className="flex-1 bg-transparent py-2.5 px-2.5 text-sm text-white placeholder:text-[var(--color-text-muted)] outline-none"
+                id="search-input-desktop"
+              />
+              <button
+                type="submit"
+                className="bg-[var(--color-accent)] hover:bg-[var(--color-accent-dark)] text-white px-5 py-2.5 text-sm font-semibold transition-colors shrink-0"
+              >
+                Search
+              </button>
             </form>
 
-            {/* ── RIGHT ACTIONS ── */}
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            {/* Right Actions */}
+            <div className="flex items-center gap-1 sm:gap-2 ml-auto">
+
+              {/* Mobile Search icon */}
+              <button
+                onClick={() => setSearchOpen(!searchOpen)}
+                className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center hover:bg-white/10 transition-all"
+                aria-label="Search"
+              >
+                <FiSearch size={19} />
+              </button>
 
               {/* Cart */}
               <Link
                 to="/cart"
-                className="relative flex flex-col items-center justify-center gap-0.5 w-11 h-11 rounded-xl hover:bg-white/5 transition-all group"
+                className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center hover:bg-white/10 transition-all"
                 id="cart-link"
                 aria-label="Cart"
               >
-                <div className="relative">
-                  <FiShoppingCart size={20} className="group-hover:text-[var(--color-accent)] transition-colors" />
-                  {cartCount > 0 && (
-                    <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] rounded-full gradient-accent text-[9px] font-bold flex items-center justify-center px-1 shadow-lg">
-                      {cartCount > 99 ? '99+' : cartCount}
-                    </span>
-                  )}
-                </div>
-                <span className="text-[9px] text-[var(--color-text-muted)] hidden sm:block leading-none">Cart</span>
+                <FiShoppingCart size={19} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[17px] h-[17px] rounded-full gradient-accent text-[9px] font-bold flex items-center justify-center px-0.5 shadow">
+                    {cartCount > 9 ? '9+' : cartCount}
+                  </span>
+                )}
               </Link>
 
-              {/* User Menu / Login */}
+              {/* Account / Login */}
               {user ? (
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className="flex flex-col items-center gap-0.5 w-11 h-11 rounded-xl hover:bg-white/5 transition-all group"
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl gradient-accent flex items-center justify-center font-bold text-sm hover:opacity-90 transition-all overflow-hidden border border-white/10"
                     id="user-menu-toggle"
                     aria-label="Account"
                   >
-                    <div className="w-6 h-6 rounded-full gradient-accent flex items-center justify-center text-xs font-bold overflow-hidden border border-white/10">
-                      {profile?.avatar_url
-                        ? <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-                        : (profile?.full_name?.[0] || user.email?.[0] || 'U').toUpperCase()
-                      }
-                    </div>
-                    <span className="text-[9px] text-[var(--color-text-muted)] hidden sm:block leading-none">Account</span>
+                    {profile?.avatar_url
+                      ? <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" />
+                      : (profile?.full_name?.[0] || user.email?.[0] || 'U').toUpperCase()
+                    }
                   </button>
 
-                  {/* Dropdown */}
                   {userMenuOpen && (
-                    <div className="absolute right-0 top-[calc(100%+8px)] w-64 bg-[var(--color-surface-card)] rounded-2xl shadow-2xl border border-[var(--color-border)] overflow-hidden animate-fadeIn z-50">
-                      {/* User info */}
-                      <div className="px-4 py-4 bg-[var(--color-primary)] border-b border-[var(--color-border)]">
+                    <div className="absolute right-0 top-[calc(100%+8px)] w-60 bg-[var(--color-surface-card)] rounded-2xl shadow-2xl border border-[var(--color-border)] overflow-hidden animate-fadeIn z-50">
+                      <div className="px-4 py-3.5 bg-[var(--color-primary)] border-b border-[var(--color-border)]">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full gradient-accent flex items-center justify-center font-bold text-sm shrink-0">
+                          <div className="w-9 h-9 rounded-full gradient-accent flex items-center justify-center font-bold text-sm shrink-0">
                             {(profile?.full_name?.[0] || 'U').toUpperCase()}
                           </div>
                           <div className="min-w-0">
                             <p className="text-sm font-semibold truncate">{profile?.full_name || 'User'}</p>
-                            <p className="text-xs text-[var(--color-text-muted)] truncate">{user.email}</p>
+                            <p className="text-[11px] text-[var(--color-text-muted)] truncate">{user.email}</p>
                           </div>
                         </div>
                       </div>
                       <div className="p-2">
                         <Link to="/profile" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-sm transition-all">
-                          <FiUser size={15} className="text-[var(--color-accent)] shrink-0" /> My Profile
+                          <FiUser size={14} className="text-[var(--color-accent)] shrink-0" /> My Profile
                         </Link>
                         <Link to="/orders" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-sm transition-all">
-                          <FiPackage size={15} className="text-[var(--color-accent)] shrink-0" /> My Orders
+                          <FiPackage size={14} className="text-[var(--color-accent)] shrink-0" /> My Orders
                         </Link>
                         {isAdmin && (
                           <Link to="/admin" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-sm transition-all">
-                            <MdDashboard size={15} className="text-[var(--color-accent)] shrink-0" /> Admin Dashboard
+                            <MdDashboard size={14} className="text-[var(--color-accent)] shrink-0" /> Admin Dashboard
                           </Link>
                         )}
                         <div className="border-t border-[var(--color-border)] mt-2 pt-2">
@@ -172,7 +183,7 @@ export default function Navbar() {
                             onClick={signOut}
                             className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-500/10 text-red-400 text-sm transition-all w-full"
                           >
-                            <FiLogOut size={15} /> Sign Out
+                            <FiLogOut size={14} /> Sign Out
                           </button>
                         </div>
                       </div>
@@ -182,35 +193,37 @@ export default function Navbar() {
               ) : (
                 <Link
                   to="/login"
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl gradient-accent text-sm font-semibold hover:opacity-90 transition-all shadow-md shadow-[var(--color-accent)]/25 whitespace-nowrap"
+                  className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl gradient-accent text-xs sm:text-sm font-semibold hover:opacity-90 transition-all shadow-md shadow-[var(--color-accent)]/20 whitespace-nowrap"
                   id="login-link"
                 >
-                  <FiUser size={15} />
-                  <span>Login</span>
+                  <FiUser size={14} />
+                  <span className="hidden xs:inline sm:inline">Login</span>
                 </Link>
               )}
 
-              {/* Mobile Hamburger */}
+              {/* Hamburger — mobile only */}
               <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="md:hidden w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all"
+                onClick={() => { setMenuOpen(!menuOpen); setSearchOpen(false) }}
+                className="md:hidden w-9 h-9 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all ml-0.5"
                 id="mobile-menu-toggle"
                 aria-label="Menu"
               >
-                {menuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
+                {menuOpen ? <FiX size={18} /> : <FiMenu size={18} />}
               </button>
             </div>
           </div>
         </div>
 
-        {/* ── BOTTOM ROW: Nav Links + Category Bar (desktop only) ── */}
-        <div className={`hidden md:block bg-[var(--color-surface)]/95 backdrop-blur-xl border-b border-white/5 ${scrolled ? 'shadow-sm' : ''}`}>
-          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex items-center gap-6 h-10">
+        {/* ─────────────────────────────────────────────────────────
+            BOTTOM ROW — Nav links + Category bar (desktop only)
+        ───────────────────────────────────────────────────────── */}
+        <div className="hidden md:block bg-[var(--color-surface)]/95 backdrop-blur-xl border-b border-white/5">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex items-center gap-6 h-10 overflow-x-auto scrollbar-none">
             {navLinks.map(link => (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-xs font-semibold tracking-wide transition-all relative py-1 whitespace-nowrap hover:text-[var(--color-accent)] ${
+                className={`text-xs font-semibold tracking-wide transition-all relative py-1 whitespace-nowrap hover:text-[var(--color-accent)] shrink-0 ${
                   location.pathname === link.path
                     ? 'text-[var(--color-accent)]'
                     : 'text-[var(--color-text-secondary)]'
@@ -222,45 +235,49 @@ export default function Navbar() {
                 )}
               </Link>
             ))}
-
-            {/* Divider */}
             <span className="w-px h-4 bg-white/10 shrink-0" />
-
-            {/* Category quick links */}
-            <div className="flex items-center gap-4 overflow-x-auto scrollbar-none">
-              {categories.map(cat => (
-                <Link
-                  key={cat.name}
-                  to={cat.path}
-                  className="text-xs text-[var(--color-text-muted)] hover:text-white transition-colors whitespace-nowrap py-1"
-                >
-                  {cat.name}
-                </Link>
-              ))}
-            </div>
+            {categories.map(cat => (
+              <Link
+                key={cat.name}
+                to={cat.path}
+                className="text-xs text-[var(--color-text-muted)] hover:text-white transition-colors whitespace-nowrap py-1 shrink-0"
+              >
+                {cat.name}
+              </Link>
+            ))}
           </div>
         </div>
 
-        {/* ── MOBILE MENU ── */}
+        {/* ─────────────────────────────────────────────────────────
+            MOBILE: Slide-down Search Bar (when icon pressed)
+        ───────────────────────────────────────────────────────── */}
+        {searchOpen && (
+          <div className="md:hidden bg-[var(--color-primary)] border-t border-white/5 px-3 py-3 animate-fadeIn">
+            <form onSubmit={handleSearch} className="flex rounded-xl overflow-hidden border border-[var(--color-border)] focus-within:border-[var(--color-accent)] bg-[var(--color-surface-light)] transition-all">
+              <FiSearch className="ml-3 self-center text-[var(--color-text-muted)] shrink-0" size={15} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search products..."
+                className="flex-1 bg-transparent py-2.5 px-2.5 text-sm outline-none placeholder:text-[var(--color-text-muted)]"
+                autoFocus
+                id="search-input-mobile"
+              />
+              <button type="submit" className="bg-[var(--color-accent)] px-4 text-sm font-semibold text-white">
+                Go
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────
+            MOBILE MENU — slides down when hamburger pressed
+        ───────────────────────────────────────────────────────── */}
         {menuOpen && (
           <div className="md:hidden bg-[var(--color-surface)] border-t border-white/5 shadow-2xl animate-fadeIn">
-            {/* Mobile search */}
-            <div className="px-4 pt-4 pb-3">
-              <form onSubmit={handleSearch} className="flex rounded-xl overflow-hidden border border-[var(--color-border)] focus-within:border-[var(--color-accent)] bg-[var(--color-surface-light)] transition-all">
-                <FiSearch className="ml-3 self-center text-[var(--color-text-muted)] shrink-0" size={16} />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search products..."
-                  className="flex-1 bg-transparent py-2.5 px-3 text-sm outline-none placeholder:text-[var(--color-text-muted)]"
-                />
-                <button type="submit" className="bg-[var(--color-accent)] px-4 text-sm font-semibold text-white">Go</button>
-              </form>
-            </div>
-
             {/* Nav links */}
-            <div className="px-4 pb-3 flex flex-col gap-1">
+            <div className="px-3 pt-3 pb-2 flex flex-col gap-0.5">
               {navLinks.map(link => (
                 <Link
                   key={link.path}
@@ -277,7 +294,8 @@ export default function Navbar() {
             </div>
 
             {/* Category pills */}
-            <div className="px-4 pb-4 flex flex-wrap gap-2 border-t border-white/5 pt-3">
+            <div className="px-3 pb-3 pt-2 border-t border-white/5 flex flex-wrap gap-2">
+              <p className="w-full text-[10px] uppercase tracking-widest text-[var(--color-text-muted)] mb-1">Categories</p>
               {categories.map(cat => (
                 <Link
                   key={cat.name}
@@ -289,15 +307,17 @@ export default function Navbar() {
               ))}
             </div>
 
+            {/* Login CTA if not logged in */}
             {!user && (
-              <div className="px-4 pb-4">
+              <div className="px-3 pb-3">
                 <Link to="/login" className="btn-primary w-full justify-center py-3 text-sm">
-                  <FiUser size={16} /> Login / Register
+                  <FiUser size={15} /> Login / Register
                 </Link>
               </div>
             )}
           </div>
         )}
+
       </header>
     </>
   )

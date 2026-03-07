@@ -31,7 +31,7 @@ export default function HomePage() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-3xl" />
         </div>
 
-        <div className="container-custom relative z-10 pt-24 pb-12">
+        <div className="container-custom relative z-10 py-10 sm:py-16">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="animate-fadeInUp">
@@ -53,25 +53,25 @@ export default function HomePage() {
                 Shop from Kalmunai's finest collection with exclusive deals and doorstep delivery.
               </p>
 
-              <div className="flex flex-wrap gap-4 mb-10">
-                <Link to="/products" className="btn-primary text-base px-8 py-3.5">
-                  <FiShoppingBag size={20} /> Shop Now <FiArrowRight size={18} />
+              <div className="flex flex-col sm:flex-row gap-3 mb-8">
+                <Link to="/products" className="btn-primary px-7 py-3 text-sm sm:text-base justify-center sm:justify-start">
+                  <FiShoppingBag size={18} /> Shop Now <FiArrowRight size={16} />
                 </Link>
                 <a href={shopInfo.socialMedia.whatsapp} target="_blank" rel="noreferrer"
-                  className="btn-outline text-base px-8 py-3.5 border-green-500 text-green-400 hover:bg-green-500 hover:text-white">
-                  <FaWhatsapp size={20} /> WhatsApp Us
+                  className="flex items-center justify-center gap-2 px-7 py-3 rounded-xl border-2 border-emerald-500 text-emerald-400 font-semibold hover:bg-emerald-500 hover:text-white transition-all text-sm sm:text-base">
+                  <FaWhatsapp size={18} /> WhatsApp Us
                 </a>
               </div>
 
               {/* Stats */}
-              <div className="flex gap-8">
+              <div className="flex flex-wrap gap-6 justify-start">
                 {[
                   { value: '500+', label: 'Products' },
-                  { value: '2K+', label: 'Happy Customers' },
-                  { value: '4.8', label: 'Avg Rating' }
+                  { value: '2K+',  label: 'Happy Customers' },
+                  { value: '4.8',  label: 'Avg Rating' }
                 ].map((stat, i) => (
-                  <div key={i} className="text-center">
-                    <p className="text-2xl font-bold gradient-text">{stat.value}</p>
+                  <div key={i}>
+                    <p className="text-xl sm:text-2xl font-bold gradient-text">{stat.value}</p>
                     <p className="text-xs text-[var(--color-text-muted)]">{stat.label}</p>
                   </div>
                 ))}
