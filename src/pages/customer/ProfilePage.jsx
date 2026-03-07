@@ -21,6 +21,21 @@ export default function ProfilePage() {
   // Filter orders where customer_email matches logged in user
   const userOrders = orders.filter(o => o.customer_email === user?.email)
 
+  const handleImageSelect = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // Limit size to ~5MB
+        toast.error('Image is too large. Please select a smaller one.')
+        return
+      }
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFormData(p => ({...p, avatarUrl: reader.result}))
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
   const handleUpdate = async (e) => {
     e.preventDefault()
     setIsUpdating(true)
@@ -37,7 +52,7 @@ export default function ProfilePage() {
   if (!loading && !user) return <Navigate to="/login" />
 
   return (
-    <div className="pt-20 min-h-screen">
+    <div className="pt-24 sm:pt-28 min-h-screen">
       <div className="bg-[var(--color-primary)] py-10">
         <div className="container-custom">
           <h1 className="text-3xl font-bold font-[var(--font-family-heading)]">My Profile</h1>
@@ -213,17 +228,21 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  {/* Profile Image URL */}
+                  {/* Profile Image Upload */}
                   <div>
-                    <label className="text-sm font-medium text-[var(--color-text-secondary)] mb-2 block">Profile Photo URL</label>
-                    <div className="relative">
-                      <FiImage className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
-                      <input
-                        value={formData.avatarUrl}
-                        onChange={e => setFormData(p => ({...p, avatarUrl: e.target.value}))}
-                        className="input-field pl-11 py-3"
-                        placeholder="https://example.com/your-image.jpg"
-                      />
+                    <label className="text-sm font-medium text-[var(--color-text-secondary)] mb-2 block">Profile Photo</label>
+                    <div className="flex items-center gap-4">
+                      <label className="cursor-pointer glass-light px-4 py-2.5 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-accent)]/30 transition-all flex items-center gap-2">
+                        <FiImage className="text-[var(--color-text-muted)]" />
+                        <span className="text-sm font-medium text-[var(--color-text-secondary)]">Choose Image</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageSelect}
+                          className="hidden"
+                        />
+                      </label>
+                      <span className="text-[11px] text-[var(--color-text-muted)]">Upload from your device</span>
                     </div>
                   </div>
 
