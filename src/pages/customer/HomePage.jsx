@@ -334,10 +334,11 @@ export default function HomePage() {
             <div className="absolute top-0 left-1/4 w-64 h-64 bg-[var(--color-accent)]/10 rounded-full blur-3xl" />
             <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-[var(--color-gold)]/10 rounded-full blur-3xl" />
             <div className="relative z-10">
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4 font-[var(--font-family-heading)]">
-                Ready to Upgrade Your Style?
+              <h2 className="text-3xl sm:text-4xl font-black mb-4 font-[var(--font-family-heading)] flex flex-col items-center">
+                <span>Ready to Upgrade</span>
+                <span className="gradient-text">Your Style?</span>
               </h2>
-              <p className="text-[var(--color-text-secondary)] mb-8 max-w-md mx-auto">
+              <p className="text-[var(--color-text-secondary)] mb-8 max-w-md mx-auto text-center leading-relaxed">
                 Browse our collection of premium watches, dresses, and accessories. Order now and get free delivery!
               </p>
               <div className="flex flex-wrap gap-4 justify-center">

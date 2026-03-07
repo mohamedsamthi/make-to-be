@@ -15,6 +15,7 @@ import CheckoutPage from './pages/customer/CheckoutPage'
 import ContactPage from './pages/customer/ContactPage'
 import ProfilePage from './pages/customer/ProfilePage'
 import OrderTrackingPage from './pages/customer/OrderTrackingPage'
+import AboutPage from './pages/customer/AboutPage'
 
 // Auth Pages
 import LoginPage from './pages/auth/LoginPage'
@@ -49,6 +50,7 @@ function App() {
               <Route path="/contact" element={<><ContactPage /><Footer /></>} />
               <Route path="/profile" element={<><ProfilePage /><Footer /></>} />
               <Route path="/orders" element={<><OrderTrackingPage /><Footer /></>} />
+              <Route path="/about" element={<AboutPage />} />
 
               {/* Auth Routes */}
               <Route path="/login" element={<LoginPage />} />
@@ -73,8 +75,7 @@ function App() {
                   <div className="text-center">
                     <h1 className="text-8xl font-black gradient-text mb-4">404</h1>
                     <p className="text-xl mb-6 text-[var(--color-text-secondary)]">Page Not Found</p>
-                    <a href="/" className="btn-primary">Go Home</a>
-                  </div>
+                    <a href="/" className="btn-primary">Go Home</a></div>
                 </div>
               } />
             </Routes>
