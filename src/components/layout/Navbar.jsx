@@ -121,10 +121,14 @@ export default function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="w-10 h-10 rounded-xl gradient-accent flex items-center justify-center text-sm font-bold hover:opacity-90 transition-all"
+                  className="w-10 h-10 rounded-xl gradient-accent flex items-center justify-center text-sm font-bold hover:opacity-90 transition-all overflow-hidden border border-white/10"
                   id="user-menu-toggle"
                 >
-                  {profile?.full_name?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || 'U'}
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    profile?.full_name?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || 'U'
+                  )}
                 </button>
                 {userMenuOpen && (
                   <div className="absolute right-0 top-13 w-60 glass rounded-2xl p-2 animate-fadeIn shadow-2xl border border-white/10">

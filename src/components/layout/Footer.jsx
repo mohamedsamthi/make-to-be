@@ -23,10 +23,10 @@ export default function Footer() {
             <h2 className="text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tighter" style={{ fontFamily: 'var(--font-family-heading)' }}>
               Contact us
             </h2>
-            <div className="h-1 lg:h-1.5 w-[50%] xs:w-[70%] sm:w-[90%] bg-[#ccff00] mt-1 sm:mt-2 mx-auto" />
+            <div className="h-1 lg:h-1.5 w-[50%] xs:w-[70%] sm:w-[90%] bg-black/90 mt-1 sm:mt-2 mx-auto" />
           </div>
 
-          <Link to="/contact" className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#ccff00] text-black hover:bg-black hover:text-[#ccff00] flex items-center justify-center transition-all duration-300 ml-auto z-10 hover:scale-105 shadow-xl shrink-0">
+          <Link to="/contact" className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-black text-white hover:bg-[#ccff00] hover:text-black flex items-center justify-center transition-all duration-300 ml-auto z-10 hover:scale-105 shadow-xl shrink-0">
             <FiArrowRight size={28} strokeWidth={2.5} />
           </Link>
           
@@ -71,19 +71,10 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Socials & Newsletter */}
-          <div className="flex flex-col justify-between h-full space-y-12 lg:space-y-0">
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-[0.15em] text-white/50 mb-4 leading-relaxed">
-                WANT TO GET EXCLUSIVE<br />OFFERS?
-              </h4>
-              <Link to="/register" className="text-[11px] font-bold uppercase tracking-widest hover:text-[#ccff00] transition-colors flex items-center gap-1 underline decoration-white/30 underline-offset-4 w-fit">
-                SIGN UP FOR FREE <FiArrowRight size={13} className="mb-0.5" />
-              </Link>
-            </div>
-            
-            <div className="mt-auto">
-              <h4 className="text-[11px] font-bold uppercase tracking-widest text-white/90 mb-5">FOLLOW US</h4>
+          {/* Follow blocks - Far Right (Replacing Newsletter) */}
+          <div className="flex flex-col justify-end">
+            <div className="lg:mt-auto">
+              <h4 className="text-[11px] font-bold uppercase tracking-widest text-white/90 mb-6">FOLLOW US</h4>
               <div className="flex gap-6 items-center flex-wrap">
                 <a href={shopInfo.socialMedia.whatsapp} target="_blank" rel="noreferrer" className="text-white hover:text-[#ccff00] transition-colors border border-transparent hover:border-[#ccff00]/30 rounded-full p-2 -m-2">
                   <FaWhatsapp size={20} />
@@ -91,10 +82,10 @@ export default function Footer() {
                 <a href={shopInfo.socialMedia.email} target="_blank" rel="noreferrer" className="text-white hover:text-[#ccff00] transition-colors border border-transparent hover:border-[#ccff00]/30 rounded-full p-2 -m-2">
                   <FaEnvelope size={20} />
                 </a>
-                <a href="#" className="text-white hover:text-[#ccff00] transition-colors border border-transparent hover:border-[#ccff00]/30 rounded-full p-2 -m-2">
+                <a href={shopInfo.socialMedia.instagram} target="_blank" rel="noreferrer" className="text-white hover:text-[#ccff00] transition-colors border border-transparent hover:border-[#ccff00]/30 rounded-full p-2 -m-2">
                   <FiInstagram size={20} />
                 </a>
-                <a href="#" className="text-white hover:text-[#ccff00] transition-colors border border-transparent hover:border-[#ccff00]/30 rounded-full p-2 -m-2">
+                <a href={shopInfo.socialMedia.facebook} target="_blank" rel="noreferrer" className="text-white hover:text-[#ccff00] transition-colors border border-transparent hover:border-[#ccff00]/30 rounded-full p-2 -m-2">
                   <FiFacebook size={20} />
                 </a>
               </div>

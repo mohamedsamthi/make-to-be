@@ -367,6 +367,8 @@ export const shopInfo = {
   },
   socialMedia: {
     whatsapp: 'https://wa.me/94759028379',
-    email: 'mailto:contact@maketobe.lk'
+    email: 'mailto:contact@maketobe.lk',
+    instagram: '#',
+    facebook: '#'
   }
 }
