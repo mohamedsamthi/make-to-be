@@ -385,15 +385,15 @@ export default function HomePage() {
       {/* ===== CTA SECTION ===== */}
       <section className="section-padding">
         <div className="container-custom">
-          <div className="text-center rounded-3xl glass p-10 sm:p-16 relative overflow-hidden">
+          <div className="rounded-3xl glass p-10 sm:p-16 relative overflow-hidden">
             <div className="absolute top-0 left-1/4 w-64 h-64 bg-[var(--color-accent)]/10 rounded-full blur-3xl" />
             <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-[var(--color-gold)]/10 rounded-full blur-3xl" />
-            <div className="relative z-10">
-              <h2 className="text-3xl sm:text-4xl font-black mb-4 font-[var(--font-family-heading)] flex flex-col items-center">
-                <span>Ready to Upgrade</span>
+            <div className="relative z-10 flex flex-col items-center text-center">
+              <h2 className="text-3xl sm:text-4xl font-black mb-4 font-[var(--font-family-heading)]">
+                Ready to Upgrade<br />
                 <span className="gradient-text">Your Style?</span>
               </h2>
-              <p className="text-[var(--color-text-secondary)] mb-8 max-w-md mx-auto text-center leading-relaxed">
+              <p className="text-[var(--color-text-secondary)] mb-8 max-w-md leading-relaxed">
                 Browse our collection of premium watches, dresses, and accessories. Order now and get free delivery!
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
@@ -401,7 +401,7 @@ export default function HomePage() {
                   <FiShoppingBag size={20} /> Start Shopping
                 </Link>
                 <a href={shopInfo.socialMedia.whatsapp} target="_blank" rel="noreferrer"
-                  className="btn-outline text-base px-8 py-3.5 border-green-500 text-green-400 hover:bg-green-500 hover:text-white">
+                  className="btn-outline text-base px-8 py-3.5">
                   <FaWhatsapp size={20} /> Contact Us
                 </a>
               </div>
