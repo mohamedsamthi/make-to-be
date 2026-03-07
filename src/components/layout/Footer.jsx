@@ -7,7 +7,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-[#ff248a] text-white overflow-hidden mt-10">
+    <footer className="bg-[#5b21b6] text-white overflow-hidden mt-10">
       {/* Top Banner Section (White background) */}
       <div className="bg-white text-black py-16 sm:py-24 relative overflow-hidden">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
@@ -27,7 +27,7 @@ export default function Footer() {
           </div>
 
           <Link to="/contact" className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-black flex items-center justify-center transition-all duration-300 ml-auto z-10 hover:scale-105 shadow-xl shrink-0 group">
-            <FiArrowRight size={32} strokeWidth={2.5} className="text-white group-hover:text-[#ff248a] transition-colors" />
+            <FiArrowRight size={32} strokeWidth={2.5} className="text-white group-hover:text-[#7c3aed] transition-colors" />
           </Link>
           
         </div>
@@ -95,7 +95,7 @@ export default function Footer() {
       </div>
       
       {/* Copyright Bar */}
-      <div className="border-t border-white/10 bg-[#e01b7a]">
+      <div className="border-t border-white/10 bg-[#4c1d95]">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium text-white/50 tracking-wide">
           <p>© {currentYear} Make To Be. All rights reserved.</p>
           <p className="flex items-center gap-1.5 cursor-default">

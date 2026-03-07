@@ -200,12 +200,12 @@ export default function HomePage() {
       {/* ===== PROMOTION BANNER ===== */}
       <section className="section-padding overflow-hidden">
         <div className="container-custom">
-          <div className="relative overflow-hidden rounded-[2.5rem] bg-[#1a1a2e] border border-white/5 shadow-2xl min-h-[450px] flex items-center">
+          <div className="relative overflow-hidden rounded-[2.5rem] bg-[#1e1b4b] border border-white/5 shadow-2xl min-h-[450px] flex items-center">
             
             {/* Artistic Background Elements */}
             <div className="absolute top-0 right-0 w-full h-full pointer-events-none">
               <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-[var(--color-accent)]/10 rounded-full blur-[100px]" />
-              <div className="absolute bottom-[-10%] left-[20%] w-[300px] h-[300px] bg-purple-500/10 rounded-full blur-[80px]" />
+              <div className="absolute bottom-[-10%] left-[20%] w-[300px] h-[300px] bg-indigo-500/10 rounded-full blur-[80px]" />
             </div>
 
             <div className="grid lg:grid-cols-2 w-full h-full relative z-10">
@@ -280,8 +280,8 @@ export default function HomePage() {
                   </div>
 
                   {/* Glassy Overlays for depth */}
-                  <div className="absolute inset-0 bg-gradient-to-l from-[#1a1a2e] via-transparent to-[#1a1a2e] z-10 pointer-events-none" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#1a1a2e] via-transparent to-transparent z-10 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-l from-[#1e1b4b] via-transparent to-[#1e1b4b] z-10 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#1e1b4b] via-transparent to-transparent z-10 pointer-events-none" />
                 </div>
               </div>
 
