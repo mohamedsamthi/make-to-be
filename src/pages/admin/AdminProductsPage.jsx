@@ -414,7 +414,17 @@ export default function AdminProductsPage() {
                 </div>
 
                 {/* Featured Toggle */}
-                <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl bg-[var(--color-surface-light)] border border-[var(--color-border)] hover:border-[var(--color-accent)]/30 transition-all">
+                <label 
+                  htmlFor="featured-toggle"
+                  className="flex items-center gap-3 cursor-pointer p-3 rounded-xl bg-[var(--color-surface-light)] border border-[var(--color-border)] hover:border-[var(--color-accent)]/30 transition-all"
+                >
+                  <input
+                    id="featured-toggle"
+                    type="checkbox"
+                    checked={formData.featured}
+                    onChange={e => setFormData(p => ({...p, featured: e.target.checked}))}
+                    className="hidden"
+                  />
                   <div className={`w-10 h-6 rounded-full relative transition-all ${formData.featured ? 'bg-[var(--color-accent)]' : 'bg-[var(--color-border)]'}`}>
                     <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md transition-all ${formData.featured ? 'left-[18px]' : 'left-0.5'}`} />
                   </div>
@@ -423,14 +433,6 @@ export default function AdminProductsPage() {
                     <p className="text-[11px] text-[var(--color-text-muted)]">Show on homepage featured section</p>
                   </div>
                 </label>
-
-                {/* Hidden checkbox for toggle logic */}
-                <input
-                  type="checkbox"
-                  checked={formData.featured}
-                  onChange={e => setFormData(p => ({...p, featured: e.target.checked}))}
-                  className="hidden"
-                />
               </div>
 
               {/* Submit */}
