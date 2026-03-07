@@ -23,7 +23,7 @@ export default function ProductCard({ product }) {
       id={`product-card-${product.id}`}
     >
       {/* Image */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-[var(--color-surface-light)] shrink-0">
+      <div className="relative aspect-square overflow-hidden bg-[var(--color-surface-light)] shrink-0">
         <img
           src={product.image_url}
           alt={product.name}

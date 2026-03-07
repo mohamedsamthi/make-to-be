@@ -166,9 +166,9 @@ export default function ProductsPage() {
       </div>
 
       {/* Products Grid */}
-      <div className="container-custom py-10">
+      <div className="container-custom py-8">
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
             {filteredProducts.map((product, i) => (
               <div key={product.id} className="animate-fadeInUp" style={{ animationDelay: `${Math.min(i * 0.04, 0.4)}s` }}>
                 <ProductCard product={product} />
