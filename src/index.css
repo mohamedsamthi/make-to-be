@@ -152,6 +152,16 @@ img {
   100% { transform: translateX(-50%); }
 }
 
+@keyframes verticalScroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+@keyframes verticalScrollReverse {
+  0% { transform: translateY(-50%); }
+  100% { transform: translateY(0); }
+}
+
 .animate-fadeInUp {
   animation: fadeInUp 0.5s ease-out forwards;
 }
@@ -178,6 +188,14 @@ img {
 
 .animate-scroll-left {
   animation: scrollLeft 30s linear infinite;
+}
+
+.animate-vertical-scroll-slow {
+  animation: verticalScroll 40s linear infinite;
+}
+
+.animate-vertical-scroll-reverse {
+  animation: verticalScrollReverse 40s linear infinite;
 }
 
 /* ============ GLASS MORPHISM ============ */

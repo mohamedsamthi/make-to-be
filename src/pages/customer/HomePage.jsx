@@ -198,38 +198,93 @@ export default function HomePage() {
       </section>
 
       {/* ===== PROMOTION BANNER ===== */}
-      <section className="section-padding">
+      <section className="section-padding overflow-hidden">
         <div className="container-custom">
-          <div className="relative overflow-hidden rounded-3xl p-8 sm:p-12" style={{ background: promotions[currentPromo]?.banner_color }}>
-            <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
-
-            <div className="relative z-10 max-w-lg">
-              <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-sm font-bold mb-4">
-                {promotions[currentPromo]?.discount_percentage}% OFF
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-                {promotions[currentPromo]?.title}
-              </h2>
-              <p className="text-lg mb-6 opacity-90">
-                {promotions[currentPromo]?.description}
-              </p>
-              <Link to="/products" className="inline-flex items-center gap-2 bg-white text-[var(--color-surface)] px-6 py-3 rounded-xl font-bold hover:bg-white/90 transition-all">
-                Shop Now <FiArrowRight />
-              </Link>
+          <div className="relative overflow-hidden rounded-[2.5rem] bg-[#1a1a2e] border border-white/5 shadow-2xl min-h-[450px] flex items-center">
+            
+            {/* Artistic Background Elements */}
+            <div className="absolute top-0 right-0 w-full h-full pointer-events-none">
+              <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-[var(--color-accent)]/10 rounded-full blur-[100px]" />
+              <div className="absolute bottom-[-10%] left-[20%] w-[300px] h-[300px] bg-purple-500/10 rounded-full blur-[80px]" />
             </div>
 
-            {/* Dots */}
-            <div className="flex gap-2 mt-8 relative z-10">
-              {promotions.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPromo(i)}
-                  className={`w-2.5 h-2.5 rounded-full transition-all ${
-                    i === currentPromo ? 'bg-white w-8' : 'bg-white/40'
-                  }`}
-                />
-              ))}
+            <div className="grid lg:grid-cols-2 w-full h-full relative z-10">
+              
+              {/* Left Content */}
+              <div className="p-8 sm:p-16 flex flex-col justify-center animate-fadeIn">
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="px-4 py-1.5 rounded-full bg-[var(--color-accent)]/20 text-[var(--color-accent-light)] text-xs font-bold tracking-widest uppercase border border-[var(--color-accent)]/20 shadow-lg">
+                    {promotions[currentPromo]?.discount_percentage}% LIMITED OFFER
+                  </span>
+                </div>
+                
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 font-[var(--font-family-heading)] leading-[1.1] tracking-tight text-white">
+                  {promotions[currentPromo]?.title}
+                </h2>
+                
+                <p className="text-lg text-[var(--color-text-secondary)] mb-10 max-w-md leading-relaxed">
+                  {promotions[currentPromo]?.description} 
+                  <span className="block mt-2 text-sm italic opacity-70">Elevate your collection with our premium picks.</span>
+                </p>
+                
+                <div className="flex flex-wrap gap-4">
+                  <Link to="/products" className="btn-primary text-base px-8 py-3.5 group">
+                    Explore Collection 
+                    <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+
+                {/* Promo Dots */}
+                <div className="flex gap-3 mt-12">
+                  {promotions.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPromo(i)}
+                      className={`h-1.5 rounded-full transition-all duration-500 ${
+                        i === currentPromo ? 'bg-[var(--color-accent)] w-10' : 'bg-white/20 w-4'
+                      }`}
+                      aria-label={`Jump to promotion ${i + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Right Side - Scrolling Images (Fake/Visual) */}
+              <div className="hidden lg:block relative h-full min-h-[500px] bg-[#111122]/50">
+                <div className="absolute inset-0 grid grid-cols-2 gap-4 p-6 overflow-hidden">
+                  
+                  {/* Column 1 - Downward */}
+                  <div className="flex flex-col gap-4 animate-vertical-scroll-slow">
+                    {[1, 2, 3, 1, 2, 3].map((num, i) => (
+                      <div key={i} className="aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl border border-white/5">
+                        <img 
+                          src={`https://images.unsplash.com/photo-${num === 1 ? '1523275335684-37898b6baf30' : (num === 2 ? '1508057198894-247b23fe5acc' : '1491553895911-0055eca6402d')}?auto=format&fit=crop&w=600&q=80`}
+                          alt="Premium Item" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Column 2 - Upward */}
+                  <div className="flex flex-col gap-4 animate-vertical-scroll-reverse">
+                    {[4, 5, 2, 4, 5, 2].map((num, i) => (
+                      <div key={i} className="aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl border border-white/5">
+                        <img 
+                          src={`https://images.unsplash.com/photo-${num === 4 ? '1491633715181-67a40c0d87a5' : (num === 5 ? '1542291026-7eec264c27ff' : '1505740420928-5e560c06d30e')}?auto=format&fit=crop&w=600&q=80`}
+                          alt="Luxury Accessary" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Overlays */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a2e] via-transparent to-[#1a1a2e] z-10 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#1a1a2e] via-transparent to-transparent z-10 pointer-events-none" />
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
