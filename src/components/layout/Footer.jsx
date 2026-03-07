@@ -26,8 +26,8 @@ export default function Footer() {
             <div className="h-1 lg:h-1.5 w-[50%] xs:w-[70%] sm:w-[90%] bg-black/90 mt-1 sm:mt-2 mx-auto" />
           </div>
 
-          <Link to="/contact" className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-black text-white hover:bg-[#ccff00] hover:text-black flex items-center justify-center transition-all duration-300 ml-auto z-10 hover:scale-105 shadow-xl shrink-0">
-            <FiArrowRight size={28} strokeWidth={2.5} />
+          <Link to="/contact" className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-black flex items-center justify-center transition-all duration-300 ml-auto z-10 hover:scale-105 shadow-xl shrink-0 group">
+            <FiArrowRight size={32} strokeWidth={2.5} className="text-white group-hover:text-black transition-colors" />
           </Link>
           
         </div>
