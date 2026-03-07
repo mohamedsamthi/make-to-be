@@ -19,9 +19,16 @@ export function ProductProvider({ children }) {
   useEffect(() => {
     const fetchRealData = async () => {
       try {
-        const { data: dbProducts, error } = await supabase.from('products').select('*').order('created_at', { ascending: false })
-        if (!error && dbProducts && dbProducts.length > 0) {
+        const { data: dbProducts, error: pError } = await supabase.from('products').select('*').order('created_at', { ascending: false })
+        if (!pError && dbProducts) {
           setProducts(dbProducts)
+        }
+        
+        const { data: dbOrders, error: oError } = await supabase.from('orders').select('*').order('created_at', { ascending: false })
+        if (!oError && dbOrders) {
+          setOrders(dbOrders)
+        } else if (!oError) {
+          setOrders([]) // Clear demo orders if real table is empty
         }
       } catch (err) {
         console.error('Error fetching Supabase products:', err)
@@ -80,17 +87,29 @@ export function ProductProvider({ children }) {
   }
 
   // ===== ORDER OPERATIONS =====
-  const updateOrder = (id, updatedData) => {
+  const updateOrder = async (id, updatedData) => {
     setOrders(prev => prev.map(o => o.id === id ? { ...o, ...updatedData } : o))
+    
+    try {
+      await supabase.from('orders').update(updatedData).eq('id', id)
+    } catch (err) {
+      console.error('Failed to update order in db:', err)
+    }
   }
 
-  const addOrder = (order) => {
+  const addOrder = async (order) => {
     const newOrder = {
       ...order,
-      id: `ORD-${String(orders.length + 1).padStart(3, '0')}`,
-      created_at: new Date().toISOString().slice(0, 10)
+      id: `ORD-${Date.now().toString().slice(-6)}`, // generate random ID
+      created_at: new Date().toISOString()
     }
     setOrders(prev => [newOrder, ...prev])
+    
+    try {
+      await supabase.from('orders').insert([newOrder])
+    } catch (err) {
+      console.error('Failed to save order to db:', err)
+    }
     return newOrder
   }
 

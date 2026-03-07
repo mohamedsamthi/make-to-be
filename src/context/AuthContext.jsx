@@ -18,7 +18,8 @@ export function AuthProvider({ children }) {
         const { data: { session } } = await supabase.auth.getSession()
         if (session?.user) {
           setUser(session.user)
-          await fetchProfile(session.user.id)
+          setProfile(session.user.user_metadata || {})
+          // await fetchProfile(session.user.id)
         }
       } catch (error) {
         console.error('Session error:', error)
@@ -33,7 +34,7 @@ export function AuthProvider({ children }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
         setUser(session.user)
-        await fetchProfile(session.user.id)
+        setProfile(session.user.user_metadata || {})
       } else {
         setUser(null)
         setProfile(null)
@@ -46,20 +47,35 @@ export function AuthProvider({ children }) {
   }, [])
 
   const fetchProfile = async (userId) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single()
-
-      if (data) {
-        setProfile(data)
-        setIsAdmin(data.role === 'admin')
-      }
-    } catch (error) {
-      console.error('Profile fetch error:', error)
+    // If not using a profiles table, just rely on user_metadata
+    if (user && user.id === userId) {
+      setProfile(user.user_metadata || {})
     }
+  }
+
+  const updateProfile = async (updates) => {
+    const payload = {}
+    if (updates.password) payload.password = updates.password
+    
+    // Update metadata (name, phone, avatar)
+    const metaDataToUpdate = {}
+    if (updates.fullName !== undefined) metaDataToUpdate.full_name = updates.fullName
+    if (updates.phone !== undefined) metaDataToUpdate.phone = updates.phone
+    if (updates.avatar_url !== undefined) metaDataToUpdate.avatar_url = updates.avatar_url
+    
+    if (Object.keys(metaDataToUpdate).length > 0) {
+      payload.data = {
+         ...(user?.user_metadata || {}),
+         ...metaDataToUpdate
+      }
+    }
+
+    const { data, error } = await supabase.auth.updateUser(payload)
+    if (!error && data?.user) {
+      setUser(data.user)
+      setProfile(data.user.user_metadata || {})
+    }
+    return { data, error }
   }
 
   const signUp = async (email, password, fullName, phone) => {
@@ -82,10 +98,12 @@ export function AuthProvider({ children }) {
   }
 
   const signOut = async () => {
+    localStorage.removeItem('adminAuth')
     await supabase.auth.signOut()
     setUser(null)
     setProfile(null)
     setIsAdmin(false)
+    window.location.href = '/' // Force reload to home page so that name disappears and cache resets
   }
 
   const value = {
@@ -96,7 +114,8 @@ export function AuthProvider({ children }) {
     signUp,
     signIn,
     signOut,
-    fetchProfile
+    fetchProfile,
+    updateProfile
   }
 
   return (

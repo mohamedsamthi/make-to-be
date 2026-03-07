@@ -64,8 +64,8 @@ export default function OrderTrackingPage() {
   const { user } = useAuth()
   const { orders } = useProducts()
 
-  // Use demoOrders for now, will be replaced with real orders
-  const demoOrders = orders
+  // Filter orders for the logged in user
+  const userOrders = orders.filter(o => o.customer_email === user?.email)
 
   return (
     <div className="pt-20 min-h-screen">
@@ -82,9 +82,9 @@ export default function OrderTrackingPage() {
       </div>
 
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 py-8">
-        {demoOrders.length > 0 ? (
+        {userOrders.length > 0 ? (
           <div className="space-y-6">
-            {demoOrders.map((order, idx) => (
+            {userOrders.map((order, idx) => (
               <div
                 key={order.id}
                 className="rounded-2xl bg-[var(--color-surface-card)] border border-[var(--color-border)] overflow-hidden animate-fadeInUp"
