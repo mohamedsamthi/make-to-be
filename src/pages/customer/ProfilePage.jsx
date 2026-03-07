@@ -30,7 +30,32 @@ export default function ProfilePage() {
       }
       const reader = new FileReader()
       reader.onloadend = () => {
-        setFormData(p => ({...p, avatarUrl: reader.result}))
+        // Compress image using canvas before saving to avoid Supabase metadata limit
+        const img = new Image()
+        img.onload = () => {
+          const canvas = document.createElement('canvas')
+          const max_size = 150 // tiny avatar size constraints
+          let width = img.width
+          let height = img.height
+          if (width > height) {
+            if (width > max_size) {
+              height *= max_size / width
+              width = max_size
+            }
+          } else {
+            if (height > max_size) {
+              width *= max_size / height
+              height = max_size
+            }
+          }
+          canvas.width = width
+          canvas.height = height
+          const ctx = canvas.getContext('2d')
+          ctx.drawImage(img, 0, 0, width, height)
+          const tinyBase64 = canvas.toDataURL('image/jpeg', 0.6)
+          setFormData(p => ({...p, avatarUrl: tinyBase64}))
+        }
+        img.src = reader.result
       }
       reader.readAsDataURL(file)
     }
