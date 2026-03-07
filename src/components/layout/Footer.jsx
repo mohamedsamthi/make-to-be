@@ -8,31 +8,6 @@ export default function Footer() {
 
   return (
     <footer className="bg-[#5b21b6] text-white overflow-hidden mt-10">
-      {/* Top Banner Section (White background) */}
-      <div className="bg-white text-black py-16 sm:py-24 relative overflow-hidden">
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
-          
-          <div className="flex items-center gap-6">
-            <div className="hidden md:flex text-xs font-bold uppercase tracking-[0.2em] text-black/60 flex-col items-start leading-tight">
-              <span>Heard</span>
-              <span>Enough? <FiArrowRight className="inline ml-1 mb-0.5" /></span>
-            </div>
-          </div>
-
-          <div className="text-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
-            <h2 className="text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tighter" style={{ fontFamily: 'var(--font-family-heading)' }}>
-              Contact us
-            </h2>
-            <div className="h-1 lg:h-1.5 w-[50%] xs:w-[70%] sm:w-[90%] bg-black/90 mt-1 sm:mt-2 mx-auto" />
-          </div>
-
-          <Link to="/contact" className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-black flex items-center justify-center transition-all duration-300 ml-auto z-10 hover:scale-105 shadow-xl shrink-0 group">
-            <FiArrowRight size={32} strokeWidth={2.5} className="text-white group-hover:text-[#7c3aed] transition-colors" />
-          </Link>
-          
-        </div>
-      </div>
-
       {/* Main Footer Section (Pink background) */}
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 py-16 sm:py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
