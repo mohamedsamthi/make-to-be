@@ -12,6 +12,19 @@ export default function LoginPage() {
   const { signIn } = useAuth()
   const navigate = useNavigate()
 
+  const [unconfirmedEmail, setUnconfirmedEmail] = useState('')
+  const [resending, setResending] = useState(false)
+
+  const handleResendConfirmation = async () => {
+    setResending(true)
+    const { error } = await import('../../lib/supabase').then(m =>
+      m.supabase.auth.resend({ type: 'signup', email: unconfirmedEmail })
+    )
+    setResending(false)
+    if (error) toast.error('Could not resend email. Try again.')
+    else toast.success('Confirmation email sent! Check your inbox.')
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!email || !password) {
@@ -20,16 +33,26 @@ export default function LoginPage() {
     }
 
     setLoading(true)
+    setUnconfirmedEmail('')
     try {
       const { data, error } = await signIn(email, password)
       if (error) {
-        toast.error(error.message || 'Login failed')
+        // Email not confirmed — show helpful message
+        if (error.message?.toLowerCase().includes('email not confirmed') ||
+            error.message?.toLowerCase().includes('not confirmed')) {
+          setUnconfirmedEmail(email)
+          toast.error('Please confirm your email first.', { duration: 5000 })
+        } else if (error.message?.toLowerCase().includes('invalid login')) {
+          toast.error('Incorrect email or password.')
+        } else {
+          toast.error(error.message || 'Login failed. Please try again.')
+        }
       } else {
         toast.success('Welcome back! 🎉')
         navigate('/')
       }
     } catch (err) {
-      toast.error('Something went wrong')
+      toast.error('Something went wrong. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -49,6 +72,26 @@ export default function LoginPage() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="glass rounded-2xl p-8 space-y-5">
+
+          {/* Email not confirmed warning */}
+          {unconfirmedEmail && (
+            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-sm">
+              <p className="font-semibold text-amber-400 mb-1">📧 Email Not Confirmed</p>
+              <p className="text-amber-300/80 text-xs mb-3 leading-relaxed">
+                Your account (<strong>{unconfirmedEmail}</strong>) needs email verification.
+                Check your inbox (and spam folder) for a confirmation link.
+              </p>
+              <button
+                type="button"
+                onClick={handleResendConfirmation}
+                disabled={resending}
+                className="text-xs font-semibold px-4 py-2 rounded-lg bg-amber-500 text-white hover:bg-amber-600 transition-colors disabled:opacity-50"
+              >
+                {resending ? 'Sending...' : '📩 Resend Confirmation Email'}
+              </button>
+            </div>
+          )}
+
           <div>
             <label className="text-sm text-[var(--color-text-secondary)] mb-1.5 block">Email Address</label>
             <div className="relative">
