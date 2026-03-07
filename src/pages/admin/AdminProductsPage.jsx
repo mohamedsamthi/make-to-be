@@ -81,6 +81,21 @@ export default function AdminProductsPage() {
     resetForm()
   }
 
+  const handleImageSelect = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // Limit size to ~5MB
+        toast.error('Image is too large. Please select a smaller one.')
+        return
+      }
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFormData(p => ({...p, image_url: reader.result}))
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
   const handleDelete = (id, name) => {
     if (confirm(`Are you sure you want to delete "${name}"?`)) {
       deleteProduct(id)
@@ -352,19 +367,25 @@ export default function AdminProductsPage() {
                   />
                 </div>
 
-                {/* Image */}
+                {/* Image Upload */}
                 <div>
                   <label className="text-sm font-medium text-[var(--color-text-secondary)] mb-1.5 block">
-                    <FiImage className="inline mr-1" size={14} /> Image URL
+                    <FiImage className="inline mr-1" size={14} /> Product Image
                   </label>
-                  <input
-                    value={formData.image_url}
-                    onChange={e => setFormData(p => ({...p, image_url: e.target.value}))}
-                    className="input-field"
-                    placeholder="https://images.unsplash.com/..."
-                  />
+                  <div className="flex items-center gap-4">
+                    <label className="cursor-pointer glass-light px-4 py-2.5 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-accent)]/30 transition-all flex items-center gap-2">
+                      <span className="text-sm font-medium text-[var(--color-text-secondary)]">Choose Image</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageSelect}
+                        className="hidden"
+                      />
+                    </label>
+                    <span className="text-[11px] text-[var(--color-text-muted)]">Upload from your device</span>
+                  </div>
                   {formData.image_url && (
-                    <div className="mt-2 w-20 h-20 rounded-xl overflow-hidden border border-[var(--color-border)]">
+                    <div className="mt-3 w-24 h-24 rounded-xl overflow-hidden border border-[var(--color-border)] shadow-lg shadow-black/20">
                       <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" onError={e => e.target.style.display='none'} />
                     </div>
                   )}
