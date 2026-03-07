@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { FaWhatsapp, FaEnvelope, FaHeart } from 'react-icons/fa'
-import { FiInstagram, FiFacebook, FiArrowRight, FiArrowUpRight } from 'react-icons/fi'
+import { FiInstagram, FiFacebook, FiArrowUpRight, FiPhone, FiMapPin } from 'react-icons/fi'
 import { shopInfo } from '../../data/demoData'
 
 export default function Footer() {
@@ -8,77 +8,116 @@ export default function Footer() {
 
   return (
     <footer className="bg-[#5b21b6] text-white overflow-hidden mt-10">
-      {/* Main Footer Section (Pink background) */}
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 py-16 sm:py-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
-          
-          {/* Brand - Far Left */}
-          <div className="lg:pr-10">
-            <h3 className="text-4xl sm:text-5xl font-black leading-[1.1] font-[var(--font-family-heading)] tracking-tight mb-2">
-              Make<br />To Be<span className="text-[18px] font-normal align-top ml-1">®</span>
-            </h3>
+      {/* Main Footer */}
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 py-14 sm:py-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
+
+          {/* Brand */}
+          <div className="col-span-2 md:col-span-1">
+            <Link to="/" className="inline-block mb-4">
+              <h3 className="text-3xl sm:text-4xl font-black leading-none tracking-tighter">
+                Make<br />To Be<span className="text-[18px] font-normal align-super ml-1 opacity-70">®</span>
+              </h3>
+            </Link>
+            <p className="text-white/70 text-sm leading-relaxed max-w-[200px]">
+              Premium lifestyle store. Quality products delivered to your door.
+            </p>
+
+            {/* Social Icons */}
+            <div className="flex gap-3 mt-6">
+              <a href={shopInfo.socialMedia.whatsapp} target="_blank" rel="noreferrer"
+                className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all hover:scale-105">
+                <FaWhatsapp size={18} />
+              </a>
+              <a href={`mailto:${shopInfo.email}`}
+                className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all hover:scale-105">
+                <FaEnvelope size={18} />
+              </a>
+              <a href={shopInfo.socialMedia.instagram} target="_blank" rel="noreferrer"
+                className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all hover:scale-105">
+                <FiInstagram size={18} />
+              </a>
+              <a href={shopInfo.socialMedia.facebook} target="_blank" rel="noreferrer"
+                className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all hover:scale-105">
+                <FiFacebook size={18} />
+              </a>
+            </div>
           </div>
 
-          {/* Location details */}
+          {/* Quick Links */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest text-white/50 mb-6">SRI LANKA</h4>
-            <div className="flex flex-col gap-1 text-[13px] font-medium leading-relaxed tracking-wide text-white">
-              <a href={`mailto:${shopInfo.email}`} className="hover:text-black transition-colors underline decoration-white/30 underline-offset-4">{shopInfo.email}</a>
-              <a href={`tel:${shopInfo.phone}`} className="mt-1 hover:text-black transition-colors">{shopInfo.phone}</a>
-              <p className="mt-3 leading-[1.6] max-w-[200px] text-white/90">{shopInfo.address}</p>
-              
-              <a href={shopInfo.location.mapUrl} target="_blank" rel="noreferrer" className="mt-8 text-[11px] font-bold uppercase tracking-widest hover:text-black transition-colors flex items-center gap-1 underline decoration-white/30 underline-offset-4 w-fit">
-                SEE ON MAP <FiArrowUpRight size={13} className="mb-0.5" />
+            <h4 className="text-xs font-bold uppercase tracking-widest text-white/50 mb-5">Quick Links</h4>
+            <ul className="space-y-3">
+              {[
+                { label: 'Home', to: '/' },
+                { label: 'Products', to: '/products' },
+                { label: 'About Us', to: '/about' },
+                { label: 'Contact', to: '/contact' },
+                { label: 'My Orders', to: '/orders' },
+              ].map(link => (
+                <li key={link.to}>
+                  <Link to={link.to} className="text-sm text-white/80 hover:text-white transition-colors hover:translate-x-1 inline-block">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 className="text-xs font-bold uppercase tracking-widest text-white/50 mb-5">Contact</h4>
+            <div className="space-y-3">
+              <a href={`mailto:${shopInfo.email}`} className="flex items-start gap-2 text-sm text-white/80 hover:text-white transition-colors">
+                <FaEnvelope size={14} className="mt-0.5 shrink-0" />
+                <span className="break-all">{shopInfo.email}</span>
+              </a>
+              <a href={`tel:${shopInfo.phone}`} className="flex items-center gap-2 text-sm text-white/80 hover:text-white transition-colors">
+                <FiPhone size={14} className="shrink-0" />
+                {shopInfo.phone}
+              </a>
+              <div className="flex items-start gap-2 text-sm text-white/70 leading-relaxed">
+                <FiMapPin size={14} className="mt-0.5 shrink-0" />
+                <span>{shopInfo.address}</span>
+              </div>
+              <a href={shopInfo.location.mapUrl} target="_blank" rel="noreferrer"
+                className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-widest text-white/60 hover:text-white transition-colors underline underline-offset-4 decoration-white/30">
+                See on Map <FiArrowUpRight size={11} />
               </a>
             </div>
           </div>
 
           {/* Bank Details */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest text-white/50 mb-6">BANK DETAILS</h4>
-            <div className="flex flex-col gap-1 text-[13px] font-medium leading-relaxed tracking-wide text-white">
-              <span className="mb-2 opacity-80">Online Payments</span>
-              <p className="mt-1"><span className="text-white/50 mb-0.5 block text-[10px] uppercase font-bold tracking-widest">Bank</span>{shopInfo.bankDetails.bankName}</p>
-              <p className="mt-1"><span className="text-white/50 mb-0.5 block text-[10px] uppercase font-bold tracking-widest">A/C Name</span>{shopInfo.bankDetails.accountName}</p>
-              <p className="mt-1"><span className="text-white/50 mb-0.5 block text-[10px] uppercase font-bold tracking-widest">A/C Number</span></p>
-              <p className="font-mono text-sm tracking-wider">{shopInfo.bankDetails.accountNumber}</p>
-            </div>
-          </div>
-
-          {/* Follow blocks */}
-          <div className="flex flex-col justify-end">
-            <div className="lg:mt-auto">
-              <h4 className="text-[11px] font-bold uppercase tracking-widest text-white/90 mb-6">FOLLOW US</h4>
-              <div className="flex gap-6 items-center flex-wrap">
-                <a href={shopInfo.socialMedia.whatsapp} target="_blank" rel="noreferrer" className="text-white hover:text-black transition-colors p-2 -m-2">
-                  <FaWhatsapp size={20} />
-                </a>
-                <a href={`mailto:${shopInfo.email}`} target="_blank" rel="noreferrer" className="text-white hover:text-black transition-colors p-2 -m-2">
-                  <FaEnvelope size={20} />
-                </a>
-                <a href={shopInfo.socialMedia.instagram} target="_blank" rel="noreferrer" className="text-white hover:text-black transition-colors p-2 -m-2">
-                  <FiInstagram size={20} />
-                </a>
-                <a href={shopInfo.socialMedia.facebook} target="_blank" rel="noreferrer" className="text-white hover:text-black transition-colors p-2 -m-2">
-                  <FiFacebook size={20} />
-                </a>
+            <h4 className="text-xs font-bold uppercase tracking-widest text-white/50 mb-5">Payment</h4>
+            <div className="space-y-2.5 text-sm">
+              <div>
+                <p className="text-[10px] uppercase tracking-wider text-white/40 mb-0.5">Bank</p>
+                <p className="text-white/90 font-medium">{shopInfo.bankDetails.bankName}</p>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-wider text-white/40 mb-0.5">Account Name</p>
+                <p className="text-white/90 font-medium">{shopInfo.bankDetails.accountName}</p>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-wider text-white/40 mb-0.5">Account Number</p>
+                <p className="font-mono font-bold text-amber-300 tracking-wider text-base">{shopInfo.bankDetails.accountNumber}</p>
               </div>
             </div>
           </div>
 
         </div>
       </div>
-      
+
       {/* Copyright Bar */}
       <div className="border-t border-white/10 bg-[#4c1d95]">
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium text-white/50 tracking-wide">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
           <p>© {currentYear} Make To Be. All rights reserved.</p>
-          <p className="flex items-center gap-1.5 cursor-default">
-            Built with <FaHeart size={10} className="text-white" /> in SRI LANKA
+          <p className="flex items-center gap-1.5">
+            Built with <FaHeart size={10} className="text-pink-400" /> in Sri Lanka
           </p>
         </div>
       </div>
-
     </footer>
   )
 }

@@ -269,8 +269,8 @@ img {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .card-hover:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(233, 69, 96, 0.12);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(124, 58, 237, 0.15);
 }
 
 /* ============ BUTTONS ============ */
@@ -292,7 +292,7 @@ img {
 }
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(233, 69, 96, 0.35);
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.4);
 }
 .btn-primary:active {
   transform: translateY(0);
@@ -317,7 +317,7 @@ img {
   background: var(--color-accent);
   color: white;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(233, 69, 96, 0.25);
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
 }
 
 .btn-gold {
@@ -354,18 +354,21 @@ img {
 }
 
 .badge-accent {
-  background: rgba(233, 69, 96, 0.15);
+  background: rgba(124, 58, 237, 0.2);
   color: var(--color-accent-light);
+  border: 1px solid rgba(124, 58, 237, 0.2);
 }
 
 .badge-gold {
-  background: rgba(245, 166, 35, 0.15);
+  background: rgba(251, 191, 36, 0.15);
   color: var(--color-gold-light);
+  border: 1px solid rgba(251, 191, 36, 0.2);
 }
 
 .badge-success {
-  background: rgba(46, 204, 113, 0.15);
-  color: var(--color-success);
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 /* ============ INPUT STYLES ============ */
@@ -383,7 +386,7 @@ img {
 }
 .input-field:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.12);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
   background: var(--color-surface-card);
 }
 .input-field::placeholder {
@@ -430,10 +433,16 @@ table {
 }
 
 /* ============ RESPONSIVE FIXES ============ */
-@media (max-width: 640px) {
-  h1 { font-size: 1.75rem; }
+@media (max-width: 768px) {
+  h1 { font-size: 1.875rem; }
   h2 { font-size: 1.5rem; }
   h3 { font-size: 1.125rem; }
+}
+
+@media (max-width: 640px) {
+  h1 { font-size: 1.625rem; }
+  h2 { font-size: 1.375rem; }
+  h3 { font-size: 1.0625rem; }
 
   .btn-primary,
   .btn-outline,
@@ -444,5 +453,9 @@ table {
 
   .section-padding {
     padding: 3rem 1rem;
+  }
+
+  .container-custom {
+    padding: 0 1rem;
   }
 }

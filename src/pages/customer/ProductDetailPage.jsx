@@ -86,16 +86,16 @@ export default function ProductDetailPage() {
   return (
     <div className="pt-20 min-h-screen">
       {/* Breadcrumb */}
-      <div className="bg-[var(--color-primary)] py-4">
+      <div className="bg-[var(--color-primary)] border-b border-[var(--color-border)] py-4">
         <div className="container-custom">
-          <nav className="text-xs text-[var(--color-text-muted)] flex items-center gap-2">
-            <Link to="/" className="hover:text-[var(--color-accent)]">Home</Link>
+          <nav className="text-xs text-[var(--color-text-muted)] flex items-center gap-2 flex-wrap">
+            <Link to="/" className="hover:text-[var(--color-accent)] transition-colors">Home</Link>
             <span>/</span>
-            <Link to="/products" className="hover:text-[var(--color-accent)]">Products</Link>
+            <Link to="/products" className="hover:text-[var(--color-accent)] transition-colors">Products</Link>
             <span>/</span>
-            <Link to={`/products?category=${product.category}`} className="hover:text-[var(--color-accent)] capitalize">{product.category}</Link>
+            <Link to={`/products?category=${product.category}`} className="hover:text-[var(--color-accent)] capitalize transition-colors">{product.category}</Link>
             <span>/</span>
-            <span className="text-[var(--color-text-primary)] truncate max-w-48">{product.name}</span>
+            <span className="text-[var(--color-text-primary)] truncate max-w-[160px] sm:max-w-xs">{product.name}</span>
           </nav>
         </div>
       </div>
@@ -242,9 +242,9 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap gap-3 mb-6">
+            <div className="flex flex-col sm:flex-row gap-3 mb-4">
               <button onClick={handleAddToCart} className="btn-primary flex-1 justify-center py-3.5" disabled={product.stock === 0}>
-                <FiShoppingCart size={20} /> Add to Cart
+                <FiShoppingCart size={18} /> Add to Cart
               </button>
               <button onClick={handleOrderNow} className="btn-gold flex-1 justify-center py-3.5" disabled={product.stock === 0}>
                 Order Now
@@ -256,7 +256,7 @@ export default function ProductDetailPage() {
               href={`${shopInfo.socialMedia.whatsapp}?text=${encodeURIComponent(whatsappMessage)}`}
               target="_blank"
               rel="noreferrer"
-              className="btn-outline w-full justify-center py-3.5 border-green-500 text-green-400 hover:bg-green-500 hover:text-white mb-6"
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl border-2 border-emerald-500 text-emerald-400 font-semibold hover:bg-emerald-500 hover:text-white transition-all text-sm mb-6"
             >
               <FaWhatsapp size={20} /> Order via WhatsApp
             </a>
@@ -268,9 +268,9 @@ export default function ProductDetailPage() {
                 { icon: <FiShield size={18} />, text: 'Genuine Product' },
                 { icon: <FiRefreshCw size={18} />, text: 'Easy Returns' }
               ].map((badge, i) => (
-                <div key={i} className="flex flex-col items-center gap-1 p-3 rounded-xl glass-light text-center">
+                <div key={i} className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-[var(--color-primary)] border border-[var(--color-border)] text-center">
                   <span className="text-[var(--color-accent)]">{badge.icon}</span>
-                  <span className="text-[10px] text-[var(--color-text-muted)]">{badge.text}</span>
+                  <span className="text-[10px] font-medium text-[var(--color-text-secondary)] leading-tight">{badge.text}</span>
                 </div>
               ))}
             </div>

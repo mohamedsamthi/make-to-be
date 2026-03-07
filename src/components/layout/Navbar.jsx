@@ -52,8 +52,8 @@ export default function Navbar() {
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-[#0f0f23]/95 backdrop-blur-xl shadow-lg shadow-black/20 py-3'
-            : 'bg-[#0f0f23]/80 backdrop-blur-md py-4'
+            ? 'bg-[var(--color-surface)]/95 backdrop-blur-xl shadow-lg shadow-black/30 border-b border-white/5 py-3'
+            : 'bg-[var(--color-surface)]/80 backdrop-blur-md py-4'
         }`}
       >
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex items-center justify-between">
@@ -201,23 +201,23 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {menuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 glass animate-fadeIn p-4 border-t border-white/5">
-            <div className="max-w-[1280px] mx-auto px-4 flex flex-col gap-1">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-[var(--color-surface)]/98 backdrop-blur-xl border-t border-white/5 shadow-2xl animate-fadeIn">
+            <div className="max-w-[1280px] mx-auto px-4 py-4 flex flex-col gap-1">
               {navLinks.map(link => (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                  className={`flex items-center px-4 py-3.5 rounded-xl text-sm font-medium transition-all ${
                     location.pathname === link.path
-                      ? 'bg-[var(--color-accent)]/10 text-[var(--color-accent)]'
-                      : 'hover:bg-white/5 text-[var(--color-text-secondary)]'
+                      ? 'bg-[var(--color-accent)]/15 text-[var(--color-accent)] border border-[var(--color-accent)]/20'
+                      : 'hover:bg-white/5 text-[var(--color-text-secondary)] hover:text-white'
                   }`}
                 >
                   {link.name}
                 </Link>
               ))}
               {!user && (
-                <Link to="/login" className="btn-primary justify-center mt-3 py-3">
+                <Link to="/login" className="btn-primary justify-center mt-3 py-3 text-sm">
                   <FiUser size={16} /> Login / Register
                 </Link>
               )}
