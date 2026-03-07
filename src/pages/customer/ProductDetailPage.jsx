@@ -105,11 +105,11 @@ export default function ProductDetailPage() {
         <div className="grid lg:grid-cols-2 gap-10 mb-16">
           {/* Images */}
           <div>
-            <div className="relative aspect-square rounded-2xl overflow-hidden bg-[var(--color-surface-card)] mb-4">
+            <div className="relative rounded-2xl overflow-hidden bg-[var(--color-surface-card)] mb-4 max-h-[500px] flex items-center justify-center">
               <img
                 src={product.images[selectedImage] || product.image_url}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full max-h-[500px] object-contain"
               />
               {hasDiscount && (
                 <span className="absolute top-4 left-4 badge gradient-accent text-white font-bold shadow-lg text-sm">
