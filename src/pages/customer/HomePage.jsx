@@ -200,93 +200,134 @@ export default function HomePage() {
       {/* ===== PROMOTION BANNER ===== */}
       <section className="section-padding overflow-hidden">
         <div className="container-custom">
-          <div className="relative overflow-hidden rounded-[2.5rem] bg-[#1e1b4b] border border-white/5 shadow-2xl min-h-[450px] flex items-center">
-            
-            {/* Artistic Background Elements */}
-            <div className="absolute top-0 right-0 w-full h-full pointer-events-none">
-              <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-[var(--color-accent)]/10 rounded-full blur-[100px]" />
-              <div className="absolute bottom-[-10%] left-[20%] w-[300px] h-[300px] bg-indigo-500/10 rounded-full blur-[80px]" />
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <p className="text-[var(--color-accent)] text-xs font-bold uppercase tracking-widest mb-1">🎯 Special Offers</p>
+              <h2 className="text-2xl sm:text-3xl font-bold font-[var(--font-family-heading)]">Today's Best Deals</h2>
             </div>
+            <Link to="/products?discount=true" className="hidden sm:flex items-center gap-1 text-sm text-[var(--color-accent)] font-medium hover:gap-2 transition-all">
+              All Deals <FiArrowRight size={14} />
+            </Link>
+          </div>
 
-            <div className="grid lg:grid-cols-2 w-full h-full relative z-10">
-              
-              {/* Left Content */}
-              <div className="p-8 sm:p-16 flex flex-col justify-center animate-fadeIn">
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="px-4 py-1.5 rounded-full bg-[var(--color-accent)]/20 text-[var(--color-accent-light)] text-xs font-bold tracking-widest uppercase border border-[var(--color-accent)]/20 shadow-lg">
-                    {promotions[currentPromo]?.discount_percentage}% LIMITED OFFER
-                  </span>
+          {/* Main Banner Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+            {/* === HERO PROMO BANNER === */}
+            <div className="lg:col-span-2 relative rounded-2xl overflow-hidden min-h-[300px] sm:min-h-[360px] flex items-end">
+              {/* Background Image with overlay */}
+              <div className="absolute inset-0">
+                <img
+                  src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80"
+                  alt="Sale Banner"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#1e1b4b]/95 via-[#1e1b4b]/70 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1e1b4b]/80 via-transparent to-transparent" />
+              </div>
+
+              {/* Content */}
+              <div className="relative z-10 p-6 sm:p-10 w-full max-w-lg">
+                {/* Badge */}
+                <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-[var(--color-accent)] text-white text-xs font-bold shadow-lg shadow-[var(--color-accent)]/30">
+                  🔥 {promotions[currentPromo]?.discount_percentage}% OFF — LIMITED TIME
                 </div>
-                
-                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 font-[var(--font-family-heading)] leading-[1.1] tracking-tight text-white">
+
+                <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight mb-3 font-[var(--font-family-heading)]">
                   {promotions[currentPromo]?.title}
-                </h2>
-                
-                <p className="text-lg text-[var(--color-text-secondary)] mb-10 max-w-md leading-relaxed">
-                  {promotions[currentPromo]?.description} 
-                  <span className="block mt-2 text-sm italic opacity-70">Elevate your collection with our premium picks.</span>
+                </h3>
+                <p className="text-white/70 text-sm sm:text-base mb-6 leading-relaxed max-w-sm">
+                  {promotions[currentPromo]?.description}
                 </p>
-                
-                <div className="flex flex-wrap gap-4">
-                  <Link to="/products" className="btn-primary text-base px-8 py-3.5 group">
-                    Explore Collection 
-                    <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+
+                <div className="flex flex-wrap gap-3 items-center">
+                  <Link to="/products?discount=true" className="btn-primary px-7 py-3 group text-sm">
+                    Shop Now <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                  <Link to="/products" className="px-6 py-3 rounded-xl border border-white/30 text-white text-sm font-medium hover:bg-white/10 transition-all">
+                    View All
                   </Link>
                 </div>
 
-                {/* Promo Dots */}
-                <div className="flex gap-3 mt-12">
+                {/* Promo dots */}
+                <div className="flex gap-2 mt-8">
                   {promotions.map((_, i) => (
                     <button
                       key={i}
                       onClick={() => setCurrentPromo(i)}
-                      className={`h-1.5 rounded-full transition-all duration-500 ${
-                        i === currentPromo ? 'bg-[var(--color-accent)] w-10' : 'bg-white/20 w-4'
-                      }`}
-                      aria-label={`Jump to promotion ${i + 1}`}
+                      className={`h-1.5 rounded-full transition-all duration-500 ${i === currentPromo ? 'bg-white w-8' : 'bg-white/30 w-3'}`}
+                      aria-label={`Promo ${i + 1}`}
                     />
                   ))}
                 </div>
               </div>
+            </div>
 
-              {/* Right Side - Scrolling Images (Horizontal rows) */}
-              <div className="hidden lg:block relative h-full min-h-[500px] bg-[#111122]/30">
-                <div className="absolute inset-0 flex flex-col justify-center gap-6 p-8 overflow-hidden">
-                  
-                  {/* Row 1 - Left to Right */}
-                  <div className="flex gap-6 animate-scroll-left whitespace-nowrap">
-                    {[1, 2, 3, 1, 2, 3].map((num, i) => (
-                      <div key={i} className="w-[180px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border border-white/5 shrink-0">
-                        <img 
-                          src={`https://images.unsplash.com/photo-${num === 1 ? '1523275335684-37898b6baf30' : (num === 2 ? '1508057198894-247b23fe5acc' : '1491553895911-0055eca6402d')}?auto=format&fit=crop&w=600&q=80`}
-                          alt="Premium Item" 
-                          className="w-full h-full object-cover grayscale-[30%] hover:grayscale-0 transition-all duration-500"
-                        />
-                      </div>
-                    ))}
+            {/* === RIGHT: Mini Promo Cards === */}
+            <div className="flex flex-col gap-4">
+              {/* Mini Banner 1 */}
+              <div className="relative rounded-2xl overflow-hidden h-[168px] flex items-end group cursor-pointer">
+                <img
+                  src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80"
+                  alt="Watches Sale"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <Link to="/products?category=watches" className="relative z-10 p-4 w-full flex items-end justify-between">
+                  <div>
+                    <p className="text-white/70 text-[10px] font-semibold uppercase tracking-widest mb-0.5">Watches</p>
+                    <p className="text-white font-bold text-base leading-tight">Up to 40% Off</p>
                   </div>
-
-                  {/* Row 2 - Right to Left */}
-                  <div className="flex gap-6 animate-scroll-right whitespace-nowrap">
-                    {[4, 5, 2, 4, 5, 2].map((num, i) => (
-                      <div key={i} className="w-[180px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border border-white/5 shrink-0">
-                        <img 
-                          src={`https://images.unsplash.com/photo-${num === 4 ? '1491633715181-67a40c0d87a5' : (num === 5 ? '1542291026-7eec264c27ff' : '1505740420928-5e560c06d30e')}?auto=format&fit=crop&w=600&q=80`}
-                          alt="Luxury Accessory" 
-                          className="w-full h-full object-cover grayscale-[30%] hover:grayscale-0 transition-all duration-500"
-                        />
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Glassy Overlays for depth */}
-                  <div className="absolute inset-0 bg-gradient-to-l from-[#1e1b4b] via-transparent to-[#1e1b4b] z-10 pointer-events-none" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#1e1b4b] via-transparent to-transparent z-10 pointer-events-none" />
-                </div>
+                  <span className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm group-hover:bg-[var(--color-accent)] transition-all">
+                    <FiArrowRight size={14} className="text-white" />
+                  </span>
+                </Link>
               </div>
 
+              {/* Mini Banner 2 */}
+              <div className="relative rounded-2xl overflow-hidden h-[168px] flex items-end group cursor-pointer">
+                <img
+                  src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80"
+                  alt="Shoes Sale"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <Link to="/products?category=shoes" className="relative z-10 p-4 w-full flex items-end justify-between">
+                  <div>
+                    <p className="text-white/70 text-[10px] font-semibold uppercase tracking-widest mb-0.5">Footwear</p>
+                    <p className="text-white font-bold text-base leading-tight">New Arrivals</p>
+                  </div>
+                  <span className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm group-hover:bg-[var(--color-accent)] transition-all">
+                    <FiArrowRight size={14} className="text-white" />
+                  </span>
+                </Link>
+              </div>
             </div>
+
           </div>
+
+          {/* Bottom: Mini Category Quick Links */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+            {[
+              { label: 'Watches', emoji: '⌚', color: 'from-violet-600/20 to-purple-600/5', path: '/products?category=watches' },
+              { label: 'Dresses', emoji: '👗', color: 'from-pink-600/20 to-rose-600/5', path: '/products?category=dresses' },
+              { label: 'Shoes',   emoji: '👟', color: 'from-blue-600/20 to-indigo-600/5', path: '/products?category=shoes' },
+              { label: 'All Deals', emoji: '🔥', color: 'from-amber-600/20 to-orange-600/5', path: '/products?discount=true' },
+            ].map((item) => (
+              <Link
+                key={item.label}
+                to={item.path}
+                className={`flex items-center gap-3 p-4 rounded-xl bg-gradient-to-br ${item.color} border border-white/5 hover:border-[var(--color-accent)]/30 hover:bg-[var(--color-accent)]/10 transition-all group`}
+              >
+                <span className="text-2xl">{item.emoji}</span>
+                <div>
+                  <p className="text-sm font-semibold text-white group-hover:text-[var(--color-accent-light)] transition-colors">{item.label}</p>
+                  <p className="text-[10px] text-white/50">Shop now →</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+
         </div>
       </section>
 
