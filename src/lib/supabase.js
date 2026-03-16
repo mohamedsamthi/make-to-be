@@ -10,7 +10,8 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,
-    storageKey: 'sb-make-to-be-auth',
+    // Using a new storageKey to bypass any deadlocked Web Locks from earlier testing
+    storageKey: 'sb-mtb-v2-auth',
   },
 })
 
