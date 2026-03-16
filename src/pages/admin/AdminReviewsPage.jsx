@@ -36,7 +36,7 @@ export default function AdminReviewsPage() {
                     {review.user_name ? review.user_name[0].toUpperCase() : 'U'}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold">{review.user_name}</p>
+                    <p className="text-sm font-semibold">{review.user_name || 'User'}</p>
                     <p className="text-[11px] text-[var(--color-text-muted)]">{review.created_at}</p>
                   </div>
                 </div>

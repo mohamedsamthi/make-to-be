@@ -54,7 +54,7 @@ export function ProductProvider({ children }) {
             return [payload.new, ...prev]
           })
         } else if (payload.eventType === 'UPDATE') {
-          setProducts(prev => prev.map(p => p.id === payload.new.id ? payload.new : p))
+          setProducts(prev => prev.map(p => p.id === payload.new.id ? { ...p, ...payload.new } : p))
         } else if (payload.eventType === 'DELETE') {
           setProducts(prev => prev.filter(p => p.id !== payload.old.id))
         }
@@ -70,7 +70,7 @@ export function ProductProvider({ children }) {
             return [payload.new, ...prev]
           })
         } else if (payload.eventType === 'UPDATE') {
-          setOrders(prev => prev.map(o => o.id === payload.new.id ? payload.new : o))
+          setOrders(prev => prev.map(o => o.id === payload.new.id ? { ...o, ...payload.new } : o))
         } else if (payload.eventType === 'DELETE') {
           setOrders(prev => prev.filter(o => o.id !== payload.old.id))
         }
@@ -86,7 +86,7 @@ export function ProductProvider({ children }) {
             return [payload.new, ...prev]
           })
         } else if (payload.eventType === 'UPDATE') {
-          setPromotions(prev => prev.map(p => p.id === payload.new.id ? payload.new : p))
+          setPromotions(prev => prev.map(p => p.id === payload.new.id ? { ...p, ...payload.new } : p))
         } else if (payload.eventType === 'DELETE') {
           setPromotions(prev => prev.filter(p => p.id !== payload.old.id))
         }
@@ -102,7 +102,7 @@ export function ProductProvider({ children }) {
             return [payload.new, ...prev]
           })
         } else if (payload.eventType === 'UPDATE') {
-          setReviews(prev => prev.map(r => r.id === payload.new.id ? payload.new : r))
+          setReviews(prev => prev.map(r => r.id === payload.new.id ? { ...r, ...payload.new } : r))
         } else if (payload.eventType === 'DELETE') {
           setReviews(prev => prev.filter(r => r.id !== payload.old.id))
         }

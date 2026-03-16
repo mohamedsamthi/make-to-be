@@ -506,10 +506,10 @@ export default function HomePage() {
                 <p className="text-sm text-[var(--color-text-secondary)] mb-4 leading-relaxed">"{review.comment}"</p>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full gradient-accent flex items-center justify-center font-bold text-sm">
-                    {review.user_name[0]}
+                    {review.user_name ? review.user_name[0].toUpperCase() : 'U'}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold">{review.user_name}</p>
+                    <p className="text-sm font-semibold">{review.user_name || 'User'}</p>
                     <p className="text-xs text-[var(--color-text-muted)]">Verified Buyer</p>
                   </div>
                 </div>

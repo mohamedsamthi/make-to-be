@@ -49,15 +49,15 @@ export default function ProductDetailPage() {
     : 0
 
   const handleAddToCart = () => {
-    if (product.sizes.length > 1 && !selectedSize) {
+    if (product.sizes?.length > 1 && !selectedSize) {
       toast.error('Please select a size')
       return
     }
-    if (product.colors.length > 1 && !selectedColor) {
+    if (product.colors?.length > 1 && !selectedColor) {
       toast.error('Please select a color')
       return
     }
-    addToCart(product, quantity, selectedSize || product.sizes[0], selectedColor || product.colors[0])
+    addToCart(product, quantity, selectedSize || product.sizes?.[0] || '', selectedColor || product.colors?.[0] || '')
   }
 
   const handleOrderNow = () => {
@@ -120,7 +120,7 @@ export default function ProductDetailPage() {
               <div className="absolute inset-0 bg-gradient-to-tr from-violet-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
               
               <img
-                src={product.images[selectedImage] || product.image_url}
+                src={product.images?.[selectedImage] || product.image_url}
                 alt={product.name}
                 className="w-full h-full max-h-[400px] object-contain relative z-10 drop-shadow-2xl group-hover:scale-105 transition-transform duration-700"
               />
@@ -131,7 +131,7 @@ export default function ProductDetailPage() {
                 </span>
               )}
             </div>
-            {product.images.length > 1 && (
+            {product.images?.length > 1 && (
               <div className="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
                 {product.images.map((img, i) => (
                   <button
@@ -199,7 +199,7 @@ export default function ProductDetailPage() {
             </p>
 
             {/* Size Selection */}
-            {product.sizes.length > 0 && (
+            {product.sizes?.length > 0 && (
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-sm font-semibold text-gray-300 uppercase tracking-widest">Select Size</p>
@@ -224,7 +224,7 @@ export default function ProductDetailPage() {
             )}
 
             {/* Color Selection */}
-            {product.colors.length > 0 && (
+            {product.colors?.length > 0 && (
               <div className="mb-8">
                 <p className="text-sm font-semibold text-gray-300 uppercase tracking-widest mb-3">
                   Color <span className="text-violet-400 ml-1 font-normal capitalize">({selectedColor || 'Select'})</span>
@@ -365,11 +365,11 @@ export default function ProductDetailPage() {
                 <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="p-5 rounded-2xl bg-black/20 border border-white/5">
                     <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Available Sizes</p>
-                    <p className="text-sm text-gray-300 font-medium">{product.sizes.join(', ')}</p>
+                    <p className="text-sm text-gray-300 font-medium">{product.sizes?.join(', ') || 'N/A'}</p>
                   </div>
                   <div className="p-5 rounded-2xl bg-black/20 border border-white/5">
                     <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Available Colors</p>
-                    <p className="text-sm text-gray-300 font-medium capitalize">{product.colors.join(', ')}</p>
+                    <p className="text-sm text-gray-300 font-medium capitalize">{product.colors?.join(', ') || 'N/A'}</p>
                   </div>
                 </div>
               </div>
@@ -414,10 +414,10 @@ export default function ProductDetailPage() {
                         <div className="flex items-center justify-between mb-4">
                           <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-violet-600 to-fuchsia-600 flex items-center justify-center font-bold text-white shadow-lg shadow-violet-500/20 text-lg">
-                              {review.user_name[0]}
+                              {review.user_name ? review.user_name[0].toUpperCase() : 'U'}
                             </div>
                             <div>
-                              <p className="text-sm font-bold text-white">{review.user_name}</p>
+                              <p className="text-sm font-bold text-white">{review.user_name || 'User'}</p>
                               <p className="text-[10px] uppercase font-bold tracking-wider text-gray-500">{review.created_at}</p>
                             </div>
                           </div>
