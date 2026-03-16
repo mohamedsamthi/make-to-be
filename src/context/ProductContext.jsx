@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { supabase } from '../lib/supabase'
+import { supabase, supabaseData } from '../lib/supabase'
 import { demoCategories } from '../data/demoData'
 
 const ProductContext = createContext()
@@ -21,13 +21,13 @@ export function ProductProvider({ children }) {
     const fetchRealData = async () => {
       console.log('[MakeToBe] Starting data fetch from Supabase...')
       
-      // Fetch all tables independently - one failure won't block others
+      // Fetch all tables independently using supabaseData (no auth locks)
       const fetches = [
-        { name: 'products', setter: setProducts, query: supabase.from('products').select('*').order('created_at', { ascending: false }) },
-        { name: 'orders', setter: setOrders, query: supabase.from('orders').select('*').order('created_at', { ascending: false }) },
-        { name: 'promotions', setter: setPromotions, query: supabase.from('promotions').select('*').order('created_at', { ascending: false }) },
-        { name: 'reviews', setter: setReviews, query: supabase.from('reviews').select('*').order('created_at', { ascending: false }) },
-        { name: 'profiles', setter: setProfiles, query: supabase.from('profiles').select('*').order('created_at', { ascending: false }) },
+        { name: 'products', setter: setProducts, query: supabaseData.from('products').select('*').order('created_at', { ascending: false }) },
+        { name: 'orders', setter: setOrders, query: supabaseData.from('orders').select('*').order('created_at', { ascending: false }) },
+        { name: 'promotions', setter: setPromotions, query: supabaseData.from('promotions').select('*').order('created_at', { ascending: false }) },
+        { name: 'reviews', setter: setReviews, query: supabaseData.from('reviews').select('*').order('created_at', { ascending: false }) },
+        { name: 'profiles', setter: setProfiles, query: supabaseData.from('profiles').select('*').order('created_at', { ascending: false }) },
       ]
 
       await Promise.all(fetches.map(async ({ name, setter, query }) => {
