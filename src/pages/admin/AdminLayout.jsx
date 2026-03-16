@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { MdDashboard, MdInventory, MdLocalOffer, MdRateReview } from 'react-icons/md'
-import { FiPackage, FiUsers, FiMenu, FiX, FiArrowLeft, FiLogOut, FiShield, FiChevronLeft, FiChevronRight, FiDollarSign } from 'react-icons/fi'
+import { FiPackage, FiUsers, FiMenu, FiX, FiArrowLeft, FiLogOut, FiShield, FiChevronLeft, FiChevronRight, FiDollarSign, FiMessageSquare } from 'react-icons/fi'
+import { useProducts } from '../../context/ProductContext'
 
 const sidebarLinks = [
   { name: 'Dashboard', path: '/admin', icon: <MdDashboard size={20} /> },
@@ -10,10 +11,13 @@ const sidebarLinks = [
   { name: 'Customers', path: '/admin/customers', icon: <FiUsers size={20} /> },
   { name: 'Reviews', path: '/admin/reviews', icon: <MdRateReview size={20} /> },
   { name: 'Sales / Track', path: '/admin/sales', icon: <FiDollarSign size={20} /> },
-  { name: 'Promotions', path: '/admin/promotions', icon: <MdLocalOffer size={20} /> }
+  { name: 'Promotions', path: '/admin/promotions', icon: <MdLocalOffer size={20} /> },
+  { name: 'Messages', path: '/admin/messages', icon: <FiMessageSquare size={20} /> }
 ]
 
 export default function AdminLayout() {
+  const { messages } = useProducts()
+  const unreadCount = messages?.filter(m => m.status === 'unread')?.length || 0
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [mobileSidebar, setMobileSidebar] = useState(false)
   const location = useLocation()
@@ -85,9 +89,19 @@ export default function AdminLayout() {
                     : 'text-[var(--color-text-secondary)] hover:text-white hover:bg-white/5'
                 } ${!sidebarOpen ? 'justify-center' : ''}`}
               >
-                <span className="shrink-0">{link.icon}</span>
+                <span className="shrink-0 relative">
+                  {link.icon}
+                  {link.name === 'Messages' && unreadCount > 0 && !sidebarOpen && (
+                    <span className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-red-500 rounded-full border border-[var(--color-primary)]" />
+                  )}
+                </span>
                 {sidebarOpen && <span className="truncate">{link.name}</span>}
-                {sidebarOpen && location.pathname === link.path && (
+                {sidebarOpen && link.name === 'Messages' && unreadCount > 0 && (
+                  <span className="ml-auto bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md shrink-0">
+                    {unreadCount}
+                  </span>
+                )}
+                {sidebarOpen && location.pathname === link.path && link.name !== 'Messages' && (
                   <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] shrink-0" />
                 )}
               </Link>

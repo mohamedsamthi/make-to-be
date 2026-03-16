@@ -34,6 +34,7 @@ import AdminCustomersPage from './pages/admin/AdminCustomersPage'
 import AdminReviewsPage from './pages/admin/AdminReviewsPage'
 import AdminPromotionsPage from './pages/admin/AdminPromotionsPage'
 import AdminSalesPage from './pages/admin/AdminSalesPage'
+import AdminMessagesPage from './pages/admin/AdminMessagesPage'
 
 function CustomerLayout({ children }) {
   return (
@@ -202,6 +203,7 @@ function App() {
                   <Route path="reviews" element={<AdminReviewsPage />} />
                   <Route path="promotions" element={<AdminPromotionsPage />} />
                   <Route path="sales" element={<AdminSalesPage />} />
+                  <Route path="messages" element={<AdminMessagesPage />} />
                 </Route>
 
                 {/* 404 */}

@@ -4,6 +4,8 @@ import { FaWhatsapp, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa'
 import { FiSend, FiUser, FiMail, FiSmartphone, FiMessageSquare, FiClock, FiExternalLink, FiShield } from 'react-icons/fi'
 import { shopInfo } from '../../data/demoData'
 import toast from 'react-hot-toast'
+import Swal from 'sweetalert2'
+import { useProducts } from '../../context/ProductContext'
 
 // Simple math-based spam protection
 function useAntiSpam() {
@@ -13,6 +15,7 @@ function useAntiSpam() {
 }
 
 export default function ContactPage() {
+  const { sendMessage } = useProducts()
   const [spam] = useState(useAntiSpam)
   const [formData, setFormData] = useState({
     firstName: '', lastName: '', mobile: '', email: '', message: '', captcha: ''
@@ -21,18 +24,37 @@ export default function ContactPage() {
 
   const update = (key) => (e) => setFormData(p => ({ ...p, [key]: e.target.value }))
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (parseInt(formData.captcha) !== spam.answer) {
       toast.error('Incorrect spam check answer. Please try again.')
       return
     }
     setLoading(true)
-    setTimeout(() => {
-      toast.success("Message sent! We'll get back to you soon. 🎉")
-      setFormData({ firstName: '', lastName: '', mobile: '', email: '', message: '', captcha: '' })
-      setLoading(false)
-    }, 1000)
+    
+    await sendMessage({
+      name: `${formData.firstName} ${formData.lastName}`.trim(),
+      email: formData.email,
+      phone: formData.mobile,
+      message: formData.message
+    })
+
+    Swal.fire({
+      title: 'Message Sent! 🎉',
+      text: "We have received your message and will get back to you within 24 hours.",
+      icon: 'success',
+      confirmButtonText: 'Great!',
+      confirmButtonColor: '#8b5cf6',
+      background: '#1e1c3a',
+      color: '#fff',
+      customClass: {
+        popup: 'border border-white/10 rounded-2xl',
+        confirmButton: 'rounded-xl font-bold tracking-wide'
+      }
+    })
+
+    setFormData({ firstName: '', lastName: '', mobile: '', email: '', message: '', captcha: '' })
+    setLoading(false)
   }
 
   const contactInfo = [

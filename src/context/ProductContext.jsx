@@ -15,6 +15,7 @@ export function ProductProvider({ children }) {
   const [reviews, setReviews] = useState([])
   const [promotions, setPromotions] = useState([])
   const [profiles, setProfiles] = useState([])
+  const [messages, setMessages] = useState([])
 
   // Fetch from Supabase on mount + set up realtime
   useEffect(() => {
@@ -28,6 +29,7 @@ export function ProductProvider({ children }) {
         { name: 'promotions', setter: setPromotions, query: supabaseData.from('promotions').select('*').order('created_at', { ascending: false }) },
         { name: 'reviews', setter: setReviews, query: supabaseData.from('reviews').select('*').order('created_at', { ascending: false }) },
         { name: 'profiles', setter: setProfiles, query: supabaseData.from('profiles').select('*').order('created_at', { ascending: false }) },
+        { name: 'messages', setter: setMessages, query: supabaseData.from('messages').select('*').order('created_at', { ascending: false }) },
       ]
 
       await Promise.all(fetches.map(async ({ name, setter, query }) => {
@@ -117,11 +119,28 @@ export function ProductProvider({ children }) {
       })
       .subscribe()
 
+    const messagesChannel = supabase
+      .channel('realtime-messages')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, (payload) => {
+        if (payload.eventType === 'INSERT') {
+          setMessages(prev => {
+            if (prev.find(m => m.id === payload.new.id)) return prev
+            return [payload.new, ...prev]
+          })
+        } else if (payload.eventType === 'UPDATE') {
+          setMessages(prev => prev.map(m => m.id === payload.new.id ? { ...m, ...payload.new } : m))
+        } else if (payload.eventType === 'DELETE') {
+          setMessages(prev => prev.filter(m => m.id !== payload.old.id))
+        }
+      })
+      .subscribe()
+
     return () => {
       supabase.removeChannel(productsChannel)
       supabase.removeChannel(ordersChannel)
       supabase.removeChannel(promoChannel)
       supabase.removeChannel(reviewsChannel)
+      supabase.removeChannel(messagesChannel)
     }
   }, [])
 
@@ -304,6 +323,32 @@ export function ProductProvider({ children }) {
     }
   }
 
+  // ===== MESSAGE OPERATIONS =====
+  const sendMessage = async (msgData) => {
+    const tempId = String(Date.now())
+    const newMessage = { ...msgData, id: tempId, status: 'unread', created_at: new Date().toISOString() }
+    setMessages(prev => [newMessage, ...prev])
+    try {
+      const { data } = await supabase.from('messages').insert([msgData]).select().single()
+      if (data) setMessages(prev => prev.map(m => m.id === tempId ? data : m))
+    } catch(e) { console.error('Message failed', e) }
+    return newMessage
+  }
+
+  const replyToMessage = async (id, reply) => {
+    setMessages(prev => prev.map(m => m.id === id ? { ...m, admin_reply: reply, status: 'replied' } : m))
+    try {
+      await supabase.from('messages').update({ admin_reply: reply, status: 'replied' }).eq('id', id)
+    } catch(e) {}
+  }
+
+  const deleteMessage = async (id) => {
+    setMessages(prev => prev.filter(m => m.id !== id))
+    try {
+      await supabase.from('messages').delete().eq('id', id)
+    } catch(e) {}
+  }
+
   // ===== DERIVED DATA =====
   const featuredProducts = products.filter(p => p.featured)
   const discountedProducts = products.filter(p => p.discount_price)
@@ -324,6 +369,7 @@ export function ProductProvider({ children }) {
     reviews,
     promotions,
     profiles,
+    messages,
     featuredProducts,
     discountedProducts,
     addProduct,
@@ -340,7 +386,10 @@ export function ProductProvider({ children }) {
     updatePromotion,
     deletePromotion,
     updateProfile,
-    deleteOrder
+    deleteOrder,
+    sendMessage,
+    replyToMessage,
+    deleteMessage
   }
 
   return (
