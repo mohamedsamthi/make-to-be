@@ -1,0 +1,373 @@
+import { useState, useEffect } from 'react'
+import { useAuth } from '../../context/AuthContext'
+import { useProducts } from '../../context/ProductContext'
+import { Link, Navigate } from 'react-router-dom'
+import { FiUser, FiMail, FiPhone, FiLogOut, FiPackage, FiSettings, FiImage, FiLock, FiCheck, FiArrowRight } from 'react-icons/fi'
+import { MdDashboard } from 'react-icons/md'
+import toast from 'react-hot-toast'
+
+export default function ProfilePage() {
+  const { user, profile, isAdmin, signOut, loading, updateProfile } = useAuth()
+  const { orders } = useProducts()
+  const [activeTab, setActiveTab] = useState('orders')
+  const [isUpdating, setIsUpdating] = useState(false)
+  const [formData, setFormData] = useState({
+    fullName: profile?.full_name || '',
+    phone: profile?.phone || '',
+    avatarUrl: profile?.avatar_url || '',
+    password: ''
+  })
+
+  // Sync formData with profile when profile changes
+  useEffect(() => {
+    if (profile) {
+      setFormData(prev => ({
+        ...prev,
+        fullName: profile.full_name || '',
+        phone: profile.phone || '',
+        avatarUrl: profile.avatar_url || ''
+      }))
+    }
+  }, [profile])
+
+  const handleImageSelect = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // Limit size to ~5MB
+        toast.error('Image is too large. Please select a smaller one.')
+        return
+      }
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        const img = new Image()
+        img.onload = () => {
+          const canvas = document.createElement('canvas')
+          const max_size = 150
+          let width = img.width
+          let height = img.height
+          if (width > height) {
+            if (width > max_size) {
+              height *= max_size / width
+              width = max_size
+            }
+          } else {
+            if (height > max_size) {
+              width *= max_size / height
+              height = max_size
+            }
+          }
+          canvas.width = width
+          canvas.height = height
+          const ctx = canvas.getContext('2d')
+          ctx.drawImage(img, 0, 0, width, height)
+          const tinyBase64 = canvas.toDataURL('image/jpeg', 0.6)
+          setFormData(p => ({...p, avatarUrl: tinyBase64}))
+        }
+        img.src = reader.result
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleUpdate = async (e) => {
+    e.preventDefault()
+    setIsUpdating(true)
+    const { error } = await updateProfile(formData)
+    if (error) {
+       toast.error(error.message || 'Failed to update profile')
+    } else {
+       toast.success('Profile updated successfully! ✅')
+       if (formData.password) setFormData(prev => ({...prev, password: ''}))
+    }
+    setIsUpdating(false)
+  }
+
+  if (!loading && !user) return <Navigate to="/login" />
+
+  const userOrders = orders.filter(o => o.customer_email === user?.email)
+
+  return (
+    <div className="min-h-screen bg-[var(--color-surface)] relative overflow-hidden pb-20 pt-20">
+      {/* Background Ornaments */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-10 w-72 h-72 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+
+      {/* Hero Header */}
+      <div className="relative py-12 mb-8 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 blur-3xl -z-10" />
+        <div className="container-custom text-center">
+          <h1 className="text-4xl md:text-5xl font-black font-[var(--font-family-heading)] text-white mb-4 tracking-tight drop-shadow-sm">
+            My <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">Profile</span>
+          </h1>
+          <p className="text-gray-400 max-w-lg mx-auto text-sm sm:text-base px-4">
+            Manage your account settings, track orders and customize your experience.
+          </p>
+        </div>
+      </div>
+
+      <div className="container-custom px-4">
+        <div className="grid lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Sidebar / Profile Card */}
+          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
+            <div className="bg-[#1e1c3a]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 text-center shadow-2xl relative overflow-hidden group">
+              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-violet-500 to-fuchsia-500" />
+              
+              {/* Profile DP View */}
+              <div className="relative inline-block mb-6 group/avatar">
+                <div className="w-28 h-28 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 p-1 shadow-lg shadow-violet-500/20 group-hover:shadow-violet-500/40 transition-shadow">
+                  <div className="w-full h-full rounded-full bg-[#151230] flex items-center justify-center text-4xl font-black text-white overflow-hidden border-2 border-[#1e1c3a]">
+                    {formData.avatarUrl || profile?.avatar_url ? (
+                      <img src={formData.avatarUrl || profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      (profile?.full_name?.[0] || user?.email?.[0] || 'U').toUpperCase()
+                    )}
+                  </div>
+                </div>
+                
+                {/* DP Update Trigger */}
+                <label className="absolute bottom-1 right-1 w-10 h-10 bg-violet-600 hover:bg-violet-500 text-white rounded-xl flex items-center justify-center cursor-pointer shadow-xl border-2 border-[#1e1c3a] transition-all hover:scale-110 active:scale-95 group-hover/avatar:opacity-100 opacity-90">
+                  <FiImage size={18} />
+                  <input type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
+                </label>
+              </div>
+
+              <h2 className="text-2xl font-black text-white mb-1 tracking-tight">
+                {profile?.full_name || 'User Name'}
+              </h2>
+              <p className="text-gray-400 text-sm mb-4 font-medium">{user?.email}</p>
+              
+              {isAdmin && (
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-500 text-[10px] font-black uppercase tracking-widest mb-6">
+                  <FiSettings size={12} /> Admin Mode
+                </div>
+              )}
+
+              <div className="space-y-2 text-left mt-4 border-t border-white/5 pt-6">
+                <button 
+                  onClick={() => setActiveTab('orders')} 
+                  className={`w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all font-bold text-sm ${
+                    activeTab === 'orders' 
+                    ? 'bg-violet-600 text-white shadow-lg shadow-violet-600/20' 
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <FiPackage size={18} /> My Orders
+                </button>
+                <button 
+                  onClick={() => setActiveTab('settings')} 
+                  className={`w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all font-bold text-sm ${
+                    activeTab === 'settings' 
+                    ? 'bg-violet-600 text-white shadow-lg shadow-violet-600/20' 
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <FiSettings size={18} /> Account Settings
+                </button>
+                
+                {isAdmin && (
+                  <Link 
+                    to="/admin" 
+                    className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-amber-400 hover:text-amber-300 hover:bg-amber-400/10 font-bold text-sm transition-all"
+                  >
+                    <MdDashboard size={18} /> Admin Dashboard
+                  </Link>
+                )}
+
+                <button 
+                  onClick={signOut} 
+                  className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-red-400 hover:text-red-300 hover:bg-red-400/10 font-bold text-sm transition-all mt-4"
+                >
+                  <FiLogOut size={18} /> Sign Out
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="lg:col-span-8">
+            <div className="bg-[#1e1c3a]/80 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden min-h-[500px]">
+              
+              {activeTab === 'orders' ? (
+                <div className="p-8 sm:p-10">
+                  <h3 className="text-2xl font-black text-white mb-8 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-violet-600/20 flex items-center justify-center text-violet-400">
+                      <FiPackage size={22} />
+                    </div>
+                    Recent Orders
+                    <span className="ml-2 px-3 py-1 bg-white/5 rounded-lg text-sm text-gray-500 font-bold">
+                      {userOrders.length}
+                    </span>
+                  </h3>
+
+                  <div className="space-y-4">
+                    {userOrders.length > 0 ? userOrders.map(order => (
+                      <div key={order.id} className="group p-6 rounded-2xl bg-black/40 border border-white/5 hover:border-violet-500/30 transition-all hover:bg-black/60 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-4">
+                           <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                            order.status === 'delivered' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/30' :
+                            order.status === 'shipped' ? 'bg-blue-500/10 text-blue-500 border border-blue-500/30' :
+                            order.status === 'cancelled' ? 'bg-red-500/10 text-red-500 border border-red-500/30' :
+                            'bg-amber-500/10 text-amber-500 border border-amber-500/30'
+                          }`}>
+                            {order.status}
+                          </span>
+                        </div>
+                        
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                          <div>
+                            <p className="font-black text-white mb-0.5 tracking-wide uppercase text-sm">Order #{order.id.slice(-8)}</p>
+                            <p className="text-xs text-gray-500 font-bold">{new Date(order.created_at).toLocaleDateString(undefined, { dateStyle: 'long' })}</p>
+                          </div>
+                          <div className="text-right">
+                             <p className="text-xs text-gray-500 font-bold mb-1 uppercase tracking-widest">Total Amount</p>
+                             <p className="text-xl font-black text-white">LKR {Number(order.total).toLocaleString()}</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2 mb-6 bg-[#151230]/50 p-4 rounded-xl border border-white/5">
+                          {order.items.filter(i => !i.is_sales_data).map((item, i) => (
+                            <div key={i} className="flex justify-between items-center text-sm group/item">
+                              <span className="text-gray-400 font-medium">
+                                <span className="text-violet-400 font-bold mr-2 uppercase tracking-tighter">{item.quantity}x</span> 
+                                <span className="text-gray-300">{item.product_name}</span>
+                                {item.size && <span className="text-[10px] bg-white/5 px-1.5 py-0.5 rounded ml-2 font-black uppercase">{item.size}</span>}
+                              </span>
+                              <span className="font-bold text-white text-xs">LKR {(item.price * item.quantity).toLocaleString()}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${order.payment_status === 'paid' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                              Payment: {order.payment_status === 'paid' ? 'Completed' : 'Pending'}
+                            </span>
+                          </div>
+                          <Link to={`/orders?id=${order.id}`} className="text-xs font-black text-violet-400 hover:text-white transition-colors uppercase tracking-widest flex items-center gap-1.5">
+                            Track Status <FiArrowRight />
+                          </Link>
+                        </div>
+                      </div>
+                    )) : (
+                      <div className="text-center py-20 bg-black/20 border border-dashed border-white/10 rounded-3xl">
+                        <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-6">
+                          <FiPackage className="text-gray-600 text-3xl" />
+                        </div>
+                        <h4 className="text-xl font-black text-white mb-2">No Active Orders</h4>
+                        <p className="text-gray-500 text-sm max-w-xs mx-auto mb-8">
+                          Your shopping venture awaits! Start exploring our collections.
+                        </p>
+                        <Link to="/products" className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white px-8 py-3.5 rounded-xl font-black text-sm uppercase tracking-widest hover:scale-105 transition-transform inline-block">
+                          Start Shopping
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="p-8 sm:p-10">
+                  <h3 className="text-2xl font-black text-white mb-8 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-violet-600/20 flex items-center justify-center text-violet-400">
+                      <FiSettings size={22} />
+                    </div>
+                    Account Settings
+                  </h3>
+
+                  <form onSubmit={handleUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Basic Info Group */}
+                    <div className="space-y-6">
+                       <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-violet-500/80 mb-2">Personal Information</h4>
+                       
+                       {/* Name Input */}
+                       <div>
+                        <label className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">Full Name</label>
+                        <div className="relative group/input">
+                          <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within/input:text-violet-400 transition-colors" />
+                          <input
+                            value={formData.fullName}
+                            onChange={e => setFormData(p => ({...p, fullName: e.target.value}))}
+                            className="w-full bg-black/40 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all font-bold"
+                            placeholder="Your display name"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Phone Input */}
+                      <div>
+                        <label className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">Contact Number</label>
+                        <div className="relative group/input">
+                          <FiPhone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within/input:text-violet-400 transition-colors" />
+                          <input
+                            value={formData.phone}
+                            onChange={e => setFormData(p => ({...p, phone: e.target.value}))}
+                            className="w-full bg-black/40 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all font-bold"
+                            placeholder="+94 XX XXX XXXX"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Security Group */}
+                    <div className="space-y-6">
+                      <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-violet-500/80 mb-2">Security & Identity</h4>
+
+                      {/* Email (Static) */}
+                      <div>
+                        <label className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 block ml-1">Account Email</label>
+                        <div className="relative opacity-60">
+                          <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600" />
+                          <input
+                            value={user?.email || ''}
+                            disabled
+                            className="w-full bg-black/20 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-sm text-gray-500 cursor-not-allowed font-bold"
+                          />
+                          <FiLock className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700" title="Fixed" />
+                        </div>
+                      </div>
+
+                      {/* Password Update */}
+                      <div>
+                        <label className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">New Password</label>
+                        <div className="relative group/input">
+                          <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within/input:text-violet-400 transition-colors" />
+                          <input
+                            type="password"
+                            value={formData.password}
+                            onChange={e => setFormData(p => ({...p, password: e.target.value}))}
+                            className="w-full bg-black/40 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all font-bold"
+                            placeholder="Change password (optional)"
+                          />
+                        </div>
+                        <p className="text-[10px] text-gray-500 mt-2 ml-1 italic font-medium">* Leave empty to keep existing password</p>
+                      </div>
+                    </div>
+
+                    <div className="md:col-span-2 pt-6 border-t border-white/5 mt-4 flex items-center justify-between">
+                      <p className="text-xs text-gray-500 font-medium hidden sm:block">
+                        Updates might take a few moments to sync across devices.
+                      </p>
+                      <button 
+                        type="submit" 
+                        disabled={isUpdating} 
+                        className="w-full sm:w-auto bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-violet-500/20 disabled:opacity-50 flex items-center justify-center gap-2"
+                      >
+                        {isUpdating ? (
+                           <svg className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" viewBox="0 0 24 24"></svg>
+                        ) : (
+                          <><FiCheck size={18}/> Update Account</>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  )
+}
