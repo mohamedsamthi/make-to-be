@@ -19,24 +19,32 @@ export function ProductProvider({ children }) {
   // Fetch from Supabase on mount + set up realtime
   useEffect(() => {
     const fetchRealData = async () => {
-      try {
-        const { data: dbProducts } = await supabase.from('products').select('*').order('created_at', { ascending: false })
-        if (dbProducts) setProducts(dbProducts)
-        
-        const { data: dbOrders } = await supabase.from('orders').select('*').order('created_at', { ascending: false })
-        if (dbOrders) setOrders(dbOrders)
+      console.log('[MakeToBe] Starting data fetch from Supabase...')
+      
+      // Fetch all tables independently - one failure won't block others
+      const fetches = [
+        { name: 'products', setter: setProducts, query: supabase.from('products').select('*').order('created_at', { ascending: false }) },
+        { name: 'orders', setter: setOrders, query: supabase.from('orders').select('*').order('created_at', { ascending: false }) },
+        { name: 'promotions', setter: setPromotions, query: supabase.from('promotions').select('*').order('created_at', { ascending: false }) },
+        { name: 'reviews', setter: setReviews, query: supabase.from('reviews').select('*').order('created_at', { ascending: false }) },
+        { name: 'profiles', setter: setProfiles, query: supabase.from('profiles').select('*').order('created_at', { ascending: false }) },
+      ]
 
-        const { data: dbPromotions } = await supabase.from('promotions').select('*').order('created_at', { ascending: false })
-        if (dbPromotions) setPromotions(dbPromotions)
-
-        const { data: dbReviews } = await supabase.from('reviews').select('*').order('created_at', { ascending: false })
-        if (dbReviews) setReviews(dbReviews)
-
-        const { data: dbProfiles } = await supabase.from('profiles').select('*').order('created_at', { ascending: false })
-        if (dbProfiles) setProfiles(dbProfiles)
-      } catch (err) {
-        console.error('Error fetching Supabase data:', err)
-      }
+      await Promise.all(fetches.map(async ({ name, setter, query }) => {
+        try {
+          const { data, error } = await query
+          if (error) {
+            console.error(`[MakeToBe] Error fetching ${name}:`, error.message)
+          } else if (data) {
+            console.log(`[MakeToBe] Loaded ${data.length} ${name}`)
+            setter(data)
+          }
+        } catch (err) {
+          console.error(`[MakeToBe] Failed to fetch ${name}:`, err)
+        }
+      }))
+      
+      console.log('[MakeToBe] Data fetch complete!')
     }
     fetchRealData()
     
