@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { supabase, supabaseData } from '../lib/supabase'
 import { demoCategories } from '../data/demoData'
+import toast from 'react-hot-toast'
 
 const ProductContext = createContext()
 
@@ -75,6 +76,7 @@ export function ProductProvider({ children }) {
       .channel('realtime-orders')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
         if (payload.eventType === 'INSERT') {
+          toast.success(`🎉 New Order Received: ${payload.new.id}`, { duration: 5000, icon: '📦' })
           setOrders(prev => {
             if (prev.find(o => o.id === payload.new.id)) return prev
             return [payload.new, ...prev]
@@ -123,6 +125,7 @@ export function ProductProvider({ children }) {
       .channel('realtime-messages')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, (payload) => {
         if (payload.eventType === 'INSERT') {
+          toast.success(`💬 New Support Message from ${payload.new.name}`, { duration: 5000, icon: '✉️' })
           setMessages(prev => {
             if (prev.find(m => m.id === payload.new.id)) return prev
             return [payload.new, ...prev]
@@ -231,9 +234,11 @@ export function ProductProvider({ children }) {
     }
     setOrders(prev => [newOrder, ...prev])
     try {
-      await supabase.from('orders').insert([newOrder])
+      const { error } = await supabase.from('orders').insert([newOrder])
+      if (error) throw error
     } catch (err) {
       console.error('Failed to save order to db:', err)
+      throw err
     }
     return newOrder
   }

@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { FiSearch, FiTrash2, FiPrinter } from 'react-icons/fi'
+import { FiSearch, FiTrash2, FiPrinter, FiCheckCircle } from 'react-icons/fi'
 import { useProducts } from '../../context/ProductContext'
 import toast from 'react-hot-toast'
+import Swal from 'sweetalert2'
 
 export default function AdminOrdersPage() {
   const { orders, updateOrder, deleteOrder } = useProducts()
@@ -22,6 +23,31 @@ export default function AdminOrdersPage() {
       deleteOrder(id)
       toast.success('Order deleted successfully')
     }
+  }
+
+  const handleCompleteOrder = (order) => {
+    Swal.fire({
+      title: 'Complete Order?',
+      text: `Mark Order ${order.id} as Delivered and Paid?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#10b981',
+      cancelButtonColor: '#374151',
+      confirmButtonText: 'Yes, Complete it!',
+      background: '#1e1c3a',
+      color: '#fff'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        updateOrder(order.id, { status: 'delivered', payment_status: 'paid' })
+        Swal.fire({
+          title: 'Success!',
+          text: 'Order has been completed.',
+          icon: 'success',
+          background: '#1e1c3a',
+          color: '#fff'
+        })
+      }
+    })
   }
 
   return (
@@ -97,6 +123,14 @@ export default function AdminOrdersPage() {
                   </td>
                   <td className="px-6 py-5 text-right">
                     <div className="flex items-center gap-2 justify-end">
+                      <button 
+                        onClick={() => handleCompleteOrder(order)}
+                        className={`p-2 rounded-xl transition-all shadow-lg ${order.status === 'delivered' && order.payment_status === 'paid' ? 'bg-emerald-500/20 text-emerald-500 cursor-default' : 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-emerald-500/20'}`}
+                        title="Complete Order (Deliver & Pay)"
+                        disabled={order.status === 'delivered' && order.payment_status === 'paid'}
+                      >
+                        <FiCheckCircle size={16} />
+                      </button>
                       <button 
                         onClick={() => handleDeleteOrder(order.id)}
                         className="p-2 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-lg hover:shadow-red-500/20"
