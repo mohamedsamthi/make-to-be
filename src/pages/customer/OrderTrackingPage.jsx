@@ -201,31 +201,29 @@ export default function OrderTrackingPage() {
                   >
                     <FaWhatsapp size={18} /> Follow up Order
                   </a>
-                  {order.status === 'pending' && (
-                    <button
-                      onClick={() => {
-                        Swal.fire({
-                          title: 'Cancel & Delete Order?',
-                          text: "This will remove your order from the system.",
-                          icon: 'warning',
-                          showCancelButton: true,
-                          confirmButtonColor: '#ef4444',
-                          cancelButtonColor: '#374151',
-                          confirmButtonText: 'Yes, Delete it!',
-                          background: '#1e1c3a',
-                          color: '#fff'
-                        }).then((result) => {
-                          if (result.isConfirmed) {
-                            deleteOrder(order.id)
-                            toast.success('Order deleted successfully')
-                          }
-                        })
-                      }}
-                      className="flex-1 sm:flex-none flex justify-center items-center gap-2 py-3 px-6 rounded-xl bg-red-500/10 border border-red-500/30 text-red-500 font-bold text-sm hover:bg-red-500 hover:text-white transition-all shadow-lg hover:shadow-red-500/20"
-                    >
-                      <FiTrash2 size={18} /> Delete Order
-                    </button>
-                  )}
+                  <button
+                    onClick={() => {
+                      Swal.fire({
+                        title: 'Cancel & Delete Order?',
+                        text: "This will remove your order from the system permanently.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#ef4444',
+                        cancelButtonColor: '#374151',
+                        confirmButtonText: 'Yes, Delete it!',
+                        background: '#1e1c3a',
+                        color: '#fff'
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                          deleteOrder(order.id)
+                          toast.success('Order deleted successfully')
+                        }
+                      })
+                    }}
+                    className="flex-1 sm:flex-none flex justify-center items-center gap-2 py-3 px-6 rounded-xl bg-red-500/10 border border-red-500/30 text-red-500 font-bold text-sm hover:bg-red-500 hover:text-white transition-all shadow-lg hover:shadow-red-500/20"
+                  >
+                    <FiTrash2 size={18} /> Delete Order
+                  </button>
                 </div>
               </div>
             ))}
