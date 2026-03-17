@@ -177,12 +177,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-float">
-          <div className="w-6 h-10 rounded-full border-2 border-[var(--color-text-muted)] flex items-start justify-center p-1.5">
-            <div className="w-1.5 h-3 rounded-full bg-[var(--color-accent)] animate-pulse" />
-          </div>
-        </div>
       </section>
       
       {/* ===== FEATURED VIDEO ===== */}
