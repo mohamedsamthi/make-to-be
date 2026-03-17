@@ -97,8 +97,8 @@ export default function ProductsPage() {
     <div className="min-h-screen bg-[var(--color-surface)] text-[var(--color-text-primary)] selection:bg-[var(--color-accent)]/30">
       {/* Background Ambience */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-violet-600/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[10%] left-[-5%] w-[30%] h-[30%] bg-fuchsia-600/5 rounded-full blur-[100px]" />
+        <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-[var(--color-accent)]/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[10%] left-[-5%] w-[30%] h-[30%] bg-[var(--color-gold)]/5 rounded-full blur-[100px]" />
       </div>
 
       {/* Hero Header Area */}
@@ -255,7 +255,7 @@ export default function ProductsPage() {
             </p>
             <button 
               onClick={clearFilters} 
-              className="h-12 px-8 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-violet-500/20 transition-all active:scale-95"
+              className="h-12 px-8 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-dark)] text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-[var(--color-accent)]/20 transition-all active:scale-95"
             >
               Reset All Filters
             </button>

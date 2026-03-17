@@ -38,7 +38,7 @@ export default function Footer() {
           <div className="space-y-6">
             <Link to="/" className="inline-block group">
               <span className="text-2xl font-black text-white tracking-tighter uppercase italic">
-                MAKE <span className="text-[var(--color-accent-light)]">TO BE</span>
+                MAKE <span className="text-[var(--color-accent)]">TO BE</span>
               </span>
             </Link>
             <p className="text-xs uppercase font-black tracking-widest leading-relaxed text-[var(--color-text-muted)] opacity-60">
@@ -53,7 +53,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={s.label}
-                  className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white hover:text-[var(--color-surface)] flex items-center justify-center transition-all duration-300 transform hover:-translate-y-1"
+                  className="w-10 h-10 rounded-xl bg-white/5 hover:bg-[var(--color-accent)] hover:text-white flex items-center justify-center transition-all duration-300 transform hover:-translate-y-1"
                 >
                   {s.icon}
                 </a>
@@ -67,7 +67,7 @@ export default function Footer() {
             <ul className="space-y-4">
               {quickLinks.map(l => (
                 <li key={l.to}>
-                  <Link to={l.to} className="text-[var(--color-text-muted)] hover:text-white transition-colors text-[10px] uppercase font-black tracking-widest opacity-60 hover:opacity-100">
+                  <Link to={l.to} className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors text-[10px] uppercase font-black tracking-widest opacity-60 hover:opacity-100">
                     {l.label}
                   </Link>
                 </li>
@@ -81,7 +81,7 @@ export default function Footer() {
             <ul className="space-y-4">
               {categories.map(c => (
                 <li key={c.to}>
-                  <Link to={c.to} className="text-[var(--color-text-muted)] hover:text-white transition-colors text-[10px] uppercase font-black tracking-widest opacity-60 hover:opacity-100">
+                  <Link to={c.to} className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors text-[10px] uppercase font-black tracking-widest opacity-60 hover:opacity-100">
                     {c.label}
                   </Link>
                 </li>
@@ -94,11 +94,11 @@ export default function Footer() {
             <h3 className="text-white font-black mb-2 uppercase tracking-widest text-[10px]">Direct</h3>
             <div className="space-y-4">
               <a href={`tel:${shopInfo.phone}`} className="flex items-center gap-3 text-[10px] text-[var(--color-text-muted)] hover:text-white transition-colors font-black uppercase tracking-widest">
-                <FiPhone size={14} className="text-[var(--color-accent-light)]" />
+                <FiPhone size={14} className="text-[var(--color-accent)]" />
                 {shopInfo.phone}
               </a>
               <a href={`mailto:${shopInfo.email}`} className="flex items-center gap-3 text-[10px] text-[var(--color-text-muted)] hover:text-white transition-colors font-black uppercase tracking-widest">
-                <FaEnvelope size={13} className="text-[var(--color-accent-light)]" />
+                <FaEnvelope size={13} className="text-[var(--color-accent)]" />
                 <span className="break-all">{shopInfo.email}</span>
               </a>
             </div>

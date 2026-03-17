@@ -127,7 +127,7 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Products', path: '/products' },
-    { name: 'Promo Video', path: '/promo-video', icon: <FiPlay size={14} className="text-violet-400" /> },
+    { name: 'Promo Video', path: '/promo-video', icon: <FiPlay size={14} className="text-[var(--color-accent)]" /> },
     { name: 'About Us', path: '/about' },
     { name: 'Contact', path: '/contact' },
   ]
@@ -245,8 +245,8 @@ export default function Navbar() {
                       )}
                     </div>
                     <div className="hidden md:block text-left">
-                      <p className="text-[9px] uppercase font-black tracking-widest text-[var(--color-accent-light)] leading-none mb-0.5">Account</p>
-                      <p className="text-xs font-black text-white truncate max-w-[100px]">
+                      <p className="text-[9px] uppercase font-black tracking-widest text-[var(--color-accent)] leading-none mb-0.5">Account</p>
+                      <p className="text-xs font-black text-[var(--color-text-primary)] truncate max-w-[100px]">
                         {profile?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'User'}
                       </p>
                     </div>
@@ -392,8 +392,8 @@ export default function Navbar() {
                   to={cat.path}
                   className={`text-[10px] font-black uppercase tracking-widest transition-all ${
                     cat.highlight
-                      ? 'text-amber-500 hover:text-amber-400'
-                      : 'text-gray-500 hover:text-white'
+                      ? 'text-[var(--color-accent)] hover:text-[var(--color-accent-light)]'
+                      : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]'
                   }`}
                 >
                   {cat.highlight && <span className="mr-1">🔥</span>}
@@ -408,20 +408,20 @@ export default function Navbar() {
         {mobileSearchOpen && (
           <div className="lg:hidden border-t border-white/5 bg-[var(--color-surface-card)] p-4 shadow-3xl animate-fadeInUp">
             <form onSubmit={handleSearch} className="flex group/mobsearch">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products..."
-                className="flex-1 bg-white/5 border border-white/10 rounded-l-xl py-3 px-5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[var(--color-accent)] transition-all z-10"
-                autoFocus
-              />
-              <button
-                type="submit"
-                className="bg-white text-[var(--color-surface)] px-6 rounded-r-xl font-black text-xs uppercase tracking-widest shadow-xl"
-              >
-                Search
-              </button>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products..."
+                  className="flex-1 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-l-xl py-3 px-5 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)] transition-all z-10"
+                  autoFocus
+                />
+                <button
+                  type="submit"
+                  className="bg-[var(--color-accent)] text-white px-6 rounded-r-xl font-black text-xs uppercase tracking-widest shadow-xl"
+                >
+                  Search
+                </button>
             </form>
           </div>
         )}
@@ -508,7 +508,7 @@ export default function Navbar() {
             <Link
               to="/login"
               onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-center gap-3 w-full bg-white text-[var(--color-surface)] py-4 rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-xl"
+              className="flex items-center justify-center gap-3 w-full bg-[var(--color-accent)] text-white py-4 rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-[var(--color-accent)]/20"
             >
               <FiUser size={18} /> Sign In
             </Link>

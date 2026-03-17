@@ -1,43 +1,43 @@
 @import "tailwindcss";
 
 :root {
-  /* DARK MODE (Default) */
-  --color-primary: #0f172a;
-  --color-primary-light: #1e293b;
-  --color-accent: #6366f1;
-  --color-accent-light: #818cf8;
-  --color-accent-dark: #4f46e5;
-  --color-gold: #fbbf24;
-  --color-gold-light: #fcd34d;
-  --color-surface: #020617;
-  --color-surface-light: #0f172a;
-  --color-surface-card: #0f172a;
-  --color-text-primary: #f8fafc;
-  --color-text-secondary: #cbd5e1;
-  --color-text-muted: #94a3b8;
+  /* DARK MODE (Default) - Professional Orange & Black */
+  --color-primary: #0a0a0a;
+  --color-primary-light: #161616;
+  --color-accent: #ff5500;
+  --color-accent-light: #ff7733;
+  --color-accent-dark: #cc4400;
+  --color-gold: #ff9900;
+  --color-gold-light: #ffaa33;
+  --color-surface: #000000;
+  --color-surface-light: #0d0d0d;
+  --color-surface-card: #0a0a0a;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
   --color-success: #10b981;
-  --color-warning: #f59e0b;
+  --color-warning: #ff9900;
   --color-danger: #ef4444;
-  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border: rgba(255, 255, 255, 0.05);
   --font-family-heading: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-family-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 [data-theme="light"] {
-  --color-primary: #f1f5f9;
-  --color-primary-light: #e2e8f0;
-  --color-accent: #4f46e5;
-  --color-accent-light: #6366f1;
-  --color-accent-dark: #3730a3;
-  --color-gold: #b45309;
-  --color-gold-light: #d97706;
+  --color-primary: #ffffff;
+  --color-primary-light: #f4f4f5;
+  --color-accent: #ff5500;
+  --color-accent-light: #ff7733;
+  --color-accent-dark: #cc4400;
+  --color-gold: #ff9900;
+  --color-gold-light: #ffaa33;
   --color-surface: #ffffff;
-  --color-surface-light: #f8fafc;
+  --color-surface-light: #fafafa;
   --color-surface-card: #ffffff;
-  --color-text-primary: #020617;
-  --color-text-secondary: #1e293b;
-  --color-text-muted: #475569;
-  --color-border: rgba(15, 23, 42, 0.08);
+  --color-text-primary: #000000;
+  --color-text-secondary: #3f3f46;
+  --color-text-muted: #71717a;
+  --color-border: rgba(0, 0, 0, 0.06);
 }
 
 @theme {
@@ -294,7 +294,7 @@
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #fff, var(--color-accent-light));
+  background: linear-gradient(135deg, var(--color-text-primary), var(--color-accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -330,7 +330,7 @@
 }
 .card-hover:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 85, 0, 0.1);
 }
 
 /* ============ BUTTONS ============ */
@@ -349,11 +349,11 @@
   gap: 0.6rem;
   letter-spacing: 0.02em;
   white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 4px 12px rgba(255, 85, 0, 0.2);
 }
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 8px 24px rgba(255, 85, 0, 0.4);
   filter: brightness(1.1);
 }
 .btn-primary:active {
@@ -398,5 +398,5 @@
 }
 .btn-gold:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(251, 191, 36, 0.3);
+  box-shadow: 0 8px 20px rgba(255, 153, 0, 0.3);
 }

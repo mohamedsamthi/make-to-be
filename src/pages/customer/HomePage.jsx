@@ -340,7 +340,7 @@ export default function HomePage() {
                   {/* Content */}
                   <div className="relative z-10 p-6 sm:p-10 w-full max-w-lg">
                     {activePromo?.discount_percentage > 0 && (
-                      <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-violet-600 text-white text-xs font-bold shadow-lg shadow-violet-600/30">
+                      <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-[var(--color-accent)] text-white text-xs font-bold shadow-lg shadow-[var(--color-accent)]/30">
                         🔥 {activePromo.discount_percentage}% OFF — LIMITED TIME
                       </div>
                     )}
@@ -423,9 +423,9 @@ export default function HomePage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
             {[
               { label: 'Watches', emoji: '⌚', color: 'from-[var(--color-accent)]/20 to-[var(--color-accent)]/5', path: '/products?category=watches' },
-              { label: 'Dresses', emoji: '👗', color: 'from-pink-600/20 to-rose-600/5', path: '/products?category=dresses' },
-              { label: 'Shoes',   emoji: '👟', color: 'from-blue-600/20 to-indigo-600/5', path: '/products?category=shoes' },
-              { label: 'All Deals', emoji: '🔥', color: 'from-amber-600/20 to-orange-600/5', path: '/products?discount=true' },
+              { label: 'Dresses', emoji: '👗', color: 'from-orange-600/20 to-orange-600/5', path: '/products?category=dresses' },
+              { label: 'Shoes',   emoji: '👟', color: 'from-amber-600/20 to-amber-600/5', path: '/products?category=shoes' },
+              { label: 'All Deals', emoji: '🔥', color: 'from-orange-600/20 to-red-600/5', path: '/products?discount=true' },
             ].map((item) => (
               <Link
                 key={item.label}
