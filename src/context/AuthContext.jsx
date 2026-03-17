@@ -32,6 +32,7 @@ export function AuthProvider({ children }) {
           email: authUser.email,
           full_name: authUser.user_metadata?.full_name || '',
           phone: authUser.user_metadata?.phone || '',
+          avatar_url: authUser.user_metadata?.avatar_url || '',
           role: 'customer',
           status: 'active'
         }
@@ -140,8 +141,9 @@ export function AuthProvider({ children }) {
     const { data, error } = await supabase.auth.updateUser(payload)
     if (!error && data?.user) {
       setUser(data.user)
-      if (user?.id) {
-        await supabaseData.from('profiles').update(metaDataToUpdate).eq('id', user.id)
+      // Use data.user.id for immediate reliability
+      if (data.user.id) {
+        await supabaseData.from('profiles').update(metaDataToUpdate).eq('id', data.user.id)
       }
       await loadProfile(data.user)
     }
