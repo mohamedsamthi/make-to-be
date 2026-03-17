@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useProducts } from '../../context/ProductContext'
 import { supabaseData } from '../../lib/supabase'
 import { Link, Navigate, useLocation } from 'react-router-dom'
-import { FiUser, FiMail, FiPhone, FiLogOut, FiPackage, FiSettings, FiImage, FiLock, FiCheck, FiArrowRight, FiMessageSquare } from 'react-icons/fi'
+import { FiUser, FiMail, FiPhone, FiLogOut, FiPackage, FiSettings, FiImage, FiLock, FiCheck, FiArrowRight, FiMessageSquare, FiSend } from 'react-icons/fi'
 import { MdDashboard } from 'react-icons/md'
 import toast from 'react-hot-toast'
 
@@ -14,6 +14,8 @@ export default function ProfilePage() {
   const location = useLocation()
   const [activeTab, setActiveTab] = useState(new URLSearchParams(location.search).get('tab') || 'orders')
   const [isUpdating, setIsUpdating] = useState(false)
+  const [customerReplyText, setCustomerReplyText] = useState({})
+  const [isSendingReply, setIsSendingReply] = useState(false)
   const [formData, setFormData] = useState({
     fullName: profile?.full_name || '',
     phone: profile?.phone || '',
@@ -96,6 +98,18 @@ export default function ProfilePage() {
        if (formData.password) setFormData(prev => ({...prev, password: ''}))
     }
     setIsUpdating(false)
+  }
+
+  const { customerReply } = useProducts()
+
+  const handleCustomerReply = async (messageId) => {
+    const text = customerReplyText[messageId]
+    if (!text?.trim()) return
+    
+    setIsSendingReply(true)
+    await customerReply(messageId, text)
+    setCustomerReplyText(p => ({...p, [messageId]: ''}))
+    setIsSendingReply(false)
   }
 
   if (!loading && !user) return <Navigate to="/login" />
@@ -303,49 +317,99 @@ export default function ProfilePage() {
                     </div>
                     Support History
                   </h3>
-                  <div className="space-y-6">
+                  <div className="space-y-8">
                     {messages.filter(m => m.email === user?.email || m.phone === profile?.phone).length > 0 ? (
                       messages.filter(m => m.email === user?.email || m.phone === profile?.phone).map(msg => (
-                        <div key={msg.id} className="p-6 rounded-2xl bg-black/40 border border-white/5 space-y-4">
-                          <div className="flex justify-between items-start">
-                             <div>
-                               <p className="text-[10px] font-black uppercase text-gray-500 tracking-widest mb-1">Your Message</p>
-                               <div className="bg-white/5 p-4 rounded-2xl rounded-tl-sm text-sm text-gray-200">
-                                 {msg.message}
-                               </div>
+                        <div key={msg.id} className="rounded-3xl bg-black/40 border border-white/5 overflow-hidden shadow-sm">
+                          {/* Chat Header */}
+                          <div className="px-6 py-4 border-b border-white/5 bg-white/5 flex justify-between items-center">
+                             <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full gradient-accent flex items-center justify-center text-[10px] font-black text-white">M</div>
+                                <div>
+                                   <p className="text-xs font-black text-white uppercase tracking-wider">Ticket #{msg.id.slice(0, 8)}</p>
+                                   <p className="text-[10px] text-gray-500 font-bold">{new Date(msg.created_at).toLocaleDateString()}</p>
+                                </div>
                              </div>
-                             <span className="text-[10px] text-gray-500 font-bold whitespace-nowrap ml-4">
-                               {new Date(msg.created_at).toLocaleDateString()}
+                             <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest ${
+                                msg.status === 'unread' ? 'bg-violet-500/20 text-violet-400' : 'bg-emerald-500/20 text-emerald-400'
+                             }`}>
+                               {msg.status}
                              </span>
                           </div>
 
-                          {msg.admin_reply && (
-                            <div className="flex flex-col items-end">
-                               <p className="text-[10px] font-black uppercase text-violet-400 tracking-widest mb-1">Admin Response</p>
-                               <div className="bg-gradient-to-br from-violet-600/20 to-fuchsia-600/20 border border-violet-500/30 p-4 rounded-2xl rounded-tr-sm text-sm text-white">
-                                 {msg.admin_reply}
-                                 <div className="flex justify-end mt-2">
-                                     <div className="flex -space-x-1.5 opacity-60">
-                                       <FiCheck size={12} className="text-emerald-400" />
-                                       <FiCheck size={12} className="text-emerald-400" />
-                                     </div>
-                                 </div>
+                          {/* Chat Messages */}
+                          <div className="p-6 space-y-4 max-h-[400px] overflow-y-auto custom-scrollbar bg-[#1a1738]/30">
+                            {/* Original Message */}
+                            <div className="flex flex-col items-start max-w-[85%]">
+                               <div className="bg-white/5 border border-white/10 p-4 rounded-2xl rounded-tl-sm text-sm text-gray-200">
+                                 {msg.message}
                                </div>
+                               <span className="text-[9px] text-gray-600 font-bold mt-1 ml-2">YOU • {new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                             </div>
-                          )}
 
-                          {!msg.admin_reply && (
-                            <div className="flex items-center gap-2 text-[10px] font-bold text-amber-500/60 uppercase tracking-widest">
-                               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-                               Waiting for response
-                            </div>
-                          )}
+                            {/* Chat History */}
+                            {Array.isArray(msg.chat_history) && msg.chat_history.slice(1).map((chat, idx) => (
+                              <div key={idx} className={`flex flex-col ${chat.sender === 'admin' ? 'items-end' : 'items-start'} max-w-[100%]`}>
+                                 <div className={`max-w-[85%] p-4 rounded-2xl text-sm ${
+                                   chat.sender === 'admin' 
+                                   ? 'bg-gradient-to-br from-violet-600/20 to-fuchsia-600/20 border border-violet-500/30 text-white rounded-tr-sm' 
+                                   : 'bg-white/5 border border-white/10 text-gray-200 rounded-tl-sm'
+                                 }`}>
+                                   {chat.message}
+                                   {chat.sender === 'admin' && (
+                                      <div className="flex justify-end mt-2 opacity-50">
+                                        <div className="flex -space-x-1.5">
+                                          <FiCheck size={10} className="text-emerald-400" />
+                                          <FiCheck size={10} className="text-emerald-400" />
+                                        </div>
+                                      </div>
+                                   )}
+                                 </div>
+                                 <span className={`text-[9px] font-bold mt-1 px-2 ${chat.sender === 'admin' ? 'text-violet-400' : 'text-gray-600'}`}>
+                                   {chat.sender === 'admin' ? 'ADMIN' : 'YOU'} • {new Date(chat.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                 </span>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Chat Footer / Reply Input */}
+                          <div className="p-4 border-t border-white/5 bg-black/20">
+                             <div className="flex gap-2">
+                               <input 
+                                 value={customerReplyText[msg.id] || ''}
+                                 onChange={e => setCustomerReplyText(p => ({...p, [msg.id]: e.target.value}))}
+                                 placeholder="Type your reply here..."
+                                 className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:border-violet-500 outline-none transition-all"
+                                 onKeyDown={e => {
+                                   if (e.key === 'Enter' && !e.shiftKey) {
+                                     e.preventDefault();
+                                     handleCustomerReply(msg.id);
+                                   }
+                                 }}
+                               />
+                               <button 
+                                 onClick={() => handleCustomerReply(msg.id)}
+                                 disabled={!customerReplyText[msg.id]?.trim() || isSendingReply}
+                                 className="w-10 h-10 rounded-xl gradient-accent flex items-center justify-center text-white hover:scale-105 active:scale-95 transition-all disabled:opacity-30 disabled:grayscale"
+                               >
+                                 <FiSend size={18} />
+                               </button>
+                             </div>
+                          </div>
                         </div>
                       ))
                     ) : (
-                      <div className="text-center py-20 text-gray-500">
-                        <p>No support messages yet.</p>
-                        <Link to="/contact" className="text-violet-400 font-bold hover:underline mt-2 inline-block">Contact Support</Link>
+                      <div className="text-center py-20 bg-black/20 border border-dashed border-white/10 rounded-3xl">
+                        <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
+                           <FiMessageSquare className="text-gray-600 text-2xl" />
+                        </div>
+                        <h4 className="text-lg font-black text-white mb-2">No Support Tickets</h4>
+                        <p className="text-gray-500 text-sm max-w-xs mx-auto mb-6">
+                          Need help? Our team is ready to assist you.
+                        </p>
+                        <Link to="/contact" className="bg-white/5 hover:bg-white/10 text-white px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest transition-all">
+                          Open New Ticket
+                        </Link>
                       </div>
                     )}
                   </div>

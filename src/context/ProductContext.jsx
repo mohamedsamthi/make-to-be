@@ -381,11 +381,20 @@ export function ProductProvider({ children }) {
 
   // ===== MESSAGE OPERATIONS =====
   const sendMessage = async (msgData) => {
-    const tempId = String(Date.now())
-    const newMessage = { ...msgData, id: tempId, status: 'unread', created_at: new Date().toISOString() }
-    setMessages(prev => [newMessage, ...prev])
+    const { user } = JSON.parse(localStorage.getItem('sb-vuxshxicvzzsngyzhqjt-auth-token') || '{}')
+    const finalData = { 
+      ...msgData, 
+      user_id: user?.id || null,
+      status: 'unread',
+      chat_history: [{
+        sender: 'user',
+        message: msgData.message,
+        time: new Date().toISOString()
+      }]
+    }
+    
     try {
-      const { data, error } = await supabaseData.from('messages').insert([msgData]).select().single()
+      const { data, error } = await supabaseData.from('messages').insert([finalData]).select().single()
       if (error) throw error
       if (data) setMessages(prev => [data, ...prev])
       return data
@@ -395,11 +404,54 @@ export function ProductProvider({ children }) {
     }
   }
 
+  const customerReply = async (messageId, replyText) => {
+    try {
+      const msg = messages.find(m => m.id === messageId)
+      if (!msg) return
+      
+      const history = Array.isArray(msg.chat_history) ? [...msg.chat_history] : []
+      history.push({
+        sender: 'user',
+        message: replyText,
+        time: new Date().toISOString()
+      })
+
+      const updateData = {
+        chat_history: history,
+        status: 'unread', // Admin sees it as unread again
+        readByAdmin: false
+      }
+
+      const { error } = await supabaseData.from('messages').update(updateData).eq('id', messageId)
+      if (error) throw error
+      setMessages(prev => prev.map(m => m.id === messageId ? { ...m, ...updateData } : m))
+      toast.success('Reply sent!')
+    } catch (err) {
+      console.error('Error sending customer reply:', err)
+    }
+  }
+
   const replyToMessage = async (id, reply) => {
     try {
+      const msg = messages.find(m => m.id === id)
+      if (!msg) return
+
       const status = reply ? 'replied' : 'read'
       const updateData = { admin_reply: reply, status }
-      if (reply) updateData.readByUser = false // New reply is unread by customer
+      
+      if (reply) {
+        updateData.readByUser = false
+        const history = Array.isArray(msg.chat_history) ? [...msg.chat_history] : []
+        history.push({
+          sender: 'admin',
+          message: reply,
+          time: new Date().toISOString()
+        })
+        updateData.chat_history = history
+      } else {
+        updateData.readByAdmin = true
+      }
+
       const { error } = await supabaseData.from('messages').update(updateData).eq('id', id)
       if (error) throw error
       setMessages(prev => prev.map(m => m.id === id ? { ...m, ...updateData } : m))
@@ -459,6 +511,7 @@ export function ProductProvider({ children }) {
     deleteOrder,
     sendMessage,
     replyToMessage,
+    customerReply,
     deleteMessage
   }
 

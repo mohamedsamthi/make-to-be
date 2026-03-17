@@ -139,23 +139,43 @@ export default function AdminMessagesPage() {
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 bg-[#151230]/50 space-y-6">
-              {/* Customer Message */}
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2 pl-3">Message from {activeMessage.name}</p>
-                <div className="bg-[#1e1c3a] border border-white/10 p-5 rounded-2xl rounded-tl-sm text-sm text-gray-200 shadow-sm w-fit max-w-[85%] leading-relaxed">
-                  {activeMessage.message}
-                </div>
-              </div>
-
-              {/* Admin Reply History */}
-              {activeMessage.admin_reply && (
-                <div className="flex flex-col items-end">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2 pr-3">Your Answer / Note</p>
-                  <div className="bg-violet-600 p-5 rounded-2xl rounded-tr-sm text-sm text-white shadow-lg shadow-violet-500/20 w-fit max-w-[85%] leading-relaxed">
-                    {activeMessage.admin_reply}
+            <div className="flex-1 overflow-y-auto p-6 bg-[#151230]/50 space-y-6 custom-scrollbar">
+              {/* If no chat history, show the single legacy message */}
+              {!activeMessage.chat_history || activeMessage.chat_history.length === 0 ? (
+                <>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2 pl-3">Message from {activeMessage.name}</p>
+                    <div className="bg-[#1e1c3a] border border-white/10 p-5 rounded-2xl rounded-tl-sm text-sm text-gray-200 shadow-sm w-fit max-w-[85%] leading-relaxed">
+                      {activeMessage.message}
+                    </div>
                   </div>
-                </div>
+
+                  {activeMessage.admin_reply && (
+                    <div className="flex flex-col items-end">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2 pr-3">Your Answer / Note</p>
+                      <div className="bg-violet-600 p-5 rounded-2xl rounded-tr-sm text-sm text-white shadow-lg shadow-violet-500/20 w-fit max-w-[85%] leading-relaxed">
+                        {activeMessage.admin_reply}
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  {activeMessage.chat_history.map((chat, idx) => (
+                    <div key={idx} className={`flex flex-col ${chat.sender === 'admin' ? 'items-end' : 'items-start'}`}>
+                      <p className="text-[9px] font-bold tracking-widest text-gray-500 mb-1 px-3">
+                        {chat.sender === 'admin' ? 'YOU' : activeMessage.name.toUpperCase()} • {new Date(chat.time).toLocaleString([], {hour: '2-digit', minute:'2-digit'})}
+                      </p>
+                      <div className={`p-4 rounded-2xl text-sm leading-relaxed max-w-[85%] ${
+                        chat.sender === 'admin' 
+                        ? 'bg-violet-600 text-white rounded-tr-sm shadow-lg shadow-violet-500/10' 
+                        : 'bg-[#1e1c3a] border border-white/10 text-gray-200 rounded-tl-sm'
+                      }`}>
+                        {chat.message}
+                      </div>
+                    </div>
+                  ))}
+                </>
               )}
             </div>
 
