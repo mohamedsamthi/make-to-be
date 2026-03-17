@@ -30,7 +30,7 @@ export default function ProductCard({ product }) {
   return (
     <Link
       to={`/products/${product.id}`}
-      className="group flex flex-col bg-[var(--color-surface-card)] rounded-2xl overflow-hidden border border-[var(--color-border)] hover:border-[var(--color-accent)]/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[var(--color-accent)]/10"
+      className="group flex flex-col bg-[var(--color-surface-card)] rounded-xl overflow-hidden border border-[var(--color-border)] hover:border-[var(--color-accent)]/80 transition-all duration-300"
       id={`product-card-${product.id}`}
     >
       {/* Image */}
@@ -45,10 +45,10 @@ export default function ProductCard({ product }) {
         {/* Favorite Button (Visible on Hover or if Active) */}
         <button
           onClick={handleFavorite}
-          className={`absolute top-3 right-3 w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 z-10 ${
+          className={`absolute top-3 right-3 w-9 h-9 rounded-md flex items-center justify-center transition-all duration-300 z-10 ${
             isFavorite 
-              ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/30' 
-              : 'bg-black/10 dark:bg-white/10 backdrop-blur-md text-[var(--color-text-primary)] border border-white/20 hover:bg-black/20 dark:hover:bg-white/20 opacity-0 group-hover:opacity-100'
+              ? 'bg-[var(--color-surface-light)] text-[var(--color-accent)] border border-[var(--color-border)]' 
+              : 'bg-[var(--color-surface-light)] text-[var(--color-text-primary)] border border-[var(--color-border)] opacity-0 group-hover:opacity-100'
           }`}
           title={isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
         >
@@ -56,15 +56,15 @@ export default function ProductCard({ product }) {
         </button>
 
         {/* Hover overlay */}
-        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-3">
+        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-3">
           <button
             onClick={handleAddToCart}
-            className="w-11 h-11 rounded-xl bg-[var(--color-accent)] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+            className="w-10 h-10 rounded-md bg-[var(--color-accent)] text-white flex items-center justify-center hover:bg-[var(--color-accent-dark)] transition-colors"
             title="Add to Cart"
           >
             <FiShoppingCart size={18} />
           </button>
-          <div className="w-11 h-11 rounded-xl bg-white/10 backdrop-blur-md text-white flex items-center justify-center hover:scale-110 transition-transform" title="View Details">
+          <div className="w-10 h-10 rounded-md bg-[var(--color-surface-light)] text-[var(--color-text-primary)] flex items-center justify-center hover:bg-[var(--color-border)] transition-colors border border-[var(--color-border)]" title="View Details">
             <FiEye size={18} />
           </div>
         </div>
@@ -72,25 +72,25 @@ export default function ProductCard({ product }) {
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5">
           {hasDiscount && (
-            <span className="bg-[var(--color-accent)] text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-lg">
+            <span className="bg-[var(--color-surface-light)] text-[var(--color-accent)] border border-[var(--color-border)] text-[9px] font-bold px-2 py-0.5 rounded-sm">
               -{discountPercent}% OFF
             </span>
           )}
           {product.featured && (
-            <span className="bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-lg">
+            <span className="bg-[var(--color-surface-light)] text-[var(--color-text-primary)] border border-[var(--color-border)] text-[9px] font-bold px-2 py-0.5 rounded-sm">
               ⭐ Featured
             </span>
           )}
         </div>
 
         {product.stock <= 5 && product.stock > 0 && (
-          <span className="absolute top-3 right-3 bg-red-500/90 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-lg">
-            Only {product.stock} left
+          <span className="absolute top-3 right-3 bg-[var(--color-surface-light)] border border-red-500/50 text-red-500 text-[9px] font-bold px-2 py-0.5 rounded-sm">
+            Low Stock ({product.stock})
           </span>
         )}
         {product.stock === 0 && (
-          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-            <span className="bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg">Out of Stock</span>
+          <div className="absolute inset-0 bg-[var(--color-surface)]/80 flex items-center justify-center">
+            <span className="bg-[var(--color-surface-light)] text-[var(--color-text-primary)] border border-[var(--color-border)] text-[9px] font-bold px-3 py-1 rounded-sm">Out of Stock</span>
           </div>
         )}
       </div>

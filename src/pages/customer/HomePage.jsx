@@ -93,12 +93,7 @@ export default function HomePage() {
       {/* ===== HERO SECTION ===== */}
       <section className="relative pt-4 pb-10 lg:pt-10 lg:pb-16 overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-[var(--color-surface)]" />
-          <div className="absolute top-20 right-10 w-96 h-96 bg-[var(--color-accent)]/10 rounded-full blur-3xl animate-pulse-soft" />
-          <div className="absolute bottom-20 left-10 w-80 h-80 bg-[var(--color-gold)]/10 rounded-full blur-3xl animate-pulse-soft" style={{ animationDelay: '1s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[var(--color-accent)]/5 rounded-full blur-3xl" />
-        </div>
+        <div className="absolute inset-0 bg-[var(--color-surface)]" />
 
         <div className="container-custom relative z-10">
           <div className="grid lg:grid-cols-2 gap-8 items-center">
@@ -109,10 +104,10 @@ export default function HomePage() {
                 <span className="text-[9px] font-black uppercase tracking-widest text-[var(--color-text-secondary)]">Now Open for Online Orders</span>
               </div>
 
-              <h1 className="text-3xl sm:text-5xl lg:text-5xl font-black font-[var(--font-family-heading)] leading-tight mb-4">
+              <h1 className="text-3xl sm:text-5xl lg:text-5xl font-black font-[var(--font-family-heading)] leading-tight mb-4 text-[var(--color-text-primary)]">
                 Discover Your
                 <br />
-                <span className="gradient-text">Perfect Style</span>
+                Perfect Style
                 <br />
                 at <span className="text-[var(--color-accent)]">Make To Be</span>
               </h1>
@@ -134,8 +129,8 @@ export default function HomePage() {
 
               <div className="flex flex-wrap gap-5 justify-start">
                 {stats.map((stat, i) => (
-                  <div key={i} className="border-l border-white/10 pl-4 first:border-0 first:pl-0">
-                    <p className="text-xl font-black gradient-text tracking-tight">{stat.value}</p>
+                  <div key={i} className="border-l border-[var(--color-border)] pl-4 first:border-0 first:pl-0">
+                    <p className="text-xl font-black text-[var(--color-text-primary)] tracking-tight">{stat.value}</p>
                     <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest">{stat.label}</p>
                   </div>
                 ))}
@@ -145,8 +140,7 @@ export default function HomePage() {
             {/* Right - Featured Product Showcase */}
             <div className="hidden lg:block animate-slideInRight">
               <div className="relative">
-                <div className="absolute inset-0 gradient-accent rounded-3xl blur-3xl opacity-20 animate-pulse-soft" />
-                <div className="relative glass rounded-3xl p-6 overflow-hidden">
+                <div className="relative bg-[var(--color-surface-card)] border border-[var(--color-border)] rounded-2xl p-6 overflow-hidden">
                   <div className="grid grid-cols-2 gap-4">
                     {featuredProducts.slice(0, 4).map((product, i) => (
                       <Link
