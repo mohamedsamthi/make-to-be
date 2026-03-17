@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { MdDashboard, MdInventory, MdLocalOffer, MdRateReview } from 'react-icons/md'
-import { FiPackage, FiUsers, FiMenu, FiX, FiArrowLeft, FiLogOut, FiShield, FiChevronLeft, FiChevronRight, FiDollarSign, FiMessageSquare, FiVideo, FiUser, FiSettings } from 'react-icons/fi'
+import { FiPackage, FiUsers, FiMenu, FiX, FiArrowLeft, FiLogOut, FiShield, FiChevronLeft, FiChevronRight, FiDollarSign, FiMessageSquare, FiVideo, FiUser, FiSettings, FiSun, FiMoon } from 'react-icons/fi'
 import { useProducts } from '../../context/ProductContext'
 
 import { useTheme } from '../../context/ThemeContext'
