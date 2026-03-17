@@ -10,6 +10,8 @@ import {
   FiStar,
 } from 'react-icons/fi'
 import { MdVerified } from 'react-icons/md'
+import { useProducts } from '../../context/ProductContext'
+
 
 const values = [
   {
@@ -46,14 +48,9 @@ const values = [
   },
 ]
 
-const stats = [
-  { value: '2,000+', label: 'Happy Customers' },
-  { value: '500+', label: 'Products' },
-  { value: '4.8★', label: 'Avg Rating' },
-  { value: '100%', label: 'Authentic' },
-]
-
+// Static values moved inside component or kept if truly static
 const whyUs = [
+
   { icon: <MdVerified size={22} />, title: 'Genuine Products', desc: 'Authentic quality guaranteed' },
   { icon: <FiTruck size={20} />, title: 'Fast Delivery', desc: 'All across Sri Lanka' },
   { icon: <FiShield size={20} />, title: 'Secure Payment', desc: 'Safe bank transfer' },
@@ -69,6 +66,26 @@ const badges = [
 const cx = { maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }
 
 export default function AboutPage() {
+  const { products, orders, reviews, profiles } = useProducts()
+
+  const liveStats = [
+    { 
+      value: (profiles.length + orders.length) > 50 ? `${profiles.length + orders.length}+` : (profiles.length + orders.length), 
+      label: 'Happy Customers' 
+    },
+    { 
+      value: products.length > 50 ? `${products.length}+` : products.length, 
+      label: 'Products' 
+    },
+    { 
+      value: reviews.length > 0 
+        ? `${(reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)}★` 
+        : '4.8★', 
+      label: 'Avg Rating' 
+    },
+    { value: '100%', label: 'Authentic' },
+  ]
+
   return (
     <div className="relative min-h-screen bg-[var(--color-surface)]">
 
@@ -107,9 +124,8 @@ export default function AboutPage() {
               — a premium fashion & lifestyle destination founded in Kalmunai, Sri Lanka.
             </p>
 
-            {/* Stats — 2 cols mobile, 4 cols desktop */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-              {stats.map((s) => (
+              {liveStats.map((s) => (
                 <div
                   key={s.label}
                   className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-card)] px-4 py-5 text-center shadow-sm sm:px-5 sm:py-6"

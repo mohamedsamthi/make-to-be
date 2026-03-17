@@ -15,7 +15,26 @@ const getYoutubeVideoId = (url) => {
 };
 
 export default function HomePage() {
-  const { featuredProducts, discountedProducts, categories, reviews, promotions } = useProducts()
+  const { products, featuredProducts, discountedProducts, categories, reviews, promotions, orders, profiles } = useProducts()
+  
+  // Calculate real stats
+  const stats = [
+    { 
+      value: products.length > 50 ? `${products.length}+` : products.length, 
+      label: 'Products' 
+    },
+    { 
+      value: (profiles.length + orders.length) > 50 ? `${profiles.length + orders.length}+` : (profiles.length + orders.length), 
+      label: 'Happy Customers' 
+    },
+    { 
+      value: reviews.length > 0 
+        ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1) 
+        : '4.8', 
+      label: 'Avg Rating' 
+    }
+  ]
+
   const [currentPromo, setCurrentPromo] = useState(0)
 
   // Auto rotate promotions
@@ -112,13 +131,9 @@ export default function HomePage() {
                 </a>
               </div>
 
-              {/* Stats */}
               <div className="flex flex-wrap gap-6 justify-start">
-                {[
-                  { value: '500+', label: 'Products' },
-                  { value: '2K+',  label: 'Happy Customers' },
-                  { value: '4.8',  label: 'Avg Rating' }
-                ].map((stat, i) => (
+                {stats.map((stat, i) => (
+
                   <div key={i}>
                     <p className="text-xl sm:text-2xl font-bold gradient-text">{stat.value}</p>
                     <p className="text-xs text-[var(--color-text-muted)]">{stat.label}</p>
