@@ -225,7 +225,7 @@ export default function Navbar() {
               {/* Mobile Search Toggle */}
               <button
                 onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-                className="lg:hidden p-2.5 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
+                className="lg:hidden p-2.5 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-light)] rounded-xl transition-colors"
               >
                 <FiSearch size={22} />
               </button>
@@ -290,7 +290,7 @@ export default function Navbar() {
               ) : (
                 <Link
                   to="/login"
-                  className="hidden sm:flex items-center gap-2 text-gray-400 hover:text-white px-4 py-2.5 font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-white/5 transition-all"
+                  className="hidden sm:flex items-center gap-2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] px-4 py-2.5 font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-[var(--color-surface-light)] transition-all"
                 >
                   <FiUser size={18} />
                   Sign In
@@ -300,7 +300,7 @@ export default function Navbar() {
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
-                className="p-2.5 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-all"
+                className="p-2.5 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-light)] rounded-xl transition-all"
                 title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
               >
                 {theme === 'dark' ? <FiSun size={20} /> : <FiMoon size={20} />}
@@ -372,8 +372,8 @@ export default function Navbar() {
                   to={link.path}
                   className={`relative text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${
                     isActivePath(link.path)
-                      ? 'text-white'
-                      : 'text-gray-500 hover:text-white'
+                      ? 'text-[var(--color-text-primary)]'
+                      : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]'
                   }`}
                 >
                   {link.icon}
