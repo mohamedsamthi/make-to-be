@@ -25,7 +25,7 @@ export default function AdminMessagesPage() {
     replyToMessage(activeMessage.id, replyText)
     toast.success('Reply saved and marked as read!')
     setReplyText('')
-    setActiveMessage(null)
+    setActiveMessageId(null) // Ensure active message is cleared after reply
   }
 
   const handleDelete = (id, e) => {
@@ -37,9 +37,10 @@ export default function AdminMessagesPage() {
     }
   }
 
-  const markAsRead = (msg) => {
-    if (msg.status === 'unread') {
-      replyToMessage(msg.id, null) // updates status to Replied or Read
+  const markAsRead = async (id) => {
+    const msg = messages.find(m => m.id === id)
+    if (msg && msg.status === 'unread') {
+      await replyToMessage(id, null) // updates status to 'read'
     }
   }
 
@@ -71,7 +72,7 @@ export default function AdminMessagesPage() {
               {filtered.map(msg => (
                 <div 
                   key={msg.id}
-                  onClick={() => { setActiveMessageId(msg.id); markAsRead(msg); }}
+                  onClick={() => { setActiveMessageId(msg.id); markAsRead(msg.id); }}
                   className={`p-4 cursor-pointer transition-colors relative hover:bg-white/5 ${activeMessageId === msg.id ? 'bg-violet-500/10 border-l-4 border-violet-500' : 'border-l-4 border-transparent'}`}
                 >
                   <div className="flex justify-between items-start mb-1">
@@ -87,9 +88,23 @@ export default function AdminMessagesPage() {
                   </p>
                   
                   <div className="flex items-center justify-between mt-3">
-                    <div className="flex gap-2">
-                       {msg.status === 'unread' && <span className="w-2 h-2 rounded-full bg-red-500 mt-1" />}
-                       {msg.status === 'replied' && <FiCheck size={14} className="text-emerald-500" />}
+                    <div className="flex gap-0.5 items-center">
+                       {msg.status === 'unread' ? (
+                         <FiCheck size={14} className="text-gray-500" title="Sent (Unread)" />
+                       ) : msg.status === 'read' ? (
+                         <div className="flex -space-x-2">
+                           <FiCheck size={14} className="text-gray-400" />
+                           <FiCheck size={14} className="text-gray-400" />
+                         </div>
+                       ) : (
+                         <div className="flex -space-x-2" title="Replied">
+                           <FiCheck size={14} className="text-emerald-500" />
+                           <FiCheck size={14} className="text-emerald-500" />
+                         </div>
+                       )}
+                       <span className={`text-[10px] ml-2 ${msg.status === 'unread' ? 'text-violet-400 font-bold' : 'text-gray-500'}`}>
+                         {msg.status === 'unread' ? 'New' : msg.status.charAt(0).toUpperCase() + msg.status.slice(1)}
+                       </span>
                     </div>
                     <button 
                       onClick={(e) => handleDelete(msg.id, e)}

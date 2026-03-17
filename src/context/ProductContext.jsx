@@ -290,25 +290,55 @@ export function ProductProvider({ children }) {
     })
 
     try {
-      const { data, error } = await supabase.from('reviews').insert([{
+      const { data, error } = await supabaseData.from('reviews').insert([{
          product_id: review.product_id,
          user_name: review.user_name,
          rating: review.rating,
          comment: review.comment
       }]).select().single()
+      if (error) throw error
       if (data) {
         setReviews(prev => prev.map(r => r.id === tempId ? data : r))
       }
-    } catch (e) { console.error('Failed to add review to db:', e) }
+    } catch (err) { 
+      console.error('Failed to add review to db:', err)
+    }
 
     return newReview
+  }
+
+  const deleteReview = async (id) => {
+    const review = reviews.find(r => r.id === id)
+    if (!review) return
+
+    setReviews(prev => prev.filter(r => r.id !== id))
+    
+    // Recalculate rating
+    const otherReviews = reviews.filter(r => r.product_id === review.product_id && r.id !== id)
+    const newCount = otherReviews.length
+    const newRating = newCount > 0 ? (otherReviews.reduce((s, r) => s + r.rating, 0) / newCount) : 0
+    
+    updateProduct(review.product_id, {
+      rating: Math.round(newRating * 10) / 10,
+      review_count: newCount
+    })
+
+    try {
+      const { error } = await supabaseData.from('reviews').delete().eq('id', id)
+      if (error) throw error
+    } catch (err) {
+      console.error('Failed to delete review from db:', err)
+    }
   }
 
   const replyToReview = async (reviewId, reply) => {
     setReviews(prev => prev.map(r => r.id === reviewId ? { ...r, admin_reply: reply } : r))
     try {
-      await supabase.from('reviews').update({ admin_reply: reply }).eq('id', reviewId)
-    } catch(e) {}
+      const { error } = await supabaseData.from('reviews').update({ admin_reply: reply }).eq('id', reviewId)
+      if (error) throw error
+    } catch (err) {
+      console.error('Failed to reply to review:', err)
+    }
   }
 
   // ===== PROMOTION OPERATIONS =====
@@ -347,6 +377,8 @@ export function ProductProvider({ children }) {
       console.error('Failed to update profile:', err)
     }
   }
+   // No duplicate review section needed here
+
 
   // ===== MESSAGE OPERATIONS =====
   const sendMessage = async (msgData) => {
@@ -416,6 +448,7 @@ export function ProductProvider({ children }) {
     updateOrder,
     addOrder,
     addReview,
+    deleteReview,
     replyToReview,
     getProductReviews,
     addPromotion,

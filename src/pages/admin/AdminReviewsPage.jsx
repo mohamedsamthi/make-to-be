@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { FaStar } from 'react-icons/fa'
-import { FiSend } from 'react-icons/fi'
+import { FiSend, FiTrash2 } from 'react-icons/fi'
 import { useProducts } from '../../context/ProductContext'
 import toast from 'react-hot-toast'
 
 export default function AdminReviewsPage() {
-  const { reviews, products, replyToReview } = useProducts()
+  const { reviews, products, replyToReview, deleteReview } = useProducts()
   const [replyText, setReplyText] = useState({})
 
   const handleReply = (reviewId) => {
@@ -48,6 +48,17 @@ export default function AdminReviewsPage() {
                   </div>
                   {product && <p className="text-xs text-[var(--color-accent)]">{product.name}</p>}
                 </div>
+                <button 
+                  onClick={() => {
+                    if (window.confirm('Are you sure you want to delete this review?')) {
+                      deleteReview(review.id)
+                      toast.success('Review deleted')
+                    }
+                  }}
+                  className="p-2 text-gray-500 hover:text-red-500 transition-colors ml-4"
+                >
+                  <FiTrash2 size={16} />
+                </button>
               </div>
               <p className="text-sm text-[var(--color-text-secondary)] mb-4">{review.comment}</p>
               {review.admin_reply ? (
