@@ -47,7 +47,7 @@ function CustomerLayout({ children }) {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-1 pt-[104px] sm:pt-[124px]">
+      <main className="flex-1 pt-[104px] lg:pt-[168px]">
         {children}
       </main>
       <Footer />
@@ -59,7 +59,7 @@ function AuthLayout({ children }) {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-1 pt-[104px] sm:pt-[124px]">
+      <main className="flex-1 pt-[104px] lg:pt-[168px]">
         {children}
       </main>
     </div>

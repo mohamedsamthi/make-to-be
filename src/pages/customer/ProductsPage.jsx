@@ -95,11 +95,8 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-surface)] text-[var(--color-text-primary)] selection:bg-[var(--color-accent)]/30">
-      {/* Background Ambience */}
-      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-[var(--color-accent)]/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[10%] left-[-5%] w-[30%] h-[30%] bg-[var(--color-gold)]/5 rounded-full blur-[100px]" />
-      </div>
+      {/* Minimal Background */}
+      <div className="absolute inset-0 bg-[var(--color-surface)]" />
 
       {/* Hero Header Area */}
       <div className="relative z-10 pt-10 pb-6">
@@ -140,7 +137,7 @@ export default function ProductsPage() {
       </div>
 
       {/* Control Bar: Search & Filters Unified */}
-      <div className="sticky top-[108px] sm:top-[128px] z-30 bg-[var(--color-surface)]/80 backdrop-blur-2xl border-y border-[var(--color-border)] py-4">
+      <div className="sticky top-24 lg:top-[168px] z-30 bg-[var(--color-surface)]/95 backdrop-blur-xl border-y border-[var(--color-border)] py-4 transition-all duration-500">
         <div className="container-custom">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             

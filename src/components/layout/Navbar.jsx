@@ -148,10 +148,13 @@ export default function Navbar() {
   return (
     <>
       {/* Top Announcement Bar */}
-    <div className="fixed top-0 left-0 right-0 h-10 bg-[var(--color-primary)] text-white text-[10px] sm:text-xs py-2 text-center font-black tracking-widest uppercase z-[60] border-b border-white/5 flex items-center justify-center">
+      {/* Top Announcement Bar */}
+      <div className="fixed top-0 left-0 right-0 h-10 bg-[var(--color-surface-light)] text-[var(--color-text-primary)] text-[10px] sm:text-xs py-2 text-center font-black tracking-widest uppercase z-[60] border-b border-[var(--color-border)] flex items-center justify-center">
         {activePromo ? (
-          <>
-            {activePromo.title} • <span className="text-[var(--color-accent-light)]">
+          <div className="flex items-center gap-2">
+            <span>{activePromo.title}</span>
+            <span className="w-1 h-1 rounded-full bg-[var(--color-accent)] opacity-40" />
+            <span className="text-[var(--color-text-muted)]">
               {(() => {
                 try {
                   const d = JSON.parse(activePromo.description);
@@ -161,11 +164,13 @@ export default function Navbar() {
                 }
               })()}
             </span>
-          </>
+          </div>
         ) : (
-          <>
-            Island-wide Delivery • <span className="text-[var(--color-accent-light)]">Free shipping on orders over Rs. 10,000!</span>
-          </>
+          <div className="flex items-center gap-2">
+            <span>Island-wide Delivery</span>
+            <span className="w-1 h-1 rounded-full bg-[var(--color-accent)] opacity-40" />
+            <span className="text-[var(--color-text-muted)]">Free shipping on orders Rs. 10,000+</span>
+          </div>
         )}
       </div>
 
@@ -185,7 +190,7 @@ export default function Navbar() {
             <div className="flex items-center gap-3 shrink-0">
               <button
                 onClick={() => setMenuOpen(true)}
-                className="lg:hidden p-2 -ml-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-all"
+                className="lg:hidden p-2 -ml-2 text-[var(--color-text-primary)] hover:bg-[var(--color-surface-light)] rounded-xl transition-all"
               >
                 <FiMenu size={24} />
               </button>
@@ -210,7 +215,7 @@ export default function Navbar() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search premium pieces..."
-                className="w-full bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-l-xl py-3 pl-5 pr-4 text-xs text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)] transition-all z-10"
+                className="w-full bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-l-xl py-3 pl-5 pr-4 text-xs text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)] transition-all z-20"
               />
               <button
                 type="submit"
@@ -235,9 +240,9 @@ export default function Navbar() {
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={() => setUserMenuOpen((prev) => !prev)}
-                    className="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-2 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all group"
+                    className="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-2 rounded-xl hover:bg-[var(--color-surface-light)] border border-transparent hover:border-[var(--color-border)] transition-all group"
                   >
-                    <div className="w-9 h-9 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-black text-xs overflow-hidden shadow-lg border border-white/10">
+                    <div className="w-9 h-9 rounded-full bg-[var(--color-primary-light)] text-[var(--color-text-primary)] flex items-center justify-center font-black text-xs overflow-hidden shadow-sm border border-[var(--color-border)]">
                       {profile?.avatar_url ? (
                         <img src={profile.avatar_url} alt="avatar" className="h-full w-full object-cover" />
                       ) : (
@@ -276,10 +281,10 @@ export default function Navbar() {
                             <MdDashboard size={16} /> Admin Panel
                           </Link>
                         )}
-                        <div className="border-t border-white/5 my-1 mx-2" />
+                        <div className="border-t border-[var(--color-border)] my-1 mx-2" />
                         <button
                           onClick={signOut}
-                          className="w-full flex items-center gap-3 px-4 py-3 text-[10px] uppercase tracking-widest font-black text-red-500 hover:text-red-400 hover:bg-red-500/5 rounded-xl transition-colors"
+                          className="w-full flex items-center gap-3 px-4 py-3 text-[10px] uppercase tracking-widest font-black text-red-500 hover:bg-red-500/5 rounded-xl transition-colors"
                         >
                           <FiLogOut size={16} /> End Session
                         </button>
@@ -309,7 +314,7 @@ export default function Navbar() {
               {/* Wishlist Link */}
               <Link
                 to="/wishlist"
-                className="relative flex items-center gap-2.5 p-2 sm:px-4 sm:py-2.5 hover:bg-white/5 rounded-xl transition-all group"
+                className="relative flex items-center gap-2.5 p-2 sm:px-4 sm:py-2.5 hover:bg-[var(--color-surface-light)] border border-transparent hover:border-[var(--color-border)] rounded-xl transition-all group"
                 title="Your Wishlist"
               >
                 <div className="relative">
@@ -329,12 +334,12 @@ export default function Navbar() {
               {/* Cart Link */}
               <Link
                 to="/cart"
-                className="relative flex items-center gap-2.5 p-2 sm:px-4 sm:py-2.5 hover:bg-white/5 rounded-xl transition-all group"
+                className="relative flex items-center gap-2.5 p-2 sm:px-4 sm:py-2.5 hover:bg-[var(--color-surface-light)] border border-transparent hover:border-[var(--color-border)] rounded-xl transition-all group"
               >
                 <div className="relative">
                   <FiShoppingCart size={20} className="text-[var(--color-text-muted)] group-hover:text-[var(--color-text-primary)] transition-colors" />
                   {cartCount > 0 && (
-                    <span className="absolute -top-1.5 -right-2 min-w-[18px] h-[18px] bg-white text-[var(--color-surface)] text-[9px] font-black rounded-full flex items-center justify-center px-1 shadow-lg border-2 border-[var(--color-surface)]">
+                    <span className="absolute -top-1.5 -right-2 min-w-[18px] h-[18px] bg-[var(--color-text-primary)] text-[var(--color-primary)] text-[9px] font-black rounded-full flex items-center justify-center px-1 shadow-sm border-2 border-[var(--color-surface)]">
                       {cartCount > 99 ? '99+' : cartCount}
                     </span>
                   )}
@@ -363,9 +368,9 @@ export default function Navbar() {
         </div>
 
         {/* Desktop Category Navigation */}
-        <div className="hidden lg:block border-t border-white/5 bg-black/20 backdrop-blur-md">
+        <div className="hidden lg:block border-t border-[var(--color-border)] bg-[var(--color-surface)]">
           <div className="container-custom flex items-center h-12 gap-10">
-            <div className="flex items-center gap-8 border-r border-white/10 pr-8">
+            <div className="flex items-center gap-8 border-r border-[var(--color-border)] pr-8">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
@@ -406,7 +411,7 @@ export default function Navbar() {
 
         {/* Mobile Search Expandable */}
         {mobileSearchOpen && (
-          <div className="lg:hidden border-t border-white/5 bg-[var(--color-surface-card)] p-4 shadow-3xl animate-fadeInUp">
+          <div className="lg:hidden border-t border-[var(--color-border)] bg-[var(--color-surface-card)] p-4 shadow-xl z-50 relative">
             <form onSubmit={handleSearch} className="flex group/mobsearch">
                 <input
                   type="text"
@@ -436,7 +441,7 @@ export default function Navbar() {
       )}
 
       <div
-        className={`fixed inset-y-0 left-0 w-[300px] bg-[var(--color-surface)] z-[70] transform transition-transform duration-300 lg:hidden shadow-3xl flex flex-col border-r border-white/10 ${
+        className={`fixed inset-y-0 left-0 w-[300px] bg-[var(--color-surface)] z-[70] transform transition-transform duration-300 lg:hidden shadow-2xl flex flex-col border-r border-[var(--color-border)] ${
           menuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -446,7 +451,7 @@ export default function Navbar() {
            </span>
           <button
             onClick={() => setMenuOpen(false)}
-            className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+            className="p-2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] rounded-lg hover:bg-[var(--color-surface-light)] transition-colors"
           >
             <FiX size={24} />
           </button>
@@ -464,8 +469,8 @@ export default function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 className={`flex items-center justify-between py-3 text-xs font-black uppercase tracking-widest transition-all mb-4 ${
                   isActivePath(link.path)
-                    ? 'text-white'
-                    : 'text-gray-500 hover:text-white'
+                    ? 'text-[var(--color-text-primary)]'
+                    : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]'
                 }`}
               >
                 <span className="flex items-center gap-3">
@@ -491,8 +496,8 @@ export default function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 className={`flex items-center py-3 text-xs font-black uppercase tracking-widest transition-all mb-4 ${
                   cat.highlight
-                    ? 'text-amber-500'
-                    : 'text-gray-500 hover:text-white'
+                    ? 'text-[var(--color-accent)]'
+                    : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]'
                 }`}
               >
                 {cat.highlight && <span className="mr-2">🔥</span>}
@@ -503,12 +508,12 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Auth Footer */}
-        <div className="p-6 border-t border-white/5 bg-black/20">
+        <div className="p-6 border-t border-[var(--color-border)] bg-[var(--color-surface-light)]">
           {!user ? (
             <Link
               to="/login"
               onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-center gap-3 w-full bg-[var(--color-accent)] text-white py-4 rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-[var(--color-accent)]/20"
+              className="flex items-center justify-center gap-3 w-full bg-[var(--color-accent)] text-white py-4 rounded-xl font-black text-xs uppercase tracking-widest transition-all"
             >
               <FiUser size={18} /> Sign In
             </Link>
@@ -517,14 +522,14 @@ export default function Navbar() {
               <Link
                 to="/profile"
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-4 text-gray-400 hover:text-white font-black text-xs uppercase tracking-widest transition-colors"
+                className="flex items-center gap-4 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] font-black text-xs uppercase tracking-widest transition-colors"
               >
                 <FiUser size={18} /> Account Info
               </Link>
               <Link
                 to="/orders"
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-4 text-gray-400 hover:text-white font-black text-xs uppercase tracking-widest transition-colors"
+                className="flex items-center gap-4 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] font-black text-xs uppercase tracking-widest transition-colors"
               >
                 <FiPackage size={18} /> My Orders
               </Link>
