@@ -35,9 +35,9 @@
   --color-surface-light: #fafafa;
   --color-surface-card: #ffffff;
   --color-text-primary: #000000;
-  --color-text-secondary: #3f3f46;
-  --color-text-muted: #71717a;
-  --color-border: rgba(0, 0, 0, 0.06);
+  --color-text-secondary: #18181b;
+  --color-text-muted: #27272a;
+  --color-border: rgba(0, 0, 0, 0.1);
 }
 
 @theme {
