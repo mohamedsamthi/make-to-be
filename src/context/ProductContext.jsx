@@ -16,6 +16,7 @@ export function ProductProvider({ children }) {
   const [reviews, setReviews] = useState([])
   const [promotions, setPromotions] = useState([])
   const [profiles, setProfiles] = useState([])
+  const [messages, setMessages] = useState([])
   const [promotionalVideos, setPromotionalVideos] = useState([])
   const updateTimeouts = useRef({})
 
@@ -573,6 +574,7 @@ export function ProductProvider({ children }) {
     sendMessage,
     replyToMessage,
     customerReply,
+    messages,
     promotionalVideos,
     setPromotionalVideos,
     deleteMessage
