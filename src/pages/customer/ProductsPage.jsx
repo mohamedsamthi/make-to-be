@@ -102,7 +102,7 @@ export default function ProductsPage() {
       </div>
 
       {/* Page Header */}
-      <div className="relative z-10 border-b border-white/10 bg-[#1e1c3a]/80 backdrop-blur-md pt-24 pb-8">
+      <div className="relative z-10 border-b border-white/10 bg-[#1e1c3a]/80 backdrop-blur-md pt-6 pb-6">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
           {/* Breadcrumb */}
           <nav className="mb-4 flex flex-wrap items-center gap-2 text-xs text-gray-400 font-semibold tracking-wide">

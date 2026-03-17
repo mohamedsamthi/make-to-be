@@ -113,7 +113,7 @@ export default function ContactPage() {
     <div className="min-h-screen bg-[var(--color-surface)] pb-20">
       
       {/* ── HEADER WITH MODERN GRADIENT ── */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-[#151230] to-[var(--color-surface)] border-b border-white/5 pt-12 pb-16 lg:pt-20 lg:pb-32">
+      <div className="relative overflow-hidden bg-gradient-to-b from-[#151230] to-[var(--color-surface)] border-b border-white/5 pt-4 pb-8 lg:pt-8 lg:pb-16">
         {/* Abstract Backgrounds */}
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-10 w-72 h-72 bg-amber-500/5 rounded-full blur-3xl" />

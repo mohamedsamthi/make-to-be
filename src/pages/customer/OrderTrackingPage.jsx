@@ -108,7 +108,7 @@ export default function OrderTrackingPage() {
   };
 
   return (
-    <div className="pt-20 min-h-screen bg-[#151230] text-gray-200 font-sans relative">
+    <div className="min-h-screen bg-[#151230] text-gray-200 font-sans relative">
       {/* Print-only content */}
       <style dangerouslySetInnerHTML={{ __html: `
         @media print {
@@ -132,7 +132,7 @@ export default function OrderTrackingPage() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-fuchsia-600/10 rounded-full blur-[120px]" />
       </div>
 
-      <div className="bg-[#1e1c3a]/80 backdrop-blur-md py-8 border-b border-white/10 relative z-10">
+      <div className="bg-[#1e1c3a]/80 backdrop-blur-md py-6 border-b border-white/10 relative z-10">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
           <Link to="/profile" className="text-sm text-violet-400 font-semibold flex items-center gap-2 mb-3 hover:text-violet-300 transition-all">
             <FiArrowLeft size={16} /> Back to Profile
@@ -144,7 +144,7 @@ export default function OrderTrackingPage() {
         </div>
       </div>
 
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 py-10 relative z-10">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 py-8 relative z-10">
         {userOrders.length > 0 ? (
           <div className="space-y-6">
             {userOrders.map((order, idx) => (

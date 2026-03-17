@@ -132,17 +132,17 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-[#151230] text-gray-200">
       {/* Page Header */}
-      <div className="bg-[#1e1c3a]/80 backdrop-blur-xl border-b border-white/10 py-10 relative overflow-hidden">
+      <div className="bg-[#1e1c3a]/80 backdrop-blur-xl border-b border-white/10 py-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-violet-600/10 to-fuchsia-600/10 pointer-events-none" />
         <div className="container-custom relative z-10">
-          <Link to="/cart" className="inline-flex items-center gap-2 text-sm text-violet-400 hover:text-violet-300 hover:gap-3 transition-all mb-4 font-semibold">
+          <Link to="/cart" className="inline-flex items-center gap-2 text-sm text-violet-400 hover:text-violet-300 hover:gap-3 transition-all mb-3 font-semibold">
             <FiArrowLeft size={16} /> Back to Cart
           </Link>
-          <h1 className="text-4xl sm:text-5xl font-black text-white tracking-tight">Secure Checkout</h1>
+          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">Secure Checkout</h1>
         </div>
       </div>
 
-      <div className="container-custom py-12">
+      <div className="container-custom py-6">
         <form onSubmit={handleSubmit} className="grid lg:grid-cols-3 gap-8">
           {/* Form */}
           <div className="lg:col-span-2 space-y-6">

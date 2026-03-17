@@ -103,7 +103,7 @@ export default function AboutPage() {
           </nav>
 
           {/* Hero content */}
-          <div className="py-10 sm:py-14 lg:py-18">
+          <div className="py-6 sm:py-10 lg:py-12">
 
             {/* Label */}
             <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-accent)] sm:mb-4 sm:text-[11px]">
