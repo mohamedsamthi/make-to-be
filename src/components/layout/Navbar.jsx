@@ -217,7 +217,7 @@ export default function Navbar() {
               />
               <button
                 type="submit"
-                className="bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-dark)] px-7 rounded-r-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg"
+                className="bg-[var(--color-accent)] text-black hover:bg-[var(--color-accent-dark)] px-7 rounded-r-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2"
               >
                 <FiSearch size={16} /> Search
               </button>
@@ -421,7 +421,7 @@ export default function Navbar() {
                 />
                 <button
                   type="submit"
-                  className="bg-[var(--color-accent)] text-white px-6 rounded-r-xl font-black text-xs uppercase tracking-widest shadow-xl"
+                  className="bg-[var(--color-accent)] text-black px-6 rounded-r-xl font-black text-xs uppercase tracking-widest"
                 >
                   Search
                 </button>
@@ -511,7 +511,7 @@ export default function Navbar() {
             <Link
               to="/login"
               onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-center gap-3 w-full bg-[var(--color-accent)] text-white py-4 rounded-xl font-black text-xs uppercase tracking-widest transition-all"
+              className="flex items-center justify-center gap-3 w-full bg-[var(--color-accent)] text-black py-4 rounded-xl font-black text-xs uppercase tracking-widest transition-all"
             >
               <FiUser size={18} /> Sign In
             </Link>
