@@ -137,7 +137,7 @@ export default function ProductsPage() {
       </div>
 
       {/* Control Bar: Search & Filters Unified */}
-      <div className="sticky top-24 lg:top-[168px] z-30 bg-[var(--color-surface)]/95 backdrop-blur-xl border-y border-[var(--color-border)] py-4 transition-all duration-500">
+      <div className="bg-[var(--color-surface)] border-y border-[var(--color-border)] py-4">
         <div className="container-custom">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             
