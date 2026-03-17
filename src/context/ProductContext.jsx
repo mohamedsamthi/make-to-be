@@ -40,7 +40,15 @@ export function ProductProvider({ children }) {
             console.error(`[MakeToBe] Error fetching ${name}:`, error.message)
           } else if (data) {
             console.log(`[MakeToBe] Loaded ${data.length} ${name}`)
-            setter(data)
+            if (name === 'orders') {
+              const cleaned = data.map(o => ({
+                ...o,
+                items: typeof o.items === 'string' ? JSON.parse(o.items) : (Array.isArray(o.items) ? o.items : [])
+              }))
+              setter(cleaned)
+            } else {
+              setter(data)
+            }
           }
         } catch (err) {
           console.error(`[MakeToBe] Failed to fetch ${name}:`, err)
@@ -82,7 +90,12 @@ export function ProductProvider({ children }) {
             return [payload.new, ...prev]
           })
         } else if (payload.eventType === 'UPDATE') {
-          setOrders(prev => prev.map(o => o.id === payload.new.id ? { ...o, ...payload.new } : o))
+          const newRow = { ...payload.new }
+          // Fix: Ensure items are parsed if they come as a string (common in Supabase Realtime)
+          if (typeof newRow.items === 'string') {
+            try { newRow.items = JSON.parse(newRow.items); } catch (e) { console.error('Parse error', e); }
+          }
+          setOrders(prev => prev.map(o => o.id === newRow.id ? { ...o, ...newRow } : o))
         } else if (payload.eventType === 'DELETE') {
           setOrders(prev => prev.filter(o => o.id !== payload.old.id))
         }
@@ -220,9 +233,16 @@ export function ProductProvider({ children }) {
   const updateOrder = async (id, updatedData) => {
     setOrders(prev => prev.map(o => o.id === id ? { ...o, ...updatedData } : o))
     try {
-      await supabase.from('orders').update(updatedData).eq('id', id)
+      const { error } = await supabaseData.from('orders').update(updatedData).eq('id', id)
+      if (error) throw error
+      toast.success('Order synchronized with database')
     } catch (err) {
       console.error('Failed to update order in db:', err)
+      toast.error('Sync failed. Please check connection.')
+      // Rollback local state on failure
+      supabaseData.from('orders').select('*').eq('id', id).single().then(({ data }) => {
+        if (data) setOrders(prev => prev.map(o => o.id === id ? data : o))
+      })
     }
   }
 
@@ -234,7 +254,7 @@ export function ProductProvider({ children }) {
     }
     setOrders(prev => [newOrder, ...prev])
     try {
-      const { error } = await supabase.from('orders').insert([newOrder])
+      const { error } = await supabaseData.from('orders').insert([newOrder])
       if (error) throw error
     } catch (err) {
       console.error('Failed to save order to db:', err)
@@ -246,7 +266,7 @@ export function ProductProvider({ children }) {
   const deleteOrder = async (id) => {
     setOrders(prev => prev.filter(o => o.id !== id))
     try {
-      await supabase.from('orders').delete().eq('id', id)
+      await supabaseData.from('orders').delete().eq('id', id)
     } catch (err) {
       console.error('Failed to delete order from db:', err)
     }
@@ -334,24 +354,35 @@ export function ProductProvider({ children }) {
     const newMessage = { ...msgData, id: tempId, status: 'unread', created_at: new Date().toISOString() }
     setMessages(prev => [newMessage, ...prev])
     try {
-      const { data } = await supabase.from('messages').insert([msgData]).select().single()
-      if (data) setMessages(prev => prev.map(m => m.id === tempId ? data : m))
-    } catch(e) { console.error('Message failed', e) }
-    return newMessage
+      const { data, error } = await supabaseData.from('messages').insert([msgData]).select().single()
+      if (error) throw error
+      if (data) setMessages(prev => [data, ...prev])
+      return data
+    } catch (err) {
+      console.error('Error sending message:', err)
+      throw err
+    }
   }
 
   const replyToMessage = async (id, reply) => {
-    setMessages(prev => prev.map(m => m.id === id ? { ...m, admin_reply: reply, status: 'replied' } : m))
     try {
-      await supabase.from('messages').update({ admin_reply: reply, status: 'replied' }).eq('id', id)
-    } catch(e) {}
+      const status = reply ? 'replied' : 'read'
+      const { error } = await supabaseData.from('messages').update({ admin_reply: reply, status }).eq('id', id)
+      if (error) throw error
+      setMessages(prev => prev.map(m => m.id === id ? { ...m, admin_reply: reply, status } : m))
+    } catch (err) {
+      console.error('Error replying to message:', err)
+    }
   }
 
   const deleteMessage = async (id) => {
-    setMessages(prev => prev.filter(m => m.id !== id))
     try {
-      await supabase.from('messages').delete().eq('id', id)
-    } catch(e) {}
+      const { error } = await supabaseData.from('messages').delete().eq('id', id)
+      if (error) throw error
+      setMessages(prev => prev.filter(m => m.id !== id))
+    } catch (err) {
+      console.error('Error deleting message:', err)
+    }
   }
 
   // ===== DERIVED DATA =====

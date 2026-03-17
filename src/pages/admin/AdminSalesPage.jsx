@@ -6,9 +6,11 @@ import toast from 'react-hot-toast'
 export default function AdminSalesPage() {
   const { orders, updateOrder, deleteOrder } = useProducts()
   const [search, setSearch] = useState('')
-  const [selectedOrder, setSelectedOrder] = useState(null)
+  const [selectedOrderId, setSelectedOrderId] = useState(null)
   const [chatMessage, setChatMessage] = useState('')
   const [addPayment, setAddPayment] = useState('')
+  
+  const selectedOrder = orders.find(o => o.id === selectedOrderId)
   
   const chatEndRef = useRef(null)
 
@@ -42,7 +44,6 @@ export default function AdminSalesPage() {
     cleanedItems.push({ ...newSalesData, product_id: 'sales-tracker', is_sales_data: true, quantity: 1, price: 0 })
     
     updateOrder(orderId, { items: cleanedItems })
-    setSelectedOrder({ ...order, items: cleanedItems }) // local update to rerender modal instantly
   }
 
   const handleAddPayment = (e) => {
@@ -139,7 +140,7 @@ export default function AdminSalesPage() {
                 <FiTrash2 size={14} />
               </button>
               
-              <div onClick={() => setSelectedOrder(order)}>
+              <div onClick={() => setSelectedOrderId(order.id)}>
               <div className="flex justify-between items-start mb-3">
                 <h3 className="text-lg font-bold font-mono text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">{order.id}</h3>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest ${isFullyPaid ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
@@ -172,7 +173,7 @@ export default function AdminSalesPage() {
 
       {/* Sales / Chat Modal */}
       {selectedOrder && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setSelectedOrder(null)}>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setSelectedOrderId(null)}>
           <div className="w-full max-w-4xl h-[85vh] flex overflow-hidden bg-[#1e1c3a] border border-white/10 rounded-2xl shadow-2xl animate-fadeInUp" onClick={e => e.stopPropagation()}>
             
             {/* Left Side: Payment Details */}
@@ -246,7 +247,7 @@ export default function AdminSalesPage() {
                     <p className="text-xs text-emerald-400">Live Custom Order Chat</p>
                   </div>
                 </div>
-                <button onClick={() => setSelectedOrder(null)} className="w-8 h-8 rounded-lg bg-white/10 hover:bg-red-500/20 hover:text-red-400 flex items-center justify-center transition-colors">
+                <button onClick={() => setSelectedOrderId(null)} className="w-8 h-8 rounded-lg bg-white/10 hover:bg-red-500/20 hover:text-red-400 flex items-center justify-center transition-colors">
                   <FiX />
                 </button>
               </div>

@@ -7,8 +7,10 @@ import toast from 'react-hot-toast'
 export default function AdminMessagesPage() {
   const { messages = [], replyToMessage, deleteMessage } = useProducts()
   const [search, setSearch] = useState('')
-  const [activeMessage, setActiveMessage] = useState(null)
+  const [activeMessageId, setActiveMessageId] = useState(null)
   const [replyText, setReplyText] = useState('')
+
+  const activeMessage = messages.find(m => m.id === activeMessageId)
 
   const sortedMessages = [...messages].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
   
@@ -30,7 +32,7 @@ export default function AdminMessagesPage() {
     e.stopPropagation()
     if (window.confirm('Delete this message permanently?')) {
       deleteMessage(id)
-      if (activeMessage?.id === id) setActiveMessage(null)
+      if (activeMessageId === id) setActiveMessageId(null)
       toast.success('Message deleted')
     }
   }
@@ -69,8 +71,8 @@ export default function AdminMessagesPage() {
               {filtered.map(msg => (
                 <div 
                   key={msg.id}
-                  onClick={() => { setActiveMessage(msg); markAsRead(msg); }}
-                  className={`p-4 cursor-pointer transition-colors relative hover:bg-white/5 ${activeMessage?.id === msg.id ? 'bg-violet-500/10 border-l-4 border-violet-500' : 'border-l-4 border-transparent'}`}
+                  onClick={() => { setActiveMessageId(msg.id); markAsRead(msg); }}
+                  className={`p-4 cursor-pointer transition-colors relative hover:bg-white/5 ${activeMessageId === msg.id ? 'bg-violet-500/10 border-l-4 border-violet-500' : 'border-l-4 border-transparent'}`}
                 >
                   <div className="flex justify-between items-start mb-1">
                     <h3 className={`text-sm font-bold truncate pr-3 ${msg.status === 'unread' ? 'text-white' : 'text-gray-300'}`}>

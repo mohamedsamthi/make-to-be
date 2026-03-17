@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { FiPackage, FiCheck, FiTruck, FiMapPin, FiClock, FiArrowLeft, FiFileText, FiX, FiDownload, FiPrinter } from 'react-icons/fi'
+import { FiPackage, FiCheck, FiTruck, FiMapPin, FiClock, FiArrowLeft, FiFileText, FiX, FiDownload, FiPrinter, FiTrash2 } from 'react-icons/fi'
+import Swal from 'sweetalert2'
 import { FaWhatsapp } from 'react-icons/fa'
 import { useAuth } from '../../context/AuthContext'
 import { useProducts } from '../../context/ProductContext'
@@ -64,10 +65,13 @@ function OrderStatusTracker({ status }) {
 
 export default function OrderTrackingPage() {
   const { user } = useAuth()
-  const { orders, updateOrder } = useProducts()
-  const [selectedReceipt, setSelectedReceipt] = useState(null)
+  const { orders, updateOrder, deleteOrder } = useProducts()
+  const [orderQuery, setOrderQuery] = useState('')
+  const [selectedReceiptId, setSelectedReceiptId] = useState(null)
   const [activeTab, setActiveTab] = useState('receipt')
   const [chatMessage, setChatMessage] = useState('')
+
+  const selectedReceipt = orders.find(o => o.id === selectedReceiptId)
 
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
@@ -91,7 +95,7 @@ export default function OrderTrackingPage() {
     if (orderIdFromQuery && userOrders.length > 0) {
       const order = userOrders.find(o => o.id === orderIdFromQuery)
       if (order) {
-        setSelectedReceipt(order)
+        setSelectedReceiptId(order.id)
         if (tabFromQuery === 'chat') setActiveTab('chat')
       }
     }
@@ -179,7 +183,7 @@ export default function OrderTrackingPage() {
                 {/* Actions */}
                 <div className="p-6 sm:p-8 border-t border-white/10 flex flex-wrap gap-4 items-center bg-white/5">
                   <button
-                    onClick={() => { setSelectedReceipt(order); setActiveTab('receipt'); }}
+                    onClick={() => { setSelectedReceiptId(order.id); setActiveTab('receipt'); }}
                     className="flex-1 sm:flex-none flex justify-center items-center gap-2 py-3 px-6 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-sm transition-all shadow-lg shadow-violet-500/25"
                   >
                     <FiFileText size={18} /> View Receipt & Chat
@@ -192,6 +196,31 @@ export default function OrderTrackingPage() {
                   >
                     <FaWhatsapp size={18} /> Follow up Order
                   </a>
+                  {order.status === 'pending' && (
+                    <button
+                      onClick={() => {
+                        Swal.fire({
+                          title: 'Cancel & Delete Order?',
+                          text: "This will remove your order from the system.",
+                          icon: 'warning',
+                          showCancelButton: true,
+                          confirmButtonColor: '#ef4444',
+                          cancelButtonColor: '#374151',
+                          confirmButtonText: 'Yes, Delete it!',
+                          background: '#1e1c3a',
+                          color: '#fff'
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            deleteOrder(order.id)
+                            toast.success('Order deleted successfully')
+                          }
+                        })
+                      }}
+                      className="flex-1 sm:flex-none flex justify-center items-center gap-2 py-3 px-6 rounded-xl bg-red-500/10 border border-red-500/30 text-red-500 font-bold text-sm hover:bg-red-500 hover:text-white transition-all shadow-lg hover:shadow-red-500/20"
+                    >
+                      <FiTrash2 size={18} /> Delete Order
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
@@ -213,7 +242,7 @@ export default function OrderTrackingPage() {
       {/* Bill/Receipt/Chat Modal */}
       {selectedReceipt && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pb-20 sm:pb-6 overflow-y-auto">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setSelectedReceipt(null)} />
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setSelectedReceiptId(null)} />
           
           <div className="relative z-10 w-full max-w-lg bg-[#151230] rounded-2xl shadow-2xl overflow-hidden animate-fadeInUp text-gray-200 my-auto border border-violet-500/30">
             
@@ -225,7 +254,7 @@ export default function OrderTrackingPage() {
                   </h2>
                   <p className="text-xs text-violet-300 font-mono">{selectedReceipt.id}</p>
                </div>
-               <button onClick={() => setSelectedReceipt(null)} className="w-8 h-8 rounded-full bg-white/10 hover:bg-red-500/80 flex items-center justify-center transition-colors">
+               <button onClick={() => setSelectedReceiptId(null)} className="w-8 h-8 rounded-full bg-white/10 hover:bg-red-500/80 flex items-center justify-center transition-colors">
                   <FiX size={16} />
                </button>
             </div>
@@ -400,7 +429,6 @@ export default function OrderTrackingPage() {
                     cleanedItems.push({ ...meta, chat_history: newChat, product_id: 'sales-tracker', is_sales_data: true, quantity: 1, price: 0 })
                     
                     updateOrder(selectedReceipt.id, { items: cleanedItems })
-                    setSelectedReceipt({ ...selectedReceipt, items: cleanedItems })
                     setChatMessage('')
                   }}
                 >

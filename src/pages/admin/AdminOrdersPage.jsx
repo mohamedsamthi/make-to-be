@@ -79,7 +79,7 @@ export default function AdminOrdersPage() {
                 <tr key={order.id} className="hover:bg-white/5 transition-colors group">
                   <td className="px-6 py-5">
                     <p className="text-sm font-mono font-bold text-[var(--color-accent)]">{order.id}</p>
-                    <p className="text-[10px] text-gray-500">{order.items.filter(i => !i.is_sales_data).length} items</p>
+                    <p className="text-[10px] text-gray-500">{(order.items || []).filter(i => !i && !i.is_sales_data ? false : !i.is_sales_data).length} items</p>
                   </td>
                   <td className="px-6 py-5">
                     <p className="text-sm font-bold text-white leading-tight">{order.customer_name}</p>
@@ -87,7 +87,7 @@ export default function AdminOrdersPage() {
                   </td>
                   <td className="px-6 py-5 max-w-[200px]">
                     <div className="space-y-0.5">
-                      {order.items.filter(i => !i.is_sales_data).map((item, i) => (
+                      {(order.items || []).filter(i => i && !i.is_sales_data).map((item, i) => (
                         <p key={i} className="text-[11px] text-gray-400 truncate">{item.product_name} <span className="text-[var(--color-accent)] font-bold">×{item.quantity}</span></p>
                       ))}
                     </div>
@@ -125,11 +125,11 @@ export default function AdminOrdersPage() {
                     <div className="flex items-center gap-2 justify-end">
                       <button 
                         onClick={() => handleCompleteOrder(order)}
-                        className={`p-2 rounded-xl transition-all shadow-lg ${order.status === 'delivered' && order.payment_status === 'paid' ? 'bg-emerald-500/20 text-emerald-500 cursor-default' : 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-emerald-500/20'}`}
+                        className={`p-2 rounded-xl transition-all shadow-lg ${order.status === 'delivered' && order.payment_status === 'paid' ? 'bg-emerald-500/40 text-emerald-200 cursor-default' : 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-emerald-500/20 active:scale-90'}`}
                         title="Complete Order (Deliver & Pay)"
                         disabled={order.status === 'delivered' && order.payment_status === 'paid'}
                       >
-                        <FiCheckCircle size={16} />
+                        <FiCheckCircle size={18} />
                       </button>
                       <button 
                         onClick={() => handleDeleteOrder(order.id)}

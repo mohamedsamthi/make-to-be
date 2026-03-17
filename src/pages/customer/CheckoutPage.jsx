@@ -14,6 +14,7 @@ export default function CheckoutPage() {
   const { addOrder } = useProducts()
   const navigate = useNavigate()
   const [orderPlaced, setOrderPlaced] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     fullName: profile?.full_name || '',
     email: user?.email || '',
@@ -61,14 +62,17 @@ export default function CheckoutPage() {
       }))
     }
 
+    setIsSubmitting(true)
     try {
       await addOrder(newOrder)
-      toast.success('Order placed successfully! 🎉')
+      toast.success('Order placed successfully! 🎉', { duration: 6000 })
       setOrderPlaced(true)
       clearCart()
     } catch (err) {
-      toast.error('Failed to place order. Try again.')
+      toast.error(err.message || 'Failed to place order. Please check your internet or try again.')
       console.error(err)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -260,8 +264,19 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              <button type="submit" className="w-full py-4 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white font-bold text-base shadow-lg shadow-violet-500/25 transition-all hover:scale-[1.02] active:scale-95">
-                Complete Order
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className={`w-full py-4 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-bold text-base shadow-lg shadow-violet-500/25 transition-all flex items-center justify-center gap-2 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:from-violet-500 hover:to-fuchsia-500 hover:scale-[1.02] active:scale-95'}`}
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Processing Order...
+                  </>
+                ) : (
+                  'Complete Order'
+                )}
               </button>
             </div>
           </div>
