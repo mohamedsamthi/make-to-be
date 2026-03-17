@@ -3,34 +3,42 @@ import { useProducts } from '../../context/ProductContext'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 export default function DashboardPage() {
-  const { products, orders, promotions, reviews } = useProducts()
+  const { products = [], orders = [], promotions = [], reviews = [] } = useProducts() || {}
 
-  const totalRevenue = orders.reduce((sum, o) => o.payment_status === 'paid' ? sum + o.total : sum, 0)
-  const totalOrders = orders.length
-  const totalProducts = products.length
-  const pendingOrders = orders.filter(o => o.status === 'pending').length
+  const safeOrders = Array.isArray(orders) ? orders : []
+  const safeProducts = Array.isArray(products) ? products : []
+
+  const totalRevenue = safeOrders.reduce((sum, o) => (o && o.payment_status === 'paid') ? sum + Number(o.total || 0) : sum, 0)
+  const totalOrders = safeOrders.length
+  const totalProducts = safeProducts.length
+  const pendingOrders = safeOrders.filter(o => o && o.status === 'pending').length
   const totalExpenses = 15000
   const profit = totalRevenue - totalExpenses
-  const totalDiscount = products.reduce((sum, p) => p.discount_price ? sum + (p.price - p.discount_price) : sum, 0)
+  const totalDiscount = safeProducts.reduce((sum, p) => (p && p.discount_price) ? sum + (Number(p.price || 0) - Number(p.discount_price || 0)) : sum, 0)
 
-  // Prepare chart data from real orders (last 7 days logic or just chronological)
-  const chartData = [...orders].reverse().reduce((acc, order) => {
-    const date = new Date(order.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-    const existing = acc.find(item => item.name === date)
-    if (existing) {
-      if (order.payment_status === 'paid') existing.revenue += order.total
-    } else {
-      acc.push({ name: date, revenue: order.payment_status === 'paid' ? order.total : 0 })
-    }
-    return acc
-  }, []).slice(-10) // show last 10 days of activity
+  // Prepare chart data for the last 7 days (including days with 0 revenue)
+  const chartData = []
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date()
+    d.setDate(d.getDate() - i)
+    const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    
+    // Sum up revenue for this specific day
+    const dayRevenue = safeOrders.reduce((sum, order) => {
+      if (!order || !order.created_at || order.payment_status !== 'paid') return sum
+      const orderDate = new Date(order.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      return orderDate === dateStr ? sum + Number(order.total || 0) : sum
+    }, 0)
+
+    chartData.push({ name: dateStr, revenue: dayRevenue })
+  }
 
   if (chartData.length === 0) {
     chartData.push({ name: 'No Data', revenue: 0 })
   }
 
   const stats = [
-    { label: 'Total Revenue', value: `LKR ${totalRevenue.toLocaleString()}`, icon: <FiDollarSign size={22} />, color: 'from-green-500/20 to-green-500/5', iconBg: 'bg-green-500/15 text-green-400', trend: '+12%', trendUp: true },
+    { label: 'Total Revenue', value: `LKR ${totalRevenue.toLocaleString()}`, icon: <span className="font-bold text-sm">Rs.</span>, color: 'from-green-500/20 to-green-500/5', iconBg: 'bg-green-500/15 text-green-400', trend: '+12%', trendUp: true },
     { label: 'Total Expenses', value: `LKR ${totalExpenses.toLocaleString()}`, icon: <FiTrendingDown size={22} />, color: 'from-red-500/20 to-red-500/5', iconBg: 'bg-red-500/15 text-red-400', trend: '-3%', trendUp: false },
     { label: 'Net Profit', value: `LKR ${profit.toLocaleString()}`, icon: <FiTrendingUp size={22} />, color: 'from-[var(--color-gold)]/20 to-[var(--color-gold)]/5', iconBg: 'bg-[var(--color-gold)]/15 text-[var(--color-gold)]', trend: '+18%', trendUp: true },
     { label: 'Total Products', value: totalProducts, icon: <FiShoppingBag size={22} />, color: 'from-purple-500/20 to-purple-500/5', iconBg: 'bg-purple-500/15 text-purple-400', info: `${totalProducts} items` },
@@ -117,21 +125,21 @@ export default function DashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {orders.map(order => (
+              {(safeOrders || []).map(order => (
                 <tr key={order.id} className="border-b border-[var(--color-border)] hover:bg-white/3 transition-colors">
                   <td className="px-5 py-3.5 text-sm font-mono font-bold text-[var(--color-accent)]">{order.id}</td>
                   <td className="px-5 py-3.5">
-                    <p className="text-sm font-medium">{order.customer_name}</p>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">{order.customer_phone}</p>
+                    <p className="text-sm font-medium">{order.customer_name || 'Generic Customer'}</p>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">{order.customer_phone || 'No Phone'}</p>
                   </td>
-                  <td className="px-5 py-3.5 text-sm font-bold">LKR {order.total.toLocaleString()}</td>
+                  <td className="px-5 py-3.5 text-sm font-bold">LKR {(Number(order.total || 0)).toLocaleString()}</td>
                   <td className="px-5 py-3.5">
-                    <span className={`badge text-[11px] capitalize ${order.status === 'delivered' ? 'badge-success' : order.status === 'shipped' ? 'badge-accent' : 'badge-gold'}`}>{order.status}</span>
+                    <span className={`badge text-[11px] capitalize ${order.status === 'delivered' ? 'badge-success' : order.status === 'shipped' ? 'badge-accent' : 'badge-gold'}`}>{order.status || 'Pending'}</span>
                   </td>
                   <td className="px-5 py-3.5">
-                    <span className={`badge text-[11px] capitalize ${order.payment_status === 'paid' ? 'badge-success' : 'badge-gold'}`}>{order.payment_status}</span>
+                    <span className={`badge text-[11px] capitalize ${order.payment_status === 'paid' ? 'badge-success' : 'badge-gold'}`}>{order.payment_status || 'Unpaid'}</span>
                   </td>
-                  <td className="px-5 py-3.5 text-sm text-[var(--color-text-muted)]">{order.created_at}</td>
+                  <td className="px-5 py-3.5 text-sm text-[var(--color-text-muted)]">{order.created_at ? new Date(order.created_at).toLocaleDateString() : 'Unknown'}</td>
                 </tr>
               ))}
             </tbody>
@@ -146,12 +154,13 @@ export default function DashboardPage() {
             <h3 className="text-lg font-bold font-[var(--font-family-heading)]">Top Products</h3>
           </div>
           <div className="p-5 space-y-4">
-            {[...products].map(p => {
-              const productReviews = reviews.filter(r => r.product_id === p.id)
+            {[...safeProducts].map(p => {
+              if (!p) return null
+              const productReviews = (reviews || []).filter(r => r && r.product_id === p.id)
               const reviewCount = productReviews.length
-              const rating = reviewCount > 0 ? (productReviews.reduce((sum, r) => sum + r.rating, 0) / reviewCount).toFixed(1) : 0
+              const rating = reviewCount > 0 ? (productReviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviewCount).toFixed(1) : 0
               return { ...p, realReviewCount: reviewCount, realRating: rating }
-            }).sort((a, b) => b.realReviewCount - a.realReviewCount).slice(0, 5).map((p, i) => (
+            }).filter(Boolean).sort((a, b) => b.realReviewCount - a.realReviewCount).slice(0, 5).map((p, i) => (
               <div key={p.id} className="flex items-center gap-4 group">
                 <span className="text-sm font-bold text-[var(--color-text-muted)] w-5 shrink-0 group-hover:text-violet-400 transition-colors">{i + 1}</span>
                 <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-[var(--color-border)] group-hover:border-violet-500/50 transition-colors">
@@ -175,9 +184,9 @@ export default function DashboardPage() {
             <h3 className="text-lg font-bold font-[var(--font-family-heading)]">Recent Activity</h3>
           </div>
           <div className="p-5 space-y-4">
-            {orders.slice(0, 5).map((o, i) => {
+            {safeOrders.slice(0, 5).map((o, i) => {
+               if (!o) return null
                const isPaid = o.payment_status === 'paid'
-               const isRecent = new Date(o.created_at) > new Date(Date.now() - 86400000)
                
                let action = 'New order placed'
                let color = 'bg-blue-400'
@@ -186,24 +195,24 @@ export default function DashboardPage() {
                else if (isPaid) { action = 'Payment confirmed'; color = 'bg-amber-400' }
                
                // Extract relative time 
-               const timeDiff = Math.floor((new Date() - new Date(o.created_at)) / (1000 * 60 * 60))
+               const timeDiff = o.created_at ? Math.floor((new Date() - new Date(o.created_at)) / (1000 * 60 * 60)) : 0
                let timeStr = `${timeDiff}h ago`
                if (timeDiff > 24) timeStr = `${Math.floor(timeDiff/24)}d ago`
-               if (timeDiff === 0) timeStr = 'Just now'
+               if (timeDiff <= 0) timeStr = 'Just now'
 
                return (
                   <div key={o.id} className="flex items-start gap-4">
                     <div className={`w-2 h-2 rounded-full mt-2 ${color} shrink-0 animate-pulse`} />
                     <div className="flex-1 min-w-0 border-b border-white/5 pb-3">
                       <p className="text-sm font-bold text-white">{action}</p>
-                      <p className="text-[11px] text-[var(--color-text-muted)] mt-0.5">{o.id} • LKR {o.total.toLocaleString()} by {o.customer_name}</p>
+                      <p className="text-[11px] text-[var(--color-text-muted)] mt-0.5">{o.id} • LKR {(Number(o.total || 0)).toLocaleString()} by {o.customer_name || 'User'}</p>
                     </div>
                     <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)] whitespace-nowrap shrink-0">{timeStr}</span>
                   </div>
                )
             })}
             
-            {orders.length === 0 && (
+            {safeOrders.length === 0 && (
                <div className="text-center py-8">
                  <p className="text-xs text-gray-400">No recent activity detected.</p>
                </div>

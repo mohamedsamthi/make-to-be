@@ -12,8 +12,15 @@ export default function AdminCustomersPage() {
     const isBlocking = customer.status !== 'inactive'
     const newStatus = isBlocking ? 'inactive' : 'active'
     
-    if (!customer.profileId) {
-      toast.error('This user has no profile account to manage')
+    // Find the real profile object if profileId is missing but match exists
+    let targetProfileId = customer.profileId
+    if (!targetProfileId) {
+      const match = profiles.find(p => p.email === customer.email || p.full_name === customer.name)
+      if (match) targetProfileId = match.id
+    }
+
+    if (!targetProfileId) {
+      toast.error('Only registered users can be blocked. Guests have no account.')
       return
     }
 
@@ -27,12 +34,15 @@ export default function AdminCustomersPage() {
       confirmButtonColor: isBlocking ? '#ef4444' : '#10b981',
       cancelButtonColor: '#374151',
       confirmButtonText: isBlocking ? 'Yes, Block User' : 'Yes, Activate User',
-      background: '#1e1c3a',
-      color: '#fff'
+      background: '#151230',
+      color: '#fff',
+      customClass: {
+        popup: 'rounded-3xl border border-white/10 shadow-2xl'
+      }
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await updateProfile(customer.profileId, { status: newStatus })
+          await updateProfile(targetProfileId, { status: newStatus })
           toast.success(`User is now ${newStatus}`)
         } catch (err) {
           toast.error('Failed to update status')

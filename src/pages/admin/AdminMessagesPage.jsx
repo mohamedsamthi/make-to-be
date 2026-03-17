@@ -12,7 +12,14 @@ export default function AdminMessagesPage() {
 
   const activeMessage = messages.find(m => m.id === activeMessageId)
 
-  const sortedMessages = [...messages].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+  const getLatestTime = (m) => {
+    if (m.chat_history && m.chat_history.length > 0) {
+      return new Date(m.chat_history[m.chat_history.length - 1].time).getTime()
+    }
+    return new Date(m.created_at).getTime()
+  }
+
+  const sortedMessages = [...messages].sort((a, b) => getLatestTime(b) - getLatestTime(a))
   
   const filtered = sortedMessages.filter(m =>
     m.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -20,12 +27,16 @@ export default function AdminMessagesPage() {
     m.message?.toLowerCase().includes(search.toLowerCase())
   )
 
-  const handleReply = () => {
+  const handleReply = async () => {
     if (!replyText.trim() || !activeMessage) return
-    replyToMessage(activeMessage.id, replyText)
-    toast.success('Reply saved and marked as read!')
-    setReplyText('')
-    setActiveMessageId(null) // Ensure active message is cleared after reply
+    const id = activeMessage.id
+    try {
+      await replyToMessage(id, replyText)
+      setReplyText('')
+      // Don't close the chat, so admin can see the reply in history
+    } catch (e) {
+      // Error handled in context toast
+    }
   }
 
   const handleDelete = (id, e) => {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { MdDashboard, MdInventory, MdLocalOffer, MdRateReview } from 'react-icons/md'
-import { FiPackage, FiUsers, FiMenu, FiX, FiArrowLeft, FiLogOut, FiShield, FiChevronLeft, FiChevronRight, FiDollarSign, FiMessageSquare } from 'react-icons/fi'
+import { FiPackage, FiUsers, FiMenu, FiX, FiArrowLeft, FiLogOut, FiShield, FiChevronLeft, FiChevronRight, FiDollarSign, FiMessageSquare, FiVideo } from 'react-icons/fi'
 import { useProducts } from '../../context/ProductContext'
 
 const sidebarLinks = [
@@ -12,6 +12,7 @@ const sidebarLinks = [
   { name: 'Reviews', path: '/admin/reviews', icon: <MdRateReview size={20} /> },
   { name: 'Sales / Track', path: '/admin/sales', icon: <FiDollarSign size={20} /> },
   { name: 'Promotions', path: '/admin/promotions', icon: <MdLocalOffer size={20} /> },
+  { name: 'Promo Video', path: '/admin/promo-video', icon: <FiVideo size={20} /> },
   { name: 'Messages', path: '/admin/messages', icon: <FiMessageSquare size={20} /> }
 ]
 

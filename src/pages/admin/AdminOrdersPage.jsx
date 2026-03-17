@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { FiSearch, FiTrash2, FiCheckCircle, FiPackage, FiClock, FiCheck, FiDollarSign, FiFilter, FiExternalLink } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa'
 import { useProducts } from '../../context/ProductContext'
@@ -7,24 +8,27 @@ import Swal from 'sweetalert2'
 export default function AdminOrdersPage() {
   const { orders, updateOrder, deleteOrder } = useProducts()
   const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState('all') // all, pending, delivered, cancelled
+  const [filter, setFilter] = useState('all') 
 
-  const filtered = orders
+  const filtered = (orders || [])
     .filter(o => {
+      if (!o) return false
       if (filter === 'all') return true
       return o.status === filter
     })
-    .filter(o =>
-      o.id.toLowerCase().includes(search.toLowerCase()) ||
-      o.customer_name.toLowerCase().includes(search.toLowerCase()) ||
-      o.customer_phone.toLowerCase().includes(search.toLowerCase())
-    )
+    .filter(o => {
+      const id = String(o.id || '').toLowerCase()
+      const name = String(o.customer_name || '').toLowerCase()
+      const phone = String(o.customer_phone || '').toLowerCase()
+      const term = search.toLowerCase()
+      return id.includes(term) || name.includes(term) || phone.includes(term)
+    })
 
   const stats = {
-    total: orders.length,
-    pending: orders.filter(o => o.status === 'pending').length,
-    completed: orders.filter(o => o.status === 'delivered').length,
-    revenue: orders.filter(o => o.payment_status === 'paid').reduce((acc, o) => acc + o.total, 0)
+    total: (orders || []).length,
+    pending: (orders || []).filter(o => o.status === 'pending').length,
+    completed: (orders || []).filter(o => o.status === 'delivered').length,
+    revenue: (orders || []).filter(o => o.payment_status === 'paid').reduce((acc, o) => acc + Number(o.total || 0), 0)
   }
 
   const handleStatusChange = (id, field, value) => {
@@ -91,7 +95,7 @@ export default function AdminOrdersPage() {
           { label: 'Total Orders', value: stats.total, icon: <FiPackage />, color: 'from-blue-500/20' },
           { label: 'Pending', value: stats.pending, icon: <FiClock />, color: 'from-amber-500/20' },
           { label: 'Completed', value: stats.completed, icon: <FiCheck />, color: 'from-emerald-500/20' },
-          { label: 'Total Revenue', value: `Rs.${stats.revenue.toLocaleString()}`, icon: <FiDollarSign />, color: 'from-violet-500/20' },
+          { label: 'Total Revenue', value: `Rs.${stats.revenue.toLocaleString()}`, icon: <span className="font-bold text-sm">Rs.</span>, color: 'from-violet-500/20' },
         ].map((s, i) => (
           <div key={i} className={`p-5 rounded-2xl bg-gradient-to-br ${s.color} to-transparent border border-white/5 animate-fadeInUp shadow-xl`} style={{ animationDelay: `${i * 0.1}s` }}>
             <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-lg mb-4 text-white/70">{s.icon}</div>

@@ -38,10 +38,13 @@ export default function ProfilePage() {
   // Mark support messages as read
   useEffect(() => {
     if (activeTab === 'support') {
-      const myMsgs = messages.filter(m => (m.email === user?.email || m.phone === profile?.phone) && m.status === 'replied' && !m.readByUser)
+      const myMsgs = messages.filter(m => 
+        (m.user_id === user?.id || m.email === user?.email || (profile?.phone && m.phone === profile.phone)) && 
+        m.status === 'replied' && !m.readbyuser
+      )
       myMsgs.forEach(m => {
         // We use replyToMessage but with a flag to mark as read by user
-        supabaseData.from('messages').update({ readByUser: true }).eq('id', m.id).then(() => {
+        supabaseData.from('messages').update({ readbyuser: true }).eq('id', m.id).then(() => {
           // No need for local update as realtime will handle it, but we can if we want speed
         })
       })
@@ -193,7 +196,7 @@ export default function ProfilePage() {
                   }`}
                 >
                   <FiMessageSquare size={18} /> Support Details
-                  {messages.filter(m => m.email === user?.email && m.status === 'replied' && !m.readByUser).length > 0 && (
+                  {messages.filter(m => m.email === user?.email && m.status === 'replied' && !m.readbyuser).length > 0 && (
                     <span className="w-2 h-2 rounded-full bg-red-500 ml-auto animate-pulse" />
                   )}
                 </button>
@@ -318,8 +321,22 @@ export default function ProfilePage() {
                     Support History
                   </h3>
                   <div className="space-y-8">
-                    {messages.filter(m => m.email === user?.email || m.phone === profile?.phone).length > 0 ? (
-                      messages.filter(m => m.email === user?.email || m.phone === profile?.phone).map(msg => (
+                    {messages
+                      .filter(m => m.user_id === user?.id || m.email === user?.email || (profile?.phone && m.phone === profile.phone))
+                      .sort((a, b) => {
+                        const timeA = a.chat_history && a.chat_history.length > 0 ? new Date(a.chat_history[a.chat_history.length-1].time).getTime() : new Date(a.created_at).getTime()
+                        const timeB = b.chat_history && b.chat_history.length > 0 ? new Date(b.chat_history[b.chat_history.length-1].time).getTime() : new Date(b.created_at).getTime()
+                        return timeB - timeA
+                      })
+                      .length > 0 ? (
+                      messages
+                        .filter(m => m.user_id === user?.id || m.email === user?.email || (profile?.phone && m.phone === profile.phone))
+                        .sort((a, b) => {
+                          const timeA = a.chat_history && a.chat_history.length > 0 ? new Date(a.chat_history[a.chat_history.length-1].time).getTime() : new Date(a.created_at).getTime()
+                          const timeB = b.chat_history && b.chat_history.length > 0 ? new Date(b.chat_history[b.chat_history.length-1].time).getTime() : new Date(b.created_at).getTime()
+                          return timeB - timeA
+                        })
+                        .map(msg => (
                         <div key={msg.id} className="rounded-3xl bg-black/40 border border-white/5 overflow-hidden shadow-sm">
                           {/* Chat Header */}
                           <div className="px-6 py-4 border-b border-white/5 bg-white/5 flex justify-between items-center">

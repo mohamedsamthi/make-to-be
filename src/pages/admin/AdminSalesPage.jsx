@@ -14,10 +14,14 @@ export default function AdminSalesPage() {
   
   const chatEndRef = useRef(null)
 
-  const filtered = orders.filter(o =>
-    o.id.toLowerCase().includes(search.toLowerCase()) ||
-    o.customer_name.toLowerCase().includes(search.toLowerCase())
+  const filtered = (orders || []).filter(o =>
+    o && (
+      (o.id || '').toLowerCase().includes(search.toLowerCase()) ||
+      (o.customer_name || '').toLowerCase().includes(search.toLowerCase())
+    )
   ).sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
+
+  const lastReadUpdate = useRef(null)
 
   // Auto-scroll chat and mark as read when opened
   useEffect(() => {
@@ -27,16 +31,24 @@ export default function AdminSalesPage() {
 
     if (selectedOrderId && selectedOrder) {
       const sales = getSalesData(selectedOrder)
-      const lastMsg = sales.chat_history.slice(-1)[0]
-      // If last message is from user and not yet marked as read, mark it as read
-      if (lastMsg && lastMsg.sender === 'user' && !lastMsg.readByAdmin) {
+      if (!sales.chat_history || sales.chat_history.length === 0) return
+      
+      const lastMsgIndex = sales.chat_history.length - 1
+      const lastMsg = sales.chat_history[lastMsgIndex]
+      
+      // Prevent loop: Only mark as read if it's a new message from user and NOT already being updated
+      const msgTime = lastMsg.time || lastMsg.timestamp
+      if (lastMsg && lastMsg.sender === 'user' && !lastMsg.readbyadmin && lastReadUpdate.current !== msgTime) {
+        lastReadUpdate.current = msgTime
+        
         const newChat = sales.chat_history.map((m, i) => 
-          (i === sales.chat_history.length - 1) ? { ...m, readByAdmin: true } : m
+          (i === lastMsgIndex) ? { ...m, readbyadmin: true } : m
         )
-        // Delay slightly to ensure state is stable
-        setTimeout(() => {
-          updateOrderSalesData(selectedOrderId, { ...sales, chat_history: newChat })
-        }, 500)
+        
+        const timer = setTimeout(() => {
+           updateOrderSalesData(selectedOrderId, { ...sales, chat_history: newChat })
+        }, 300)
+        return () => clearTimeout(timer)
       }
     }
   }, [selectedOrderId, selectedOrder?.items])
@@ -55,7 +67,7 @@ export default function AdminSalesPage() {
     if (!order) return;
     
     // Filter out old sales data
-    const cleanedItems = order.items.filter(i => !i.is_sales_data)
+    const cleanedItems = (order.items || []).filter(i => !i.is_sales_data)
     cleanedItems.push({ ...newSalesData, product_id: 'sales-tracker', is_sales_data: true, quantity: 1, price: 0 })
     
     updateOrder(orderId, { items: cleanedItems })
@@ -74,7 +86,7 @@ export default function AdminSalesPage() {
       toast.success('Full payment complete!')
     }
 
-    const newChat = [...currentSales.chat_history, { sender: 'system', message: `✅ Admin logged payment of LKR ${Number(addPayment).toLocaleString()}`, timestamp: new Date().toISOString() }]
+    const newChat = [...currentSales.chat_history, { sender: 'system', message: `✅ Admin logged payment of LKR ${Number(addPayment).toLocaleString()}`, time: new Date().toISOString() }]
     
     updateOrderSalesData(selectedOrder.id, {
       ...currentSales,
@@ -90,7 +102,7 @@ export default function AdminSalesPage() {
     if (!chatMessage.trim()) return;
     
     const currentSales = getSalesData(selectedOrder)
-    const newChat = [...currentSales.chat_history, { sender: 'admin', message: chatMessage.trim(), timestamp: new Date().toISOString() }]
+    const newChat = [...currentSales.chat_history, { sender: 'admin', message: chatMessage.trim(), time: new Date().toISOString() }]
     
     updateOrderSalesData(selectedOrder.id, {
       ...currentSales,
@@ -107,7 +119,7 @@ export default function AdminSalesPage() {
       return
     }
 
-    const newChat = [...currentSales.chat_history, { sender: 'system', message: `✅ Full payment completed! Payment confirmed.`, timestamp: new Date().toISOString() }]
+    const newChat = [...currentSales.chat_history, { sender: 'system', message: `✅ Full payment completed! Payment confirmed.`, time: new Date().toISOString() }]
     
     updateOrderSalesData(selectedOrder.id, {
       ...currentSales,
@@ -161,7 +173,7 @@ export default function AdminSalesPage() {
                   <h3 className="text-lg font-bold font-mono text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">{order.id}</h3>
                   {(() => {
                     const lastMsg = getSalesData(order).chat_history.slice(-1)[0];
-                    return lastMsg?.sender === 'user' && !lastMsg?.readByAdmin && (
+                    return lastMsg?.sender === 'user' && !lastMsg?.readbyadmin && (
                       <span className="flex items-center gap-1.5 text-[10px] text-rose-400 font-bold uppercase tracking-widest mt-1 animate-pulse">
                         <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]" />
                         New Message
@@ -250,7 +262,7 @@ export default function AdminSalesPage() {
                   onClick={() => {
                     if (window.confirm(`Delete order ${selectedOrder.id}? This cannot be undone.`)) {
                       deleteOrder(selectedOrder.id);
-                      setSelectedOrder(null);
+                      setSelectedOrderId(null);
                       toast.success('Order deleted');
                     }
                   }} 
@@ -307,7 +319,7 @@ export default function AdminSalesPage() {
                       }`}>
                         <p className="text-sm font-medium leading-relaxed">{msg.message}</p>
                         <p className={`text-[9px] mt-1.5 ${isAdmin ? 'text-violet-200 opacity-80 text-right' : 'text-gray-500'}`}>
-                          {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          {new Date(msg.time || msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </p>
                       </div>
                     </div>

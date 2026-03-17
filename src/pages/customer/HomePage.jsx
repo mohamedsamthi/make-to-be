@@ -4,6 +4,7 @@ import { FiArrowRight, FiShoppingBag, FiTruck, FiShield, FiStar, FiChevronLeft, 
 import { FaWhatsapp, FaStar, FaQuoteLeft } from 'react-icons/fa'
 import { MdLocalOffer, MdVerified } from 'react-icons/md'
 import ProductCard from '../../components/product/ProductCard'
+import FeaturedVideo from '../../components/home/FeaturedVideo'
 import { shopInfo } from '../../data/demoData'
 import { useProducts } from '../../context/ProductContext'
 
@@ -183,6 +184,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      
+      {/* ===== FEATURED VIDEO ===== */}
+      <FeaturedVideo />
 
       {/* ===== PROMOTION BADGES BAR ===== */}
       {promotions.filter(p => p.active).length > 0 && (

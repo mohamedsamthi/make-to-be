@@ -8,9 +8,10 @@ import {
   FiX,
   FiLogOut,
   FiPackage,
-  FiChevronRight
+  FiChevronRight,
+  FiPlay
 } from 'react-icons/fi'
-import { MdDashboard } from 'react-icons/md'
+import { MdDashboard, MdVideoLibrary } from 'react-icons/md'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
 import { useProducts } from '../../context/ProductContext'
@@ -25,7 +26,7 @@ export default function Navbar() {
 
   const { user, isAdmin, signOut, profile } = useAuth()
   const { cartCount } = useCart()
-  const { promotions } = useProducts()
+  const { promotions, promotionalVideos } = useProducts()
 
   const activePromo = promotions?.find(p => p.active)
   const { orders, messages } = useProducts()
@@ -94,6 +95,7 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Products', path: '/products' },
+    { name: 'Promo Video', path: '/promo-video', icon: <FiPlay size={14} className="text-violet-400" /> },
     { name: 'About Us', path: '/about' },
     { name: 'Contact', path: '/contact' },
   ]
@@ -309,13 +311,17 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`text-sm font-bold uppercase tracking-wider transition-all hover:-translate-y-0.5 ${
+                  className={`relative text-sm font-bold uppercase tracking-wider transition-all hover:-translate-y-0.5 flex items-center gap-2 ${
                     isActivePath(link.path)
                       ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]'
                       : 'text-gray-400 hover:text-violet-400'
                   }`}
                 >
+                  {link.icon}
                   {link.name}
+                  {link.path === '/promo-video' && promotionalVideos.length > 0 && (
+                    <span className="absolute -top-1 -right-2 w-2 h-2 bg-violet-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
+                  )}
                 </Link>
               ))}
             </div>
@@ -403,7 +409,13 @@ export default function Navbar() {
                     : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
                 }`}
               >
-                {link.name}
+                <span className="flex items-center gap-3">
+                  {link.icon || <FiChevronRight size={16} className="text-gray-600" />}
+                  {link.name}
+                  {link.path === '/promo-video' && promotionalVideos.length > 0 && (
+                    <span className="w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
+                  )}
+                </span>
                 <FiChevronRight
                   size={16}
                   className={isActivePath(link.path) ? 'text-violet-400' : 'text-gray-600'}

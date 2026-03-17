@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useRef } from 'react'
 import { supabase, supabaseData } from '../lib/supabase'
 import { demoCategories } from '../data/demoData'
 import toast from 'react-hot-toast'
@@ -16,7 +16,8 @@ export function ProductProvider({ children }) {
   const [reviews, setReviews] = useState([])
   const [promotions, setPromotions] = useState([])
   const [profiles, setProfiles] = useState([])
-  const [messages, setMessages] = useState([])
+  const [promotionalVideos, setPromotionalVideos] = useState([])
+  const updateTimeouts = useRef({})
 
   // Fetch from Supabase on mount + set up realtime
   useEffect(() => {
@@ -31,6 +32,7 @@ export function ProductProvider({ children }) {
         { name: 'reviews', setter: setReviews, query: supabaseData.from('reviews').select('*').order('created_at', { ascending: false }) },
         { name: 'profiles', setter: setProfiles, query: supabaseData.from('profiles').select('*').order('created_at', { ascending: false }) },
         { name: 'messages', setter: setMessages, query: supabaseData.from('messages').select('*').order('created_at', { ascending: false }) },
+        { name: 'promotional_videos', setter: setPromotionalVideos, query: supabaseData.from('promotional_videos').select('*').order('created_at', { ascending: false }) },
       ]
 
       await Promise.all(fetches.map(async ({ name, setter, query }) => {
@@ -144,9 +146,39 @@ export function ProductProvider({ children }) {
             return [payload.new, ...prev]
           })
         } else if (payload.eventType === 'UPDATE') {
-          setMessages(prev => prev.map(m => m.id === payload.new.id ? { ...m, ...payload.new } : m))
+          const newRow = { ...payload.new }
+          if (typeof newRow.chat_history === 'string') {
+            try { newRow.chat_history = JSON.parse(newRow.chat_history); } catch (e) { console.error('Parse error', e); }
+          }
+          setMessages(prev => prev.map(m => m.id === newRow.id ? { ...m, ...newRow } : m))
         } else if (payload.eventType === 'DELETE') {
           setMessages(prev => prev.filter(m => m.id !== payload.old.id))
+        }
+      })
+      .subscribe()
+
+    const videoChannel = supabase
+      .channel('realtime-videos')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'promotional_videos' }, (payload) => {
+        if (payload.eventType === 'INSERT') {
+          setPromotionalVideos(prev => [payload.new, ...prev])
+        } else if (payload.eventType === 'UPDATE') {
+          setPromotionalVideos(prev => prev.map(v => v.id === payload.new.id ? { ...v, ...payload.new } : v))
+        } else if (payload.eventType === 'DELETE') {
+          setPromotionalVideos(prev => prev.filter(v => v.id !== payload.old.id))
+        }
+      })
+      .subscribe()
+
+    const profilesChannel = supabase
+      .channel('realtime-profiles')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, (payload) => {
+        if (payload.eventType === 'INSERT') {
+          setProfiles(prev => [payload.new, ...prev])
+        } else if (payload.eventType === 'UPDATE') {
+          setProfiles(prev => prev.map(p => p.id === payload.new.id ? { ...p, ...payload.new } : p))
+        } else if (payload.eventType === 'DELETE') {
+          setProfiles(prev => prev.filter(p => p.id !== payload.old.id))
         }
       })
       .subscribe()
@@ -157,6 +189,8 @@ export function ProductProvider({ children }) {
       supabase.removeChannel(promoChannel)
       supabase.removeChannel(reviewsChannel)
       supabase.removeChannel(messagesChannel)
+      supabase.removeChannel(profilesChannel)
+      supabase.removeChannel(videoChannel)
     }
   }, [])
 
@@ -231,18 +265,28 @@ export function ProductProvider({ children }) {
 
   // ===== ORDER OPERATIONS =====
   const updateOrder = async (id, updatedData) => {
+    // 1. Update local state immediately for UI responsiveness
     setOrders(prev => prev.map(o => o.id === id ? { ...o, ...updatedData } : o))
-    try {
-      const { error } = await supabaseData.from('orders').update(updatedData).eq('id', id)
-      if (error) throw error
-    } catch (err) {
-      console.error('Failed to update order in db:', err)
-      toast.error('Sync failed. Please check connection.')
-      // Rollback local state on failure
-      supabaseData.from('orders').select('*').eq('id', id).single().then(({ data }) => {
+    
+    // 2. Clear existing timeout for this ID to debounce rapid updates
+    if (updateTimeouts.current[id]) clearTimeout(updateTimeouts.current[id])
+    
+    updateTimeouts.current[id] = setTimeout(async () => {
+      try {
+        const { error } = await supabaseData.from('orders').update(updatedData).eq('id', id)
+        if (error) {
+           console.error('Supabase Update Error:', error);
+           toast.error(`Database Error: ${error.message}`);
+           throw error;
+        }
+      } catch (err) {
+        console.error('Failed to update order in db:', err)
+        // Final fallback: fetch actual DB state to ensure local state is correct
+        const { data } = await supabaseData.from('orders').select('*').eq('id', id).single()
         if (data) setOrders(prev => prev.map(o => o.id === id ? data : o))
-      })
-    }
+      }
+      delete updateTimeouts.current[id]
+    }, 300)
   }
 
   const addOrder = async (order) => {
@@ -381,7 +425,10 @@ export function ProductProvider({ children }) {
 
   // ===== MESSAGE OPERATIONS =====
   const sendMessage = async (msgData) => {
-    const { user } = JSON.parse(localStorage.getItem('sb-vuxshxicvzzsngyzhqjt-auth-token') || '{}')
+    // Get current session user to avoid hardcoded localStorage keys
+    const { data: { session } } = await supabase.auth.getSession()
+    const user = session?.user
+
     const finalData = { 
       ...msgData, 
       user_id: user?.id || null,
@@ -407,9 +454,18 @@ export function ProductProvider({ children }) {
   const customerReply = async (messageId, replyText) => {
     try {
       const msg = messages.find(m => m.id === messageId)
-      if (!msg) return
+      if (!msg) {
+        console.error('Message not found for ID:', messageId)
+        // Try fetching it directly if not in state
+        const { data: directMsg } = await supabase.from('messages').select('*').eq('id', messageId).single()
+        if (!directMsg) {
+          toast.error('Message record not found.')
+          return
+        }
+      }
       
-      const history = Array.isArray(msg.chat_history) ? [...msg.chat_history] : []
+      const currentMsg = msg || messages.find(m => m.id === messageId) // Fallback
+      const history = Array.isArray(currentMsg?.chat_history) ? [...currentMsg.chat_history] : []
       history.push({
         sender: 'user',
         message: replyText,
@@ -419,15 +475,17 @@ export function ProductProvider({ children }) {
       const updateData = {
         chat_history: history,
         status: 'unread', // Admin sees it as unread again
-        readByAdmin: false
+        readbyadmin: false
       }
 
-      const { error } = await supabaseData.from('messages').update(updateData).eq('id', messageId)
+      const { error } = await supabase.from('messages').update(updateData).eq('id', messageId)
       if (error) throw error
+      
       setMessages(prev => prev.map(m => m.id === messageId ? { ...m, ...updateData } : m))
       toast.success('Reply sent!')
     } catch (err) {
       console.error('Error sending customer reply:', err)
+      toast.error('Failed to send reply. Please try again.')
     }
   }
 
@@ -440,7 +498,7 @@ export function ProductProvider({ children }) {
       const updateData = { admin_reply: reply, status }
       
       if (reply) {
-        updateData.readByUser = false
+        updateData.readbyuser = false
         const history = Array.isArray(msg.chat_history) ? [...msg.chat_history] : []
         history.push({
           sender: 'admin',
@@ -449,14 +507,17 @@ export function ProductProvider({ children }) {
         })
         updateData.chat_history = history
       } else {
-        updateData.readByAdmin = true
+        updateData.readbyadmin = true
       }
 
       const { error } = await supabaseData.from('messages').update(updateData).eq('id', id)
       if (error) throw error
       setMessages(prev => prev.map(m => m.id === id ? { ...m, ...updateData } : m))
+      if (reply) toast.success('Reply sent to customer!')
     } catch (err) {
       console.error('Error replying to message:', err)
+      toast.error('Failed to save reply.')
+      throw err // Propagate error so caller knows it failed
     }
   }
 
@@ -512,6 +573,8 @@ export function ProductProvider({ children }) {
     sendMessage,
     replyToMessage,
     customerReply,
+    promotionalVideos,
+    setPromotionalVideos,
     deleteMessage
   }
 

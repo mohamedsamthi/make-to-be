@@ -40,38 +40,48 @@ export default function ContactPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (formData.captcha !== targetCode) {
+    
+    // Validate captcha
+    if (formData.captcha.trim() !== targetCode) {
       toast.error('Incorrect verification code. Please try again.')
-      setTargetCode(generateCode()) // Refresh code
+      setTargetCode(generateCode())
       setFormData(prev => ({ ...prev, captcha: '' }))
       return
     }
+
     setLoading(true)
     
-    await sendMessage({
-      name: `${formData.firstName} ${formData.lastName}`.trim(),
-      email: formData.email,
-      phone: formData.mobile,
-      message: formData.message
-    })
+    try {
+      await sendMessage({
+        name: `${formData.firstName} ${formData.lastName}`.trim(),
+        email: formData.email,
+        phone: formData.mobile,
+        message: formData.message
+      })
 
-    Swal.fire({
-      title: 'Message Sent! 🎉',
-      text: "We have received your message and will get back to you within 24 hours.",
-      icon: 'success',
-      confirmButtonText: 'Great!',
-      confirmButtonColor: '#8b5cf6',
-      background: '#1e1c3a',
-      color: '#fff',
-      customClass: {
-        popup: 'border border-white/10 rounded-2xl',
-        confirmButton: 'rounded-xl font-bold tracking-wide'
-      }
-    })
+      Swal.fire({
+        title: 'Message Sent! 🎉',
+        text: "We have received your message and will get back to you within 24 hours.",
+        icon: 'success',
+        confirmButtonText: 'Great!',
+        confirmButtonColor: '#8b5cf6',
+        background: '#1e1c3a',
+        color: '#fff',
+        customClass: {
+          popup: 'border border-white/10 rounded-2xl',
+          confirmButton: 'rounded-xl font-bold tracking-wide'
+        }
+      })
 
-    setFormData({ firstName: '', lastName: '', mobile: '', email: '', message: '', captcha: '' })
-    setTargetCode(generateCode())
-    setLoading(false)
+      // Reset form on success
+      setFormData({ firstName: '', lastName: '', mobile: '', email: '', message: '', captcha: '' })
+      setTargetCode(generateCode())
+    } catch (err) {
+      console.error('Contact form error:', err)
+      toast.error(err.message || 'Failed to send message. Please try again later.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const contactInfo = [
