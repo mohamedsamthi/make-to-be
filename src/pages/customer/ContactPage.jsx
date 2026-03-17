@@ -7,16 +7,12 @@ import toast from 'react-hot-toast'
 import Swal from 'sweetalert2'
 import { useProducts } from '../../context/ProductContext'
 
-// Simple math-based spam protection
-function useAntiSpam() {
-  const a = Math.floor(Math.random() * 9) + 1
-  const b = Math.floor(Math.random() * 9) + 1
-  return { a, b, answer: a + b }
-}
+// Verification Code Generator
+const generateCode = () => Math.floor(1000 + Math.random() * 9000).toString()
 
 export default function ContactPage() {
   const { sendMessage } = useProducts()
-  const [spam] = useState(useAntiSpam)
+  const [targetCode, setTargetCode] = useState(generateCode)
   const [formData, setFormData] = useState({
     firstName: '', lastName: '', mobile: '', email: '', message: '', captcha: ''
   })
@@ -26,8 +22,10 @@ export default function ContactPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (parseInt(formData.captcha) !== spam.answer) {
-      toast.error('Incorrect spam check answer. Please try again.')
+    if (formData.captcha !== targetCode) {
+      toast.error('Incorrect verification code. Please try again.')
+      setTargetCode(generateCode()) // Refresh code
+      setFormData(prev => ({ ...prev, captcha: '' }))
       return
     }
     setLoading(true)
@@ -54,6 +52,7 @@ export default function ContactPage() {
     })
 
     setFormData({ firstName: '', lastName: '', mobile: '', email: '', message: '', captcha: '' })
+    setTargetCode(generateCode())
     setLoading(false)
   }
 
@@ -333,17 +332,17 @@ export default function ContactPage() {
                       <div>
                         <p className="text-xs font-bold text-gray-300 uppercase tracking-widest mb-1">Security Check</p>
                         <p className="text-sm text-gray-400">
-                          What is <span className="text-white font-bold mx-1">{spam.a} + {spam.b}</span>?
+                          Type the code: <span className="text-white font-black tracking-widest mx-1 bg-white/5 px-2 py-0.5 rounded border border-white/10">{targetCode}</span>
                         </p>
                       </div>
                     </div>
                     <div className="relative shrink-0">
                       <input
-                        type="number"
+                        type="text"
                         value={formData.captcha}
                         onChange={update('captcha')}
-                        placeholder="Total"
-                        className="w-full sm:w-28 bg-black/40 border border-white/10 rounded-xl py-2.5 px-3 text-sm text-center text-white placeholder-gray-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
+                        placeholder="Type Code"
+                        className="w-full sm:w-32 bg-black/40 border border-white/10 rounded-xl py-2.5 px-3 text-sm text-center text-white placeholder-gray-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all font-mono tracking-widest"
                         required
                         id="contact-captcha"
                       />
