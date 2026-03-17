@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase, supabaseData } from '../lib/supabase'
+import toast from 'react-hot-toast'
 
 const AuthContext = createContext({})
 
@@ -114,6 +115,34 @@ export function AuthProvider({ children }) {
       subscription.unsubscribe()
     }
   }, [])
+
+  // Real-time status monitor
+  useEffect(() => {
+    if (!user) return
+
+    const channel = supabaseData
+      .channel(`profile-status-${user.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'profiles',
+          filter: `id=eq.${user.id}`
+        },
+        (payload) => {
+          if (payload.new && payload.new.status === 'inactive') {
+            toast.error('Your account has been deactivated. Please contact support.')
+            signOut()
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabaseData.removeChannel(channel)
+    }
+  }, [user])
 
   const fetchProfile = async (userId) => {
     if (user && user.id === userId) {

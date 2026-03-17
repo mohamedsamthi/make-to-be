@@ -1,25 +1,44 @@
 import { useState } from 'react'
-import { FiUsers, FiMail, FiPhone, FiCheckCircle, FiSlash, FiSearch } from 'react-icons/fi'
+import { FiUsers, FiMail, FiPhone, FiCheckCircle, FiSlash, FiSearch, FiUserCheck, FiUserX } from 'react-icons/fi'
 import { useProducts } from '../../context/ProductContext'
 import toast from 'react-hot-toast'
+import Swal from 'sweetalert2'
 
 export default function AdminCustomersPage() {
   const { profiles, orders, updateProfile } = useProducts()
   const [search, setSearch] = useState('')
 
   const handleToggleStatus = async (customer) => {
-    const newStatus = customer.status === 'inactive' ? 'active' : 'inactive'
-    // Only update via profiles if there's a profile ID (UUID)
-    if (customer.profileId) {
-      try {
-        await updateProfile(customer.profileId, { status: newStatus })
-        toast.success(`User set to ${newStatus}`)
-      } catch (err) {
-        toast.error('Failed to update status')
-      }
-    } else {
+    const isBlocking = customer.status !== 'inactive'
+    const newStatus = isBlocking ? 'inactive' : 'active'
+    
+    if (!customer.profileId) {
       toast.error('This user has no profile account to manage')
+      return
     }
+
+    Swal.fire({
+      title: isBlocking ? 'Block This User?' : 'Activate This User?',
+      text: isBlocking 
+        ? `User ${customer.name} will be logged out and unable to access their account.` 
+        : `User ${customer.name} will regain access to their account.`,
+      icon: isBlocking ? 'warning' : 'question',
+      showCancelButton: true,
+      confirmButtonColor: isBlocking ? '#ef4444' : '#10b981',
+      cancelButtonColor: '#374151',
+      confirmButtonText: isBlocking ? 'Yes, Block User' : 'Yes, Activate User',
+      background: '#1e1c3a',
+      color: '#fff'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await updateProfile(customer.profileId, { status: newStatus })
+          toast.success(`User is now ${newStatus}`)
+        } catch (err) {
+          toast.error('Failed to update status')
+        }
+      }
+    })
   }
 
   // Build customers from BOTH profiles and orders
@@ -172,17 +191,20 @@ export default function AdminCustomersPage() {
                       {c.profileId ? (
                         <button
                           onClick={() => handleToggleStatus(c)}
-                          className={`p-2 rounded-xl transition-all ${
+                          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all text-[11px] font-bold uppercase tracking-wider ${
                             c.status === 'inactive' 
-                              ? 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white' 
-                              : 'bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white'
+                              ? 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white shadow-lg shadow-emerald-500/10' 
+                              : 'bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white shadow-lg shadow-rose-500/10'
                           }`}
-                          title={c.status === 'inactive' ? 'Activate User' : 'Block User'}
                         >
-                          {c.status === 'inactive' ? <FiCheckCircle size={20} /> : <FiSlash size={20} />}
+                          {c.status === 'inactive' ? (
+                            <><FiUserCheck size={14} /> Activate Account</>
+                          ) : (
+                            <><FiUserX size={14} /> Inactive / Block</>
+                          )}
                         </button>
                       ) : (
-                        <span className="text-[10px] text-gray-500 italic">Guest</span>
+                        <span className="text-[10px] text-gray-500 italic opacity-50">Guest Checkout</span>
                       )}
                     </td>
                   </tr>
