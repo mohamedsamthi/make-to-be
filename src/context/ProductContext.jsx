@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react'
 import { supabase, supabaseData } from '../lib/supabase'
 import { demoCategories } from '../data/demoData'
+import { productApi } from '../api/apiClient'
 import toast from 'react-hot-toast'
 
 const ProductContext = createContext()
@@ -48,7 +49,7 @@ export function ProductProvider({ children }) {
       
       // Fetch all tables independently using supabaseData (no auth locks)
       const fetches = [
-        { name: 'products', setter: setProducts, query: supabaseData.from('products').select('*').order('created_at', { ascending: false }) },
+        { name: 'products', setter: setProducts, apiFetch: productApi.getAll },
         { name: 'orders', setter: setOrders, query: supabaseData.from('orders').select('*').order('created_at', { ascending: false }) },
         { name: 'promotions', setter: setPromotions, query: supabaseData.from('promotions').select('*').order('created_at', { ascending: false }) },
         { name: 'reviews', setter: setReviews, query: supabaseData.from('reviews').select('*').order('created_at', { ascending: false }) },
@@ -57,9 +58,17 @@ export function ProductProvider({ children }) {
         { name: 'promotional_videos', setter: setPromotionalVideos, query: supabaseData.from('promotional_videos').select('*').order('created_at', { ascending: false }) },
       ]
 
-      await Promise.all(fetches.map(async ({ name, setter, query }) => {
+      await Promise.all(fetches.map(async ({ name, setter, query, apiFetch }) => {
         try {
-          const { data, error } = await query
+          let data, error;
+          if (apiFetch) {
+            const res = await apiFetch();
+            data = res.data;
+          } else {
+            const res = await query;
+            data = res.data;
+            error = res.error;
+          }
           if (error) {
             console.error(`[MakeToBe] Error fetching ${name}:`, error.message)
           } else if (data) {
