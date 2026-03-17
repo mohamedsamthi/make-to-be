@@ -196,9 +196,7 @@ export default function Navbar() {
               </button>
 
               <Link to="/" className="flex items-center gap-2 group">
-                <div className="w-9 h-9 sm:w-11 sm:h-11 bg-[var(--color-accent)] text-white rounded-xl flex items-center justify-center font-black text-xl sm:text-2xl shadow-lg transition-all">
-                  M
-                </div>
+                <img src="/favicon.png" alt="Make To Be" className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl object-cover" />
                 <span className="font-black text-xl sm:text-2xl tracking-tighter text-[var(--color-text-primary)] hidden sm:block font-[var(--font-family-heading)]">
                    MAKE <span className="text-[var(--color-accent)]">TO BE</span>
                 </span>
