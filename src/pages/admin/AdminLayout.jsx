@@ -4,6 +4,8 @@ import { MdDashboard, MdInventory, MdLocalOffer, MdRateReview } from 'react-icon
 import { FiPackage, FiUsers, FiMenu, FiX, FiArrowLeft, FiLogOut, FiShield, FiChevronLeft, FiChevronRight, FiDollarSign, FiMessageSquare, FiVideo, FiUser, FiSettings } from 'react-icons/fi'
 import { useProducts } from '../../context/ProductContext'
 
+import { useTheme } from '../../context/ThemeContext'
+
 const sidebarLinks = [
   { name: 'Dashboard', path: '/admin', icon: <MdDashboard size={20} /> },
   { name: 'Products', path: '/admin/products', icon: <MdInventory size={20} /> },
@@ -25,6 +27,8 @@ export default function AdminLayout() {
   const [mobileSidebar, setMobileSidebar] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
+
+  const { theme, toggleTheme } = useTheme()
 
   const adminAuth = JSON.parse(localStorage.getItem('adminAuth') || '{}')
   const isLoggedIn = adminAuth.loggedIn === true
@@ -206,9 +210,20 @@ export default function AdminLayout() {
                 <p className="text-[11px] text-[var(--color-text-muted)]">Make To Be Admin Control</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl glass-light">
-              <div className="w-2 h-2 rounded-full bg-green-400" />
-              <span className="text-xs font-medium text-[var(--color-text-secondary)]">{adminAuth.username}</span>
+            <div className="flex items-center gap-3">
+              {/* Theme Toggle */}
+              <button
+                onClick={toggleTheme}
+                className="w-10 h-10 rounded-xl glass-light flex items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-all"
+                title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+              >
+                {theme === 'dark' ? <FiSun size={18} /> : <FiMoon size={18} />}
+              </button>
+
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl glass-light">
+                <div className="w-2 h-2 rounded-full bg-green-400" />
+                <span className="text-xs font-medium text-[var(--color-text-secondary)]">{adminAuth.username}</span>
+              </div>
             </div>
           </div>
         </div>

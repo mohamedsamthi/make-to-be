@@ -41,8 +41,8 @@ export default function DashboardPage() {
     { label: 'Total Revenue', value: `LKR ${totalRevenue.toLocaleString()}`, icon: <span className="font-bold text-sm">Rs.</span>, color: 'from-green-500/20 to-green-500/5', iconBg: 'bg-green-500/15 text-green-400', trend: '+12%', trendUp: true },
     { label: 'Total Expenses', value: `LKR ${totalExpenses.toLocaleString()}`, icon: <FiTrendingDown size={22} />, color: 'from-red-500/20 to-red-500/5', iconBg: 'bg-red-500/15 text-red-400', trend: '-3%', trendUp: false },
     { label: 'Net Profit', value: `LKR ${profit.toLocaleString()}`, icon: <FiTrendingUp size={22} />, color: 'from-[var(--color-gold)]/20 to-[var(--color-gold)]/5', iconBg: 'bg-[var(--color-gold)]/15 text-[var(--color-gold)]', trend: '+18%', trendUp: true },
-    { label: 'Total Products', value: totalProducts, icon: <FiShoppingBag size={22} />, color: 'from-purple-500/20 to-purple-500/5', iconBg: 'bg-purple-500/15 text-purple-400', info: `${totalProducts} items` },
-    { label: 'Total Orders', value: totalOrders, icon: <FiPackage size={22} />, color: 'from-blue-500/20 to-blue-500/5', iconBg: 'bg-blue-500/15 text-blue-400', info: `${pendingOrders} pending` },
+    { label: 'Total Products', value: totalProducts, icon: <FiShoppingBag size={22} />, color: 'from-orange-500/20 to-orange-500/5', iconBg: 'bg-orange-500/15 text-orange-400', info: `${totalProducts} items` },
+    { label: 'Total Orders', value: totalOrders, icon: <FiPackage size={22} />, color: 'from-amber-500/20 to-amber-500/5', iconBg: 'bg-amber-500/15 text-amber-400', info: `${pendingOrders} pending` },
     { label: 'Total Discounts', value: `LKR ${totalDiscount.toLocaleString()}`, icon: <FiPercent size={22} />, color: 'from-[var(--color-accent)]/20 to-[var(--color-accent)]/5', iconBg: 'bg-[var(--color-accent)]/15 text-[var(--color-accent)]', info: 'Active deals' }
   ]
 
@@ -162,17 +162,17 @@ export default function DashboardPage() {
               return { ...p, realReviewCount: reviewCount, realRating: rating }
             }).filter(Boolean).sort((a, b) => b.realReviewCount - a.realReviewCount).slice(0, 5).map((p, i) => (
               <div key={p.id} className="flex items-center gap-4 group">
-                <span className="text-sm font-bold text-[var(--color-text-muted)] w-5 shrink-0 group-hover:text-violet-400 transition-colors">{i + 1}</span>
-                <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-[var(--color-border)] group-hover:border-violet-500/50 transition-colors">
+                <span className="text-sm font-bold text-[var(--color-text-muted)] w-5 shrink-0 group-hover:text-[var(--color-accent)] transition-colors">{i + 1}</span>
+                <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-[var(--color-border)] group-hover:border-[var(--color-accent)]/50 transition-colors">
                   <img src={p.image_url} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 </div>
                 <div className="flex-1 min-w-0 py-1">
-                  <p className="text-sm font-medium truncate text-white">{p.name}</p>
+                  <p className="text-sm font-medium truncate text-[var(--color-text-primary)]">{p.name}</p>
                   <p className="text-[11px] text-[var(--color-text-muted)] mt-0.5">{p.realReviewCount} verified review{p.realReviewCount !== 1 ? 's' : ''}</p>
                 </div>
-                <div className="flex items-center gap-1 shrink-0 bg-white/5 px-2 py-1 rounded-lg">
-                  <FiStar size={12} className={p.realRating > 0 ? "text-[var(--color-gold)]" : "text-gray-600"} />
-                  <span className="text-xs font-bold text-white">{p.realRating > 0 ? p.realRating : '-'}</span>
+                <div className="flex items-center gap-1 shrink-0 bg-[var(--color-surface)] px-2 py-1 rounded-lg border border-[var(--color-border)]">
+                  <FiStar size={12} className={p.realRating > 0 ? "text-[var(--color-gold)]" : "text-[var(--color-text-muted)]"} />
+                  <span className="text-xs font-bold text-[var(--color-text-primary)]">{p.realRating > 0 ? p.realRating : '-'}</span>
                 </div>
               </div>
             ))}
@@ -189,10 +189,10 @@ export default function DashboardPage() {
                const isPaid = o.payment_status === 'paid'
                
                let action = 'New order placed'
-               let color = 'bg-blue-400'
+               let color = 'bg-[var(--color-accent)]'
                if (o.status === 'delivered') { action = 'Order delivered'; color = 'bg-emerald-400' }
-               else if (o.status === 'shipped') { action = 'Order shipped'; color = 'bg-purple-400' }
-               else if (isPaid) { action = 'Payment confirmed'; color = 'bg-amber-400' }
+               else if (o.status === 'shipped') { action = 'Order shipped'; color = 'bg-orange-400' }
+               else if (isPaid) { action = 'Payment confirmed'; color = 'bg-[var(--color-gold)]' }
                
                // Extract relative time 
                const timeDiff = o.created_at ? Math.floor((new Date() - new Date(o.created_at)) / (1000 * 60 * 60)) : 0
@@ -203,8 +203,8 @@ export default function DashboardPage() {
                return (
                   <div key={o.id} className="flex items-start gap-4">
                     <div className={`w-2 h-2 rounded-full mt-2 ${color} shrink-0 animate-pulse`} />
-                    <div className="flex-1 min-w-0 border-b border-white/5 pb-3">
-                      <p className="text-sm font-bold text-white">{action}</p>
+                    <div className="flex-1 min-w-0 border-b border-[var(--color-border)] pb-3">
+                      <p className="text-sm font-bold text-[var(--color-text-primary)]">{action}</p>
                       <p className="text-[11px] text-[var(--color-text-muted)] mt-0.5">{o.id} • LKR {(Number(o.total || 0)).toLocaleString()} by {o.customer_name || 'User'}</p>
                     </div>
                     <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)] whitespace-nowrap shrink-0">{timeStr}</span>
