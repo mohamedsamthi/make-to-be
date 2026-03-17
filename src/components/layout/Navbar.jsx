@@ -144,7 +144,7 @@ export default function Navbar() {
   return (
     <>
       {/* Top Announcement Bar */}
-    <div className="bg-[var(--color-primary)] text-white text-[10px] sm:text-xs py-2 text-center font-black tracking-widest uppercase relative z-[60] border-b border-white/5">
+    <div className="fixed top-0 left-0 right-0 h-10 bg-[var(--color-primary)] text-white text-[10px] sm:text-xs py-2 text-center font-black tracking-widest uppercase z-[60] border-b border-white/5 flex items-center justify-center">
         {activePromo ? (
           <>
             {activePromo.title} • <span className="text-[var(--color-accent-light)]">
@@ -166,11 +166,11 @@ export default function Navbar() {
       </div>
 
       <header
-        className={`sticky top-0 z-50 w-full transition-all duration-500 transform ${
-          visible ? 'translate-y-0' : '-translate-y-full'
+        className={`fixed top-10 left-0 right-0 z-50 w-full transition-all duration-500 transform ${
+          visible ? 'translate-y-0' : '-translate-y-[calc(100%+40px)]'
         } ${
           scrolled 
-            ? 'bg-[var(--color-surface)]/90 backdrop-blur-xl border-b border-[var(--color-border)] shadow-2xl' 
+            ? 'bg-[var(--color-surface)]/95 backdrop-blur-xl border-b border-[var(--color-border)] shadow-2xl' 
             : 'bg-[var(--color-surface)] border-b border-white/5'
         }`}
       >

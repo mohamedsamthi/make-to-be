@@ -140,7 +140,7 @@ export default function ProductsPage() {
       </div>
 
       {/* Control Bar: Search & Filters Unified */}
-      <div className="sticky top-[64px] z-40 bg-[#0a0a1a]/80 backdrop-blur-2xl border-y border-white/5 py-3">
+      <div className="sticky top-[108px] sm:top-[128px] z-30 bg-[#0a0a1a]/80 backdrop-blur-2xl border-y border-white/5 py-4">
         <div className="container-custom">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             
