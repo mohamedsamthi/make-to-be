@@ -26,11 +26,11 @@ export default function PromoVideoPage() {
   if (activeVideos.length === 0) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center container-custom">
-        <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6 border border-white/10">
-          <MdVideoLibrary size={40} className="text-gray-500" />
+        <div className="w-20 h-20 bg-[var(--color-surface-card)] rounded-full flex items-center justify-center mb-6 border border-[var(--color-border)]">
+          <MdVideoLibrary size={40} className="text-[var(--color-text-muted)]" />
         </div>
-        <h2 className="text-2xl font-bold mb-2">No Promo Videos Yet</h2>
-        <p className="text-gray-400 text-center max-w-md mb-8">
+        <h2 className="text-2xl font-bold mb-2 text-[var(--color-text-primary)]">No Promo Videos Yet</h2>
+        <p className="text-[var(--color-text-muted)] text-center max-w-md mb-8">
           Check back later for exclusive product showcases and style inspirations!
         </p>
         <Link to="/" className="btn-primary">
@@ -59,12 +59,12 @@ export default function PromoVideoPage() {
           </div>
           
           <div className="hidden lg:block shrink-0">
-             <div className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-4">
+             <div className="px-5 py-2.5 rounded-xl bg-[var(--color-surface-card)] border border-[var(--color-border)] flex items-center gap-4">
                 <div className="w-10 h-10 rounded-xl bg-[var(--color-accent)]/20 flex items-center justify-center text-[var(--color-accent-light)]">
                   <FiPlay size={20} fill="currentColor" />
                 </div>
                 <div>
-                   <p className="text-white font-bold text-sm leading-none mb-1">{activeVideos.length} Premium Videos</p>
+                   <p className="text-[var(--color-text-primary)] font-bold text-sm leading-none mb-1">{activeVideos.length} Premium Videos</p>
                    <p className="text-[var(--color-text-muted)] text-[10px] uppercase font-black tracking-widest leading-none">Style Library</p>
                 </div>
              </div>
@@ -74,7 +74,7 @@ export default function PromoVideoPage() {
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-10">
           {/* Main Video Display */}
           <div className="lg:col-span-8">
-            <div className="relative aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl border border-white/5 group">
+            <div className="relative aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl border border-[var(--color-border)] group">
               {mainVideoId ? (
                 <iframe
                   src={`https://www.youtube.com/embed/${mainVideoId}?autoplay=1&rel=0&modestbranding=1`}
@@ -101,14 +101,14 @@ export default function PromoVideoPage() {
               )}
             </div>
 
-            <div className="mt-8 glass p-6 sm:p-10 rounded-2xl border border-white/5 relative overflow-hidden">
+            <div className="mt-8 glass p-6 sm:p-10 rounded-2xl border border-[var(--color-border)] relative overflow-hidden">
               <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-6">
                 <div>
-                  <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-1">{selectedVideo.title}</h2>
+                  <h2 className="text-2xl sm:text-3xl font-black text-[var(--color-text-primary)] tracking-tight mb-1">{selectedVideo.title}</h2>
                   <p className="text-[var(--color-accent-light)] font-bold uppercase text-[10px] tracking-widest">Featured Presentation</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <button className="h-11 w-11 rounded-xl bg-white/5 hover:bg-white/10 text-[var(--color-text-muted)] hover:text-white transition-all border border-white/10 flex items-center justify-center">
+                  <button className="h-11 w-11 rounded-xl bg-[var(--color-surface-card)] hover:bg-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-all border border-[var(--color-border)] flex items-center justify-center">
                     <FiShare2 size={18} />
                   </button>
                   <a href={`https://wa.me/${shopInfo.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" 
@@ -117,7 +117,7 @@ export default function PromoVideoPage() {
                   </a>
                 </div>
               </div>
-              <div className="h-px w-full bg-white/5 mb-6" />
+              <div className="h-px w-full bg-[var(--color-border)] mb-6" />
               <p className="text-[var(--color-text-secondary)] text-sm sm:text-base leading-relaxed font-medium opacity-90">
                 {selectedVideo.description || 'Step into the world of Make To Be. This exclusive showcase highlights our commitment to premium quality and timeless style.'}
               </p>
@@ -149,7 +149,7 @@ export default function PromoVideoPage() {
                     className={`flex gap-3 p-3 rounded-xl border transition-all text-left w-full group relative overflow-hidden ${
                       isSelected 
                         ? 'bg-[var(--color-accent)]/10 border-[var(--color-accent)]/30' 
-                        : 'bg-white/5 border-white/5 hover:bg-white/10'
+                        : 'bg-[var(--color-surface-card)] border-[var(--color-border)] hover:bg-[var(--color-border)]'
                     }`}
                   >
                     <div className="relative w-28 h-16 rounded-lg overflow-hidden shrink-0">
@@ -161,7 +161,7 @@ export default function PromoVideoPage() {
                       </div>
                     </div>
                     <div className="flex flex-col justify-center min-w-0">
-                      <h4 className={`text-xs font-bold truncate mb-1 transition-colors ${isSelected ? 'text-white' : 'text-[var(--color-text-muted)] group-hover:text-white'}`}>
+                      <h4 className={`text-xs font-bold truncate mb-1 transition-colors ${isSelected ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-muted)] group-hover:text-[var(--color-text-primary)]'}`}>
                         {video.title || 'Untitled Campaign'}
                       </h4>
                       <span className={`text-[9px] font-black uppercase tracking-widest ${isSelected ? 'text-[var(--color-accent-light)]' : 'text-gray-600'}`}>

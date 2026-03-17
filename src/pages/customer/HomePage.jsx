@@ -94,10 +94,10 @@ export default function HomePage() {
       <section className="relative pt-4 pb-10 lg:pt-10 lg:pb-16 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-surface)] via-[var(--color-primary)] to-[var(--color-surface)]" />
+          <div className="absolute inset-0 bg-[var(--color-surface)]" />
           <div className="absolute top-20 right-10 w-96 h-96 bg-[var(--color-accent)]/10 rounded-full blur-3xl animate-pulse-soft" />
           <div className="absolute bottom-20 left-10 w-80 h-80 bg-[var(--color-gold)]/10 rounded-full blur-3xl animate-pulse-soft" style={{ animationDelay: '1s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[var(--color-accent)]/5 rounded-full blur-3xl" />
         </div>
 
         <div className="container-custom relative z-10">
@@ -236,12 +236,12 @@ export default function HomePage() {
       </section>
 
       {/* ===== FEATURED PRODUCTS ===== */}
-      <section className="section-padding bg-[var(--color-primary)]">
+      <section className="section-padding bg-[var(--color-surface-light)]">
         <div className="container-custom">
           <div className="flex items-end justify-between mb-12">
             <div>
               <p className="text-[var(--color-gold)] text-sm font-semibold uppercase tracking-widest mb-2">⭐ Handpicked</p>
-              <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)]">Featured Products</h2>
+              <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)] text-[var(--color-text-primary)]">Featured Products</h2>
             </div>
             <Link to="/products" className="hidden sm:flex items-center gap-2 text-sm text-[var(--color-accent)] font-medium hover:gap-3 transition-all">
               View All <FiArrowRight size={16} />
@@ -286,11 +286,11 @@ export default function HomePage() {
               {promoMedia ? (
                 <>
                   {/* Split Layout: Left Side Info */}
-                  <div className="flex-1 p-6 sm:p-10 flex flex-col justify-center bg-gradient-to-br from-[#1e1c3a] to-[#151230] z-10 relative border-r border-white/5">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-violet-600/20 rounded-full blur-[80px] pointer-events-none" />
+                  <div className="flex-1 p-6 sm:p-10 flex flex-col justify-center bg-[var(--color-surface-card)] z-10 relative border-r border-[var(--color-border)]">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-accent)]/10 rounded-full blur-[80px] pointer-events-none" />
                     
                     <div className="inline-flex flex-wrap items-center gap-2 mb-4">
-                      <span className="px-3 py-1 rounded-full bg-violet-500/20 border border-violet-500/30 text-violet-300 text-xs font-black tracking-widest uppercase">
+                      <span className="px-3 py-1 rounded-full bg-[var(--color-accent)]/20 border border-[var(--color-accent)]/30 text-[var(--color-accent-light)] text-xs font-black tracking-widest uppercase">
                         Featured Offer
                       </span>
                       {activePromo?.discount_percentage > 0 && (
@@ -300,10 +300,10 @@ export default function HomePage() {
                       )}
                     </div>
                     
-                    <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight mb-4 font-[var(--font-family-heading)]">
+                    <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[var(--color-text-primary)] leading-tight mb-4 font-[var(--font-family-heading)]">
                       {activePromo?.title}
                     </h3>
-                    <p className="text-gray-400 text-sm sm:text-base mb-8 leading-relaxed max-w-sm">
+                    <p className="text-[var(--color-text-muted)] text-sm sm:text-base mb-8 leading-relaxed max-w-sm">
                       {promoText}
                     </p>
                   </div>
@@ -322,7 +322,7 @@ export default function HomePage() {
                        <img src={promoMedia} alt="Promo" className="w-full h-full absolute inset-0 object-cover" />
                     )}
                     <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/80 to-transparent md:hidden" />
-                    <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#151230] to-transparent hidden md:block" />
+                    <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[var(--color-surface-card)] to-transparent hidden md:block" />
                   </div>
                 </>
               ) : (
@@ -422,7 +422,7 @@ export default function HomePage() {
           {/* Bottom: Mini Category Quick Links */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
             {[
-              { label: 'Watches', emoji: '⌚', color: 'from-violet-600/20 to-purple-600/5', path: '/products?category=watches' },
+              { label: 'Watches', emoji: '⌚', color: 'from-[var(--color-accent)]/20 to-[var(--color-accent)]/5', path: '/products?category=watches' },
               { label: 'Dresses', emoji: '👗', color: 'from-pink-600/20 to-rose-600/5', path: '/products?category=dresses' },
               { label: 'Shoes',   emoji: '👟', color: 'from-blue-600/20 to-indigo-600/5', path: '/products?category=shoes' },
               { label: 'All Deals', emoji: '🔥', color: 'from-amber-600/20 to-orange-600/5', path: '/products?discount=true' },
@@ -430,12 +430,12 @@ export default function HomePage() {
               <Link
                 key={item.label}
                 to={item.path}
-                className={`flex items-center gap-3 p-4 rounded-xl bg-gradient-to-br ${item.color} border border-white/5 hover:border-[var(--color-accent)]/30 hover:bg-[var(--color-accent)]/10 transition-all group`}
+                className={`flex items-center gap-3 p-4 rounded-xl bg-gradient-to-br ${item.color} border border-[var(--color-border)] hover:border-[var(--color-accent)]/30 hover:bg-[var(--color-accent)]/10 transition-all group`}
               >
                 <span className="text-2xl">{item.emoji}</span>
                 <div>
-                  <p className="text-sm font-semibold text-white group-hover:text-[var(--color-accent-light)] transition-colors">{item.label}</p>
-                  <p className="text-[10px] text-white/50">Shop now →</p>
+                  <p className="text-sm font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-light)] transition-colors">{item.label}</p>
+                  <p className="text-[10px] text-[var(--color-text-muted)]">Shop now →</p>
                 </div>
               </Link>
             ))}
@@ -445,12 +445,12 @@ export default function HomePage() {
       </section>
 
       {/* ===== DEALS & DISCOUNTS ===== */}
-      <section className="section-padding bg-[var(--color-primary)]">
+      <section className="section-padding bg-[var(--color-surface-light)]">
         <div className="container-custom">
           <div className="flex items-end justify-between mb-12">
             <div>
               <p className="text-[var(--color-accent)] text-sm font-semibold uppercase tracking-widest mb-2">🔥 Hot Deals</p>
-              <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)]">Discounted Products</h2>
+              <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)] text-[var(--color-text-primary)]">Discounted Products</h2>
             </div>
             <Link to="/products?discount=true" className="hidden sm:flex items-center gap-2 text-sm text-[var(--color-accent)] font-medium hover:gap-3 transition-all">
               View All Deals <FiArrowRight size={16} />
@@ -499,11 +499,11 @@ export default function HomePage() {
       </section>
 
       {/* ===== CUSTOMER REVIEWS ===== */}
-      <section className="section-padding bg-[var(--color-primary)]">
+      <section className="section-padding bg-[var(--color-surface-light)]">
         <div className="container-custom">
           <div className="text-center mb-12">
             <p className="text-[var(--color-gold)] text-sm font-semibold uppercase tracking-widest mb-2">Testimonials</p>
-            <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)]">What Customers Say</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)] text-[var(--color-text-primary)]">What Customers Say</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

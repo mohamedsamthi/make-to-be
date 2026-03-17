@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { ProductProvider } from './context/ProductContext'
+import { ThemeProvider } from './context/ThemeContext'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 
@@ -118,6 +119,7 @@ const WhatsAppButton = () => {
 
 function App() {
   return (
+    <ThemeProvider>
     <AuthProvider>
       <CartProvider>
         <ProductProvider>
@@ -171,9 +173,9 @@ function App() {
                 toastOptions={{
                   duration: 4000,
                   style: {
-                    background: '#1a1835',
-                    color: '#fff',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    background: 'var(--color-surface-card)',
+                    color: 'var(--color-text-primary)',
+                    border: '1px solid var(--color-border)',
                     borderRadius: '16px',
                     fontSize: '14px',
                     fontWeight: '600',
@@ -209,6 +211,7 @@ function App() {
         </ProductProvider>
       </CartProvider>
     </AuthProvider>
+    </ThemeProvider>
   )
 }
 

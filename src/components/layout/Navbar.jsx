@@ -10,12 +10,15 @@ import {
   FiPackage,
   FiChevronRight,
   FiPlay,
-  FiHeart
+  FiHeart,
+  FiSun,
+  FiMoon
 } from 'react-icons/fi'
 import { MdDashboard, MdVideoLibrary } from 'react-icons/md'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
 import { useProducts } from '../../context/ProductContext'
+import { useTheme } from '../../context/ThemeContext'
 import { FiMessageSquare } from 'react-icons/fi'
 
 export default function Navbar() {
@@ -29,6 +32,7 @@ export default function Navbar() {
 
   const { user, isAdmin, signOut, profile } = useAuth()
   const { cartCount } = useCart()
+  const { theme, toggleTheme } = useTheme()
   const { promotions, promotionalVideos, favorites } = useProducts()
 
   const activePromo = promotions?.find(p => p.active)
@@ -292,6 +296,15 @@ export default function Navbar() {
                   Sign In
                 </Link>
               )}
+
+              {/* Theme Toggle */}
+              <button
+                onClick={toggleTheme}
+                className="p-2.5 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-all"
+                title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+              >
+                {theme === 'dark' ? <FiSun size={20} /> : <FiMoon size={20} />}
+              </button>
 
               {/* Wishlist Link */}
               <Link

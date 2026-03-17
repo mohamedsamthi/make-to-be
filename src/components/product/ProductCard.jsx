@@ -48,7 +48,7 @@ export default function ProductCard({ product }) {
           className={`absolute top-3 right-3 w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 z-10 ${
             isFavorite 
               ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/30' 
-              : 'bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 opacity-0 group-hover:opacity-100'
+              : 'bg-black/10 dark:bg-white/10 backdrop-blur-md text-[var(--color-text-primary)] border border-white/20 hover:bg-black/20 dark:hover:bg-white/20 opacity-0 group-hover:opacity-100'
           }`}
           title={isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
         >
@@ -56,7 +56,7 @@ export default function ProductCard({ product }) {
         </button>
 
         {/* Hover overlay */}
-        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-3">
+        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-3">
           <button
             onClick={handleAddToCart}
             className="w-11 h-11 rounded-xl bg-[var(--color-accent)] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
@@ -64,7 +64,7 @@ export default function ProductCard({ product }) {
           >
             <FiShoppingCart size={18} />
           </button>
-          <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur-sm text-white flex items-center justify-center hover:scale-110 transition-transform" title="View Details">
+          <div className="w-11 h-11 rounded-xl bg-white/10 backdrop-blur-md text-white flex items-center justify-center hover:scale-110 transition-transform" title="View Details">
             <FiEye size={18} />
           </div>
         </div>
