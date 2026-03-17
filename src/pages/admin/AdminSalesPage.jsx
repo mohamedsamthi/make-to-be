@@ -141,8 +141,16 @@ export default function AdminSalesPage() {
               </button>
               
               <div onClick={() => setSelectedOrderId(order.id)}>
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="text-lg font-bold font-mono text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">{order.id}</h3>
+              <div className="flex justify-between items-start mb-3 relative">
+                <div className="flex flex-col">
+                  <h3 className="text-lg font-bold font-mono text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">{order.id}</h3>
+                  {getSalesData(order).chat_history.slice(-1)[0]?.sender === 'user' && (
+                    <span className="flex items-center gap-1.5 text-[10px] text-rose-400 font-bold uppercase tracking-widest mt-1 animate-pulse">
+                      <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]" />
+                      New Message
+                    </span>
+                  )}
+                </div>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest ${isFullyPaid ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
                   {isFullyPaid ? 'Settled' : 'Pending'}
                 </span>

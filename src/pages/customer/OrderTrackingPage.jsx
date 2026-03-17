@@ -90,7 +90,8 @@ export default function OrderTrackingPage() {
     }
   }, [activeTab, selectedReceipt?.items])
 
-  // Auto-open modal if ID is in URL
+  // REMOVED: Auto-open modal logic to prevent unwanted popups on refresh
+  /* 
   useEffect(() => {
     if (orderIdFromQuery && userOrders.length > 0) {
       const order = userOrders.find(o => o.id === orderIdFromQuery)
@@ -100,6 +101,7 @@ export default function OrderTrackingPage() {
       }
     }
   }, [orderIdFromQuery, userOrders.length])
+  */
 
   const handlePrintReceipt = () => {
     window.print();
@@ -184,9 +186,12 @@ export default function OrderTrackingPage() {
                 <div className="p-6 sm:p-8 border-t border-white/10 flex flex-wrap gap-4 items-center bg-white/5">
                   <button
                     onClick={() => { setSelectedReceiptId(order.id); setActiveTab('receipt'); }}
-                    className="flex-1 sm:flex-none flex justify-center items-center gap-2 py-3 px-6 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-sm transition-all shadow-lg shadow-violet-500/25"
+                    className="flex-1 sm:flex-none flex justify-center items-center gap-2 py-3 px-6 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-sm transition-all shadow-lg shadow-violet-500/25 relative"
                   >
                     <FiFileText size={18} /> View Receipt & Chat
+                    {(order.items?.find(i => i.is_sales_data)?.chat_history || []).slice(-1)[0]?.sender === 'admin' && (
+                      <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 border-2 border-[#151230] rounded-full animate-pulse" />
+                    )}
                   </button>
                   <a
                     href={`${shopInfo.socialMedia.whatsapp}?text=${encodeURIComponent(`Hi! I want to check the status of my order ${order.id}`)}`}
