@@ -19,8 +19,13 @@ export function ProductProvider({ children }) {
   const [messages, setMessages] = useState([])
   const [promotionalVideos, setPromotionalVideos] = useState([])
   const [favorites, setFavorites] = useState(() => {
-    const saved = localStorage.getItem('make_to_be_favorites')
-    return saved ? JSON.parse(saved) : []
+    try {
+      const saved = localStorage.getItem('make_to_be_favorites')
+      return saved ? JSON.parse(saved) : []
+    } catch (e) {
+      console.error('Error parsing favorites from localStorage:', e)
+      return []
+    }
   })
   const updateTimeouts = useRef({})
 

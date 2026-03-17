@@ -29,7 +29,7 @@ export default function Navbar() {
 
   const { user, isAdmin, signOut, profile } = useAuth()
   const { cartCount } = useCart()
-  const { promotions, promotionalVideos } = useProducts()
+  const { promotions, promotionalVideos, favorites } = useProducts()
 
   const activePromo = promotions?.find(p => p.active)
   const { orders, messages } = useProducts()
