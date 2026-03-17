@@ -44,24 +44,24 @@ import AdminSettingsPage from './pages/admin/AdminSettingsPage'
 
 function CustomerLayout({ children }) {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="min-h-screen">
+      <main className="flex-1">
         {children}
       </main>
       <Footer />
-    </>
+    </div>
   )
 }
 
 function AuthLayout({ children }) {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="min-h-screen">
+      <main className="flex-1">
         {children}
       </main>
-    </>
+    </div>
   )
 }
 

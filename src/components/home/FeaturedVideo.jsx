@@ -51,14 +51,13 @@ export default function FeaturedVideo() {
   if (!video) return null
 
   return (
-    <section className="py-12 lg:py-20 relative overflow-hidden bg-[#0a0a1a]">
+    <section className="py-12 lg:py-20 relative overflow-hidden bg-[var(--color-surface)]">
       {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-violet-600/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-fuchsia-600/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[var(--color-accent)]/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="container-custom">
         <div className="max-w-5xl mx-auto">
-          <div className="relative group rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] aspect-video bg-black">
+          <div className="relative group rounded-3xl overflow-hidden border border-[var(--color-border)] shadow-3xl aspect-video bg-black">
             {/* Video Element */}
             <video
               ref={videoRef}
@@ -71,54 +70,54 @@ export default function FeaturedVideo() {
             />
 
             {/* Overlay Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
 
             {/* Content Top */}
-            <div className="absolute top-6 left-6 md:top-10 md:left-10 flex items-center gap-3 animate-fadeInUp">
-              <span className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-violet-600/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-lg">
-                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                Featured Campaign
+            <div className="absolute top-6 left-6 md:top-8 md:left-8 flex items-center gap-3 animate-fadeInUp">
+              <span className="flex items-center gap-2 px-3 py-1 rounded-lg bg-white/10 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-[0.2em] border border-white/10">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent-light)] animate-pulse" />
+                Featured Piece
               </span>
             </div>
 
             {/* Content Bottom */}
-            <div className="absolute bottom-6 left-6 right-6 md:bottom-10 md:left-10 md:right-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-              <div className="max-w-xl animate-fadeInUp">
-                <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight mb-2 drop-shadow-2xl">
+            <div className="absolute bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div className="max-w-lg animate-fadeInUp">
+                <h2 className="text-xl md:text-3xl font-black text-white tracking-tighter leading-none mb-3 drop-shadow-2xl">
                   {video.title}
                 </h2>
-                <p className="text-gray-300 text-sm md:text-base font-medium opacity-80 line-clamp-2 md:line-clamp-none">
-                  Experience the essence of premium style with our latest collection.
+                <p className="text-[var(--color-text-muted)] text-[10px] uppercase font-black tracking-widest opacity-60 line-clamp-2 leading-relaxed">
+                  Experience the essence of premium craftsmanship and timeless style in motion.
                 </p>
               </div>
 
               {/* Controls */}
-              <div className="flex items-center gap-3 shrink-0">
+              <div className="flex items-center gap-4 shrink-0">
                 <button
                   onClick={togglePlay}
-                  className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center hover:bg-white/20 hover:scale-110 transition-all active:scale-95 shadow-2xl"
+                  className="w-12 h-12 rounded-xl bg-white/5 backdrop-blur-xl border border-white/10 text-white flex items-center justify-center hover:bg-white hover:text-[var(--color-surface)] transition-all active:scale-95"
                   title={isPlaying ? 'Pause' : 'Play'}
                 >
-                  {isPlaying ? <FiPause size={24} /> : <FiPlay size={24} className="ml-1" />}
+                  {isPlaying ? <FiPause size={20} /> : <FiPlay size={20} className="ml-1" />}
                 </button>
                 <button
                   onClick={toggleMute}
-                  className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl border flex items-center justify-center transition-all hover:scale-110 active:scale-95 shadow-2xl ${
+                  className={`w-12 h-12 rounded-xl border flex items-center justify-center transition-all active:scale-95 ${
                     isMuted 
-                      ? 'bg-white/10 border-white/20 text-white/50' 
-                      : 'bg-violet-600 border-violet-500 text-white shadow-violet-600/40'
+                      ? 'bg-white/5 border-white/10 text-gray-400' 
+                      : 'bg-white border-white text-[var(--color-surface)]'
                   }`}
                   title={isMuted ? 'Unmute' : 'Mute'}
                 >
-                  {isMuted ? <FiVolumeX size={24} /> : <FiVolume2 size={24} />}
+                  {isMuted ? <FiVolumeX size={20} /> : <FiVolume2 size={20} />}
                 </button>
               </div>
             </div>
 
             {/* Playback Progress */}
-            <div className="absolute bottom-0 left-0 w-full h-1 bg-white/10">
+            <div className="absolute bottom-0 left-0 w-full h-1 bg-white/5">
               <div 
-                className="h-full bg-violet-500 shadow-[0_0_15px_rgba(139,92,246,0.8)] transition-all duration-300" 
+                className="h-full bg-white transition-all duration-300 shadow-[0_0_10px_rgba(255,255,255,0.5)]" 
                 style={{ width: isPlaying ? '100%' : '0%', transitionTimingFunction: 'linear' }} 
               />
             </div>

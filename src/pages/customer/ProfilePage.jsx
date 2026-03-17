@@ -120,36 +120,35 @@ export default function ProfilePage() {
   const userOrders = orders.filter(o => o.customer_email === user?.email)
 
   return (
-    <div className="min-h-screen bg-[var(--color-surface)] relative overflow-hidden pb-10">
+    <div className="bg-[var(--color-surface)] relative overflow-hidden pb-10">
       {/* Background Ornaments */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-[var(--color-accent)]/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-10 w-72 h-72 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* Hero Header */}
-      <div className="relative py-8 mb-4 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 blur-3xl -z-10" />
-        <div className="container-custom text-center">
-          <h1 className="text-3xl md:text-4xl font-black font-[var(--font-family-heading)] text-white mb-2 tracking-tight drop-shadow-sm">
-            My <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">Profile</span>
+      <div className="bg-[var(--color-primary)] py-8 mb-6 relative z-10">
+        <div className="container-custom">
+          <h1 className="text-3xl md:text-4xl font-black font-[var(--font-family-heading)] text-white mb-2 tracking-tight">
+             My Account
           </h1>
-          <p className="text-gray-400 max-w-lg mx-auto text-sm sm:text-base px-4">
-            Manage your account settings, track orders and customize your experience.
+          <p className="text-[var(--color-text-muted)] max-w-lg text-xs font-black uppercase tracking-widest opacity-60">
+            Control Center & Identity
           </p>
         </div>
       </div>
 
-      <div className="container-custom px-4">
+      <div className="container-custom px-4 relative z-10">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           
           {/* Sidebar / Profile Card */}
           <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
-            <div className="bg-[#1e1c3a]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 text-center shadow-2xl relative overflow-hidden group">
-              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-violet-500 to-fuchsia-500" />
+            <div className="bg-[var(--color-surface-card)] border border-[var(--color-border)] rounded-3xl p-8 text-center shadow-2xl relative overflow-hidden group">
+              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent-dark)]" />
               
               {/* Profile DP View */}
               <div className="relative inline-block mb-6 group/avatar">
-                <div className="w-28 h-28 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 p-1 shadow-lg shadow-violet-500/20 group-hover:shadow-violet-500/40 transition-shadow">
-                  <div className="w-full h-full rounded-full bg-[#151230] flex items-center justify-center text-4xl font-black text-white overflow-hidden border-2 border-[#1e1c3a]">
+                <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-dark)] p-1 shadow-lg shadow-[var(--color-accent)]/20 transition-all">
+                  <div className="w-full h-full rounded-full bg-[var(--color-surface)] flex items-center justify-center text-4xl font-black text-white overflow-hidden border-2 border-[var(--color-surface-card)]">
                     {formData.avatarUrl || profile?.avatar_url ? (
                       <img src={formData.avatarUrl || profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
@@ -232,7 +231,7 @@ export default function ProfilePage() {
 
           {/* Main Content Area */}
           <div className="lg:col-span-8">
-            <div className="bg-[#1e1c3a]/80 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden min-h-[500px]">
+            <div className="bg-[var(--color-surface-card)] border border-[var(--color-border)] rounded-3xl shadow-2xl overflow-hidden min-h-[500px]">
               
               {activeTab === 'orders' ? (
                 <div className="p-8 sm:p-10">

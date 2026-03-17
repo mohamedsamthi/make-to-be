@@ -144,10 +144,10 @@ export default function Navbar() {
   return (
     <>
       {/* Top Announcement Bar */}
-      <div className="bg-gradient-to-r from-violet-900 to-fuchsia-900 text-violet-100 text-[10px] sm:text-xs py-2 text-center font-bold tracking-widest uppercase shadow-md relative z-[60]">
+    <div className="bg-[var(--color-primary)] text-white text-[10px] sm:text-xs py-2 text-center font-black tracking-widest uppercase relative z-[60] border-b border-white/5">
         {activePromo ? (
           <>
-            {activePromo.title} • <span className="text-amber-300">
+            {activePromo.title} • <span className="text-[var(--color-accent-light)]">
               {(() => {
                 try {
                   const d = JSON.parse(activePromo.description);
@@ -160,7 +160,7 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            Island-wide Delivery • <span className="text-amber-300">Free shipping on orders over Rs. 10,000!</span>
+            Island-wide Delivery • <span className="text-[var(--color-accent-light)]">Free shipping on orders over Rs. 10,000!</span>
           </>
         )}
       </div>
@@ -170,28 +170,28 @@ export default function Navbar() {
           visible ? 'translate-y-0' : '-translate-y-full'
         } ${
           scrolled 
-            ? 'bg-[#151230]/90 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)]' 
-            : 'bg-[#151230] border-b border-white/5'
+            ? 'bg-[var(--color-surface)]/90 backdrop-blur-xl border-b border-[var(--color-border)] shadow-2xl' 
+            : 'bg-[var(--color-surface)] border-b border-white/5'
         }`}
       >
         {/* Main Header Row */}
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container-custom">
           <div className="flex items-center justify-between h-16 sm:h-20 gap-4 lg:gap-8">
             {/* Logo + Mobile Menu Button */}
             <div className="flex items-center gap-3 shrink-0">
               <button
                 onClick={() => setMenuOpen(true)}
-                className="lg:hidden p-2 -ml-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                className="lg:hidden p-2 -ml-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-all"
               >
                 <FiMenu size={24} />
               </button>
 
               <Link to="/" className="flex items-center gap-2 group">
-                <div className="w-9 h-9 sm:w-11 sm:h-11 bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white rounded-xl flex items-center justify-center font-black text-xl sm:text-2xl shadow-lg shadow-violet-500/30 group-hover:scale-105 transition-transform">
+                <div className="w-9 h-9 sm:w-11 sm:h-11 bg-white text-[var(--color-surface)] rounded-xl flex items-center justify-center font-black text-xl sm:text-2xl shadow-xl transition-all">
                   M
                 </div>
-                <span className="font-black text-xl sm:text-2xl tracking-wider text-white hidden sm:block font-[var(--font-family-heading)]">
-                  MAKE<span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">TOBE</span>
+                <span className="font-black text-xl sm:text-2xl tracking-tighter text-white hidden sm:block font-[var(--font-family-heading)]">
+                   MAKE <span className="text-[var(--color-accent-light)]">TO BE</span>
                 </span>
               </Link>
             </div>
@@ -205,14 +205,14 @@ export default function Navbar() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search watches, dresses, shoes..."
-                className="w-full bg-black/40 border border-white/10 rounded-l-xl py-3 pl-5 pr-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all z-10"
+                placeholder="Search premium pieces..."
+                className="w-full bg-white/5 border border-white/10 rounded-l-xl py-3 pl-5 pr-4 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[var(--color-accent)] transition-all z-10"
               />
               <button
                 type="submit"
-                className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white px-7 rounded-r-xl font-bold text-sm transition-all flex items-center gap-2 shadow-lg shadow-violet-500/25 group-focus-within/search:shadow-violet-500/40"
+                className="bg-white text-[var(--color-surface)] hover:bg-gray-200 px-7 rounded-r-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2 shadow-xl"
               >
-                <FiSearch size={18} />
+                <FiSearch size={16} /> Search
               </button>
             </form>
 
@@ -221,7 +221,7 @@ export default function Navbar() {
               {/* Mobile Search Toggle */}
               <button
                 onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-                className="lg:hidden p-2.5 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                className="lg:hidden p-2.5 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
               >
                 <FiSearch size={22} />
               </button>
@@ -233,7 +233,7 @@ export default function Navbar() {
                     onClick={() => setUserMenuOpen((prev) => !prev)}
                     className="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-2 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all group"
                   >
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-violet-600 to-fuchsia-600 text-white flex items-center justify-center font-bold text-sm overflow-hidden shadow-lg group-hover:shadow-violet-500/30 transition-shadow">
+                    <div className="w-9 h-9 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-black text-xs overflow-hidden shadow-lg border border-white/10">
                       {profile?.avatar_url ? (
                         <img src={profile.avatar_url} alt="avatar" className="h-full w-full object-cover" />
                       ) : (
@@ -241,43 +241,43 @@ export default function Navbar() {
                       )}
                     </div>
                     <div className="hidden md:block text-left">
-                      <p className="text-[10px] uppercase font-bold tracking-widest text-violet-400 leading-none mb-0.5">Welcome</p>
-                      <p className="text-sm font-bold text-white truncate max-w-[100px]">
-                        {profile?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'User'}
+                      <p className="text-[9px] uppercase font-black tracking-widest text-[var(--color-accent-light)] leading-none mb-0.5">Account</p>
+                      <p className="text-xs font-black text-white truncate max-w-[100px]">
+                        {profile?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'User'}
                       </p>
                     </div>
                   </button>
 
                   {/* User Dropdown */}
                   {userMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-60 bg-[#1e1c3a] backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 animate-fadeInUp">
+                    <div className="absolute right-0 mt-2 w-60 bg-[var(--color-surface-card)] border border-[var(--color-border)] rounded-2xl shadow-3xl overflow-hidden z-50 animate-fadeInUp">
                       <div className="p-2">
                         <Link
                           to="/profile"
-                          className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
+                          className="flex items-center gap-3 px-4 py-3 text-[10px] uppercase tracking-widest font-black text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
                         >
-                          <FiUser size={18} className="text-violet-400" /> My Profile
+                          <FiUser size={16} /> My Profile
                         </Link>
                         <Link
                           to="/orders"
-                          className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
+                          className="flex items-center gap-3 px-4 py-3 text-[10px] uppercase tracking-widest font-black text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
                         >
-                          <FiPackage size={18} className="text-violet-400" /> My Orders
+                          <FiPackage size={16} /> My Orders
                         </Link>
                         {isAdmin && (
                           <Link
                             to="/admin"
-                            className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-amber-400 hover:text-amber-300 hover:bg-amber-400/10 rounded-xl transition-colors"
+                            className="flex items-center gap-3 px-4 py-3 text-[10px] uppercase tracking-widest font-black text-amber-500 hover:text-amber-400 hover:bg-amber-500/5 rounded-xl transition-colors"
                           >
-                            <MdDashboard size={18} /> Admin Dashboard
+                            <MdDashboard size={16} /> Admin Panel
                           </Link>
                         )}
-                        <div className="border-t border-white/10 my-1 mx-2" />
+                        <div className="border-t border-white/5 my-1 mx-2" />
                         <button
                           onClick={signOut}
-                          className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-xl transition-colors"
+                          className="w-full flex items-center gap-3 px-4 py-3 text-[10px] uppercase tracking-widest font-black text-red-500 hover:text-red-400 hover:bg-red-500/5 rounded-xl transition-colors"
                         >
-                          <FiLogOut size={18} /> Sign Out
+                          <FiLogOut size={16} /> End Session
                         </button>
                       </div>
                     </div>
@@ -286,9 +286,9 @@ export default function Navbar() {
               ) : (
                 <Link
                   to="/login"
-                  className="hidden sm:flex items-center gap-2 text-gray-300 hover:text-white px-4 py-2.5 font-bold text-sm rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/10"
+                  className="hidden sm:flex items-center gap-2 text-gray-400 hover:text-white px-4 py-2.5 font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-white/5 transition-all"
                 >
-                  <FiUser size={18} className="text-violet-400" />
+                  <FiUser size={18} />
                   Sign In
                 </Link>
               )}
@@ -296,39 +296,39 @@ export default function Navbar() {
               {/* Wishlist Link */}
               <Link
                 to="/wishlist"
-                className="relative flex items-center gap-2.5 p-2 sm:px-4 sm:py-2.5 hover:bg-white/5 rounded-xl transition-colors group border border-transparent hover:border-white/10"
+                className="relative flex items-center gap-2.5 p-2 sm:px-4 sm:py-2.5 hover:bg-white/5 rounded-xl transition-all group"
                 title="Your Wishlist"
               >
                 <div className="relative">
-                  <FiHeart size={22} className={`transition-colors ${favorites.length > 0 ? 'text-rose-500 fill-rose-500' : 'text-gray-300 group-hover:text-rose-500'}`} />
+                  <FiHeart size={20} className={`transition-colors ${favorites.length > 0 ? 'text-rose-500 fill-rose-500' : 'text-gray-400 group-hover:text-rose-400'}`} />
                   {favorites.length > 0 && (
-                    <span className="absolute -top-1.5 -right-2 min-w-[20px] h-[20px] bg-rose-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1.5 shadow-lg shadow-rose-500/50 border border-[#151230]">
+                    <span className="absolute -top-1.5 -right-2 min-w-[18px] h-[18px] bg-rose-600 text-white text-[9px] font-black rounded-full flex items-center justify-center px-1 shadow-lg border-2 border-[var(--color-surface)]">
                       {favorites.length}
                     </span>
                   )}
                 </div>
                 <div className="hidden sm:block text-left ml-1">
-                  <span className="text-[10px] uppercase font-bold tracking-widest text-rose-500 block leading-none mb-0.5">Saved</span>
-                  <span className="text-sm font-bold text-white leading-none block">Wishlist</span>
+                  <span className="text-[8px] uppercase font-black tracking-widest text-rose-500 block leading-none mb-0.5">Saved</span>
+                  <span className="text-xs font-black text-white leading-none block">Wishlist</span>
                 </div>
               </Link>
 
               {/* Cart Link */}
               <Link
                 to="/cart"
-                className="relative flex items-center gap-2.5 p-2 sm:px-4 sm:py-2.5 hover:bg-white/5 rounded-xl transition-colors group border border-transparent hover:border-white/10"
+                className="relative flex items-center gap-2.5 p-2 sm:px-4 sm:py-2.5 hover:bg-white/5 rounded-xl transition-all group"
               >
                 <div className="relative">
-                  <FiShoppingCart size={22} className="text-gray-300 group-hover:text-violet-400 transition-colors" />
+                  <FiShoppingCart size={20} className="text-gray-400 group-hover:text-white transition-colors" />
                   {cartCount > 0 && (
-                    <span className="absolute -top-1.5 -right-2 min-w-[20px] h-[20px] bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1.5 shadow-lg shadow-violet-500/50 border border-[#151230]">
+                    <span className="absolute -top-1.5 -right-2 min-w-[18px] h-[18px] bg-white text-[var(--color-surface)] text-[9px] font-black rounded-full flex items-center justify-center px-1 shadow-lg border-2 border-[var(--color-surface)]">
                       {cartCount > 99 ? '99+' : cartCount}
                     </span>
                   )}
                 </div>
                 <div className="hidden sm:block text-left ml-1">
-                  <span className="text-[10px] uppercase font-bold tracking-widest text-violet-400 block leading-none mb-0.5">Cart</span>
-                  <span className="text-sm font-bold text-white leading-none block">{cartCount} Items</span>
+                  <span className="text-[8px] uppercase font-black tracking-widest text-[var(--color-accent-light)] block leading-none mb-0.5">Bag</span>
+                  <span className="text-xs font-black text-white leading-none block">{cartCount} Items</span>
                 </div>
               </Link>
 
@@ -336,16 +336,12 @@ export default function Navbar() {
               {hasNewMsgs && (
                 <Link
                   to={latestMessageOrder ? `/orders?id=${latestMessageOrder.id}&tab=chat` : `/profile?tab=support`}
-                  className="relative flex items-center gap-2.5 p-2 sm:px-4 sm:py-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl transition-all hover:bg-amber-500 hover:text-white group animate-pulse"
-                  title="New message from Admin"
+                  className="relative flex items-center gap-2.5 p-2 sm:px-4 sm:py-2.5 bg-rose-500/10 border border-rose-500/20 rounded-xl transition-all group animate-pulse"
                 >
-                  <div className="relative">
-                    <FiMessageSquare size={22} className="text-amber-400 group-hover:text-white transition-colors" />
-                    <span className="absolute -top-1.5 -right-2 w-2.5 h-2.5 bg-red-600 rounded-full border-2 border-[#151230]" />
-                  </div>
+                  <FiMessageSquare size={20} className="text-rose-400 group-hover:text-white transition-colors" />
                   <div className="hidden md:block text-left ml-1">
-                    <span className="text-[10px] uppercase font-bold tracking-widest text-amber-500 group-hover:text-amber-100 block leading-none mb-0.5 animate-bounce">New Msg</span>
-                    <span className="text-sm font-bold leading-none block">Support</span>
+                    <span className="text-[8px] uppercase font-black tracking-widest text-rose-500 block leading-none mb-0.5">New</span>
+                    <span className="text-xs font-black text-white leading-none block">Alert</span>
                   </div>
                 </Link>
               )}
@@ -354,23 +350,23 @@ export default function Navbar() {
         </div>
 
         {/* Desktop Category Navigation */}
-        <div className="hidden lg:block border-t border-white/5 bg-[#1e1c3a]/50 backdrop-blur-md">
-          <div className="max-w-[1280px] mx-auto px-8 flex items-center h-12 gap-10">
+        <div className="hidden lg:block border-t border-white/5 bg-black/20 backdrop-blur-md">
+          <div className="container-custom flex items-center h-12 gap-10">
             <div className="flex items-center gap-8 border-r border-white/10 pr-8">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`relative text-sm font-bold uppercase tracking-wider transition-all hover:-translate-y-0.5 flex items-center gap-2 ${
+                  className={`relative text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${
                     isActivePath(link.path)
-                      ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]'
-                      : 'text-gray-400 hover:text-violet-400'
+                      ? 'text-white'
+                      : 'text-gray-500 hover:text-white'
                   }`}
                 >
                   {link.icon}
                   {link.name}
                   {link.path === '/promo-video' && promotionalVideos.length > 0 && (
-                    <span className="absolute -top-1 -right-2 w-2 h-2 bg-violet-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
+                    <span className="w-1.5 h-1.5 bg-[var(--color-accent-light)] rounded-full animate-pulse" />
                   )}
                 </Link>
               ))}
@@ -381,13 +377,13 @@ export default function Navbar() {
                 <Link
                   key={cat.name}
                   to={cat.path}
-                  className={`text-sm font-bold uppercase tracking-wider transition-all hover:-translate-y-0.5 ${
+                  className={`text-[10px] font-black uppercase tracking-widest transition-all ${
                     cat.highlight
-                      ? 'text-amber-400 hover:text-amber-300 flex items-center gap-1.5 drop-shadow-[0_0_8px_rgba(251,191,36,0.3)]'
-                      : 'text-gray-400 hover:text-fuchsia-400'
+                      ? 'text-amber-500 hover:text-amber-400'
+                      : 'text-gray-500 hover:text-white'
                   }`}
                 >
-                  {cat.highlight && <span className="text-lg">🔥</span>}
+                  {cat.highlight && <span className="mr-1">🔥</span>}
                   {cat.name}
                 </Link>
               ))}
@@ -397,19 +393,19 @@ export default function Navbar() {
 
         {/* Mobile Search Expandable */}
         {mobileSearchOpen && (
-          <div className="lg:hidden border-t border-white/10 bg-[#1e1c3a] p-4 shadow-2xl animate-fadeInUp">
+          <div className="lg:hidden border-t border-white/5 bg-[var(--color-surface-card)] p-4 shadow-3xl animate-fadeInUp">
             <form onSubmit={handleSearch} className="flex group/mobsearch">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search products..."
-                className="flex-1 bg-black/40 border border-white/10 rounded-l-xl py-3 px-5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all z-10"
+                className="flex-1 bg-white/5 border border-white/10 rounded-l-xl py-3 px-5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[var(--color-accent)] transition-all z-10"
                 autoFocus
               />
               <button
                 type="submit"
-                className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white px-6 rounded-r-xl font-bold shadow-lg shadow-violet-500/25 transition-all"
+                className="bg-white text-[var(--color-surface)] px-6 rounded-r-xl font-black text-xs uppercase tracking-widest shadow-xl"
               >
                 Search
               </button>
@@ -421,20 +417,20 @@ export default function Navbar() {
       {/* Mobile Sidebar Drawer */}
       {menuOpen && (
         <div
-          className="fixed inset-0 bg-[#151230]/80 z-[60] lg:hidden backdrop-blur-md transition-opacity"
+          className="fixed inset-0 bg-black/80 z-[60] lg:hidden backdrop-blur-sm transition-opacity"
           onClick={() => setMenuOpen(false)}
         />
       )}
 
       <div
-        className={`fixed inset-y-0 left-0 w-[300px] bg-[#1a1738] z-[70] transform transition-transform duration-300 lg:hidden shadow-[10px_0_30px_rgba(0,0,0,0.5)] flex flex-col border-r border-white/5 ${
+        className={`fixed inset-y-0 left-0 w-[300px] bg-[var(--color-surface)] z-[70] transform transition-transform duration-300 lg:hidden shadow-3xl flex flex-col border-r border-white/10 ${
           menuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex items-center justify-between p-5 border-b border-white/5">
-          <span className="font-black text-2xl tracking-wider text-white font-[var(--font-family-heading)]">
-            MAKE<span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">TOBE</span>
-          </span>
+        <div className="flex items-center justify-between p-6 border-b border-white/5">
+           <span className="font-black text-2xl tracking-tighter text-white">
+             MAKE <span className="text-[var(--color-accent-light)]">TO BE</span>
+           </span>
           <button
             onClick={() => setMenuOpen(false)}
             className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
@@ -443,53 +439,50 @@ export default function Navbar() {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto py-6 custom-scrollbar">
-          <div className="px-5 mb-8">
-            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-4 px-1">
-              Navigation
+        <div className="flex-1 overflow-y-auto py-8 px-6 custom-scrollbar">
+          <div className="mb-10">
+            <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-6">
+              Menu Navigation
             </p>
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 onClick={() => setMenuOpen(false)}
-                className={`flex items-center justify-between px-5 py-3.5 rounded-xl text-sm font-bold transition-all mb-1.5 ${
+                className={`flex items-center justify-between py-3 text-xs font-black uppercase tracking-widest transition-all mb-4 ${
                   isActivePath(link.path)
-                    ? 'bg-violet-600/20 text-white border border-violet-500/30 shadow-lg shadow-violet-500/10'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
+                    ? 'text-white'
+                    : 'text-gray-500 hover:text-white'
                 }`}
               >
                 <span className="flex items-center gap-3">
-                  {link.icon || <FiChevronRight size={16} className="text-gray-600" />}
+                  {link.icon || <FiChevronRight size={14} className="opacity-40" />}
                   {link.name}
-                  {link.path === '/promo-video' && promotionalVideos.length > 0 && (
-                    <span className="w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
-                  )}
                 </span>
                 <FiChevronRight
-                  size={16}
-                  className={isActivePath(link.path) ? 'text-violet-400' : 'text-gray-600'}
+                  size={14}
+                  className={isActivePath(link.path) ? 'text-[var(--color-accent-light)]' : 'opacity-20'}
                 />
               </Link>
             ))}
           </div>
 
-          <div className="px-5">
-            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-4 px-1">
-              Categories
+          <div className="mb-10">
+            <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-6">
+              Shop Collections
             </p>
             {categories.map((cat) => (
               <Link
                 key={cat.name}
                 to={cat.path}
                 onClick={() => setMenuOpen(false)}
-                className={`flex items-center px-5 py-3.5 rounded-xl text-sm font-bold transition-all mb-1.5 border border-transparent ${
+                className={`flex items-center py-3 text-xs font-black uppercase tracking-widest transition-all mb-4 ${
                   cat.highlight
-                    ? 'text-amber-400 hover:bg-amber-400/10 hover:border-amber-400/20'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5 hover:border-white/10'
+                    ? 'text-amber-500'
+                    : 'text-gray-500 hover:text-white'
                 }`}
               >
-                {cat.highlight && <span className="mr-3 text-lg drop-shadow-[0_0_8px_rgba(251,191,36,0.3)]">🔥</span>}
+                {cat.highlight && <span className="mr-2">🔥</span>}
                 {cat.name}
               </Link>
             ))}
@@ -497,36 +490,36 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Auth Footer */}
-        <div className="p-5 border-t border-white/5 bg-black/20 backdrop-blur-md">
+        <div className="p-6 border-t border-white/5 bg-black/20">
           {!user ? (
             <Link
               to="/login"
               onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-center gap-3 w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white py-4 rounded-xl font-bold transition-all shadow-lg shadow-violet-500/25"
+              className="flex items-center justify-center gap-3 w-full bg-white text-[var(--color-surface)] py-4 rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-xl"
             >
-              <FiUser size={20} /> Sign In
+              <FiUser size={18} /> Sign In
             </Link>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-4">
               <Link
                 to="/profile"
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-3.5 px-5 py-3.5 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 font-bold transition-colors border border-transparent hover:border-white/10"
+                className="flex items-center gap-4 text-gray-400 hover:text-white font-black text-xs uppercase tracking-widest transition-colors"
               >
-                <FiUser size={18} className="text-violet-400" /> My Account
+                <FiUser size={18} /> Account Info
               </Link>
               <Link
                 to="/orders"
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-3.5 px-5 py-3.5 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 font-bold transition-colors border border-transparent hover:border-white/10"
+                className="flex items-center gap-4 text-gray-400 hover:text-white font-black text-xs uppercase tracking-widest transition-colors"
               >
-                <FiPackage size={18} className="text-violet-400" /> My Orders
+                <FiPackage size={18} /> My Orders
               </Link>
               <button
                 onClick={() => { signOut(); setMenuOpen(false) }}
-                className="flex items-center gap-3.5 px-5 py-3.5 w-full rounded-xl text-red-400 hover:text-red-300 hover:bg-red-400/10 font-bold transition-colors border border-transparent hover:border-red-500/10"
+                className="flex items-center gap-4 w-full text-red-500 hover:text-red-400 font-black text-xs uppercase tracking-widest transition-colors"
               >
-                <FiLogOut size={18} /> Logout
+                <FiLogOut size={18} /> Exit Account
               </button>
             </div>
           )}

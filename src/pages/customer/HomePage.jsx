@@ -91,7 +91,7 @@ export default function HomePage() {
   return (
     <div>
       {/* ===== HERO SECTION ===== */}
-      <section className="relative pt-8 pb-16 lg:pt-16 lg:pb-24 overflow-hidden">
+      <section className="relative pt-4 pb-10 lg:pt-10 lg:pb-16 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-surface)] via-[var(--color-primary)] to-[var(--color-surface)]" />
@@ -101,15 +101,15 @@ export default function HomePage() {
         </div>
 
         <div className="container-custom relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 items-center">
             {/* Left Content */}
             <div className="animate-fadeInUp">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-light mb-6">
-                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                <span className="text-xs font-medium text-[var(--color-text-secondary)]">Now Open for Online Orders</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-light mb-4">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-[9px] font-black uppercase tracking-widest text-[var(--color-text-secondary)]">Now Open for Online Orders</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black font-[var(--font-family-heading)] leading-tight mb-6">
+              <h1 className="text-3xl sm:text-5xl lg:text-5xl font-black font-[var(--font-family-heading)] leading-tight mb-4">
                 Discover Your
                 <br />
                 <span className="gradient-text">Perfect Style</span>
@@ -117,27 +117,26 @@ export default function HomePage() {
                 at <span className="text-[var(--color-accent)]">Make To Be</span>
               </h1>
 
-              <p className="text-lg text-[var(--color-text-secondary)] mb-8 max-w-lg leading-relaxed">
+              <p className="text-base text-[var(--color-text-secondary)] mb-6 max-w-lg leading-relaxed opacity-90">
                 Premium watches, designer dresses, and luxury accessories.
                 Shop from Kalmunai's finest collection with exclusive deals and doorstep delivery.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 mb-8">
-                <Link to="/products" className="btn-primary px-7 py-3 text-sm sm:text-base justify-center sm:justify-start">
+                <Link to="/products" className="btn-primary px-6 py-3 text-sm justify-center sm:justify-start">
                   <FiShoppingBag size={18} /> Shop Now <FiArrowRight size={16} />
                 </Link>
                 <a href={shopInfo.socialMedia.whatsapp} target="_blank" rel="noreferrer"
-                  className="flex items-center justify-center gap-2 px-7 py-3 rounded-xl border-2 border-emerald-500 text-emerald-400 font-semibold hover:bg-emerald-500 hover:text-white transition-all text-sm sm:text-base">
+                  className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 border-emerald-500/50 text-emerald-400 font-bold hover:bg-emerald-500 hover:text-white transition-all text-sm">
                   <FaWhatsapp size={18} /> WhatsApp Us
                 </a>
               </div>
 
-              <div className="flex flex-wrap gap-6 justify-start">
+              <div className="flex flex-wrap gap-5 justify-start">
                 {stats.map((stat, i) => (
-
-                  <div key={i}>
-                    <p className="text-xl sm:text-2xl font-bold gradient-text">{stat.value}</p>
-                    <p className="text-xs text-[var(--color-text-muted)]">{stat.label}</p>
+                  <div key={i} className="border-l border-white/10 pl-4 first:border-0 first:pl-0">
+                    <p className="text-xl font-black gradient-text tracking-tight">{stat.value}</p>
+                    <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest">{stat.label}</p>
                   </div>
                 ))}
               </div>
