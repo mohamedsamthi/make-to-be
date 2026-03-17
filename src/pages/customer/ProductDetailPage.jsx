@@ -14,7 +14,7 @@ export default function ProductDetailPage() {
   const navigate = useNavigate()
   const { addToCart } = useCart()
   const { user } = useAuth()
-  const { getProductById, getProductReviews, products, addReview } = useProducts()
+  const { getProductById, getProductReviews, products, addReview, favorites, toggleFavorite } = useProducts()
 
   const product = getProductById(id)
   const [selectedImage, setSelectedImage] = useState(0)
@@ -140,8 +140,15 @@ export default function ProductDetailPage() {
 
               {/* Share/Heart Overlay */}
               <div className="absolute top-4 right-4 z-30 flex flex-col gap-2">
-                <button className="w-9 h-9 rounded-xl bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center text-white transition-all">
-                  <FiHeart size={16} />
+                <button 
+                  onClick={() => toggleFavorite(product.id)}
+                  className={`w-9 h-9 rounded-xl border transition-all flex items-center justify-center backdrop-blur-md ${
+                    favorites.includes(product.id)
+                      ? 'bg-rose-500 border-rose-500 text-white'
+                      : 'bg-white/5 border-white/10 text-white hover:bg-white/10'
+                  }`}
+                >
+                  <FiHeart size={16} className={favorites.includes(product.id) ? 'fill-white' : ''} />
                 </button>
               </div>
             </div>
@@ -281,20 +288,31 @@ export default function ProductDetailPage() {
                    </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="flex gap-3">
                   <button 
                     onClick={handleAddToCart} 
                     disabled={product.stock === 0}
-                    className="h-12 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-white font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 disabled:opacity-30"
+                    className="flex-1 h-12 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-white font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 disabled:opacity-30"
                   >
                     <FiShoppingCart size={14} /> Add to Bag
                   </button>
                   <button 
                     onClick={handleOrderNow} 
                     disabled={product.stock === 0}
-                    className="h-12 rounded-xl bg-white text-black font-black text-[10px] uppercase tracking-widest hover:bg-white/90 transition-all shadow-lg shadow-white/5 flex items-center justify-center gap-2 disabled:opacity-30"
+                    className="flex-1 h-12 rounded-xl bg-white text-black font-black text-[10px] uppercase tracking-widest hover:bg-white/90 transition-all shadow-lg shadow-white/5 flex items-center justify-center gap-2 disabled:opacity-30"
                   >
                     Buy Now
+                  </button>
+                  <button
+                    onClick={() => toggleFavorite(product.id)}
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center border transition-all ${
+                      favorites.includes(product.id)
+                        ? 'bg-rose-500 border-rose-500 text-white shadow-lg shadow-rose-500/20'
+                        : 'bg-white/5 border-white/10 text-white hover:bg-white/10'
+                    }`}
+                    title={favorites.includes(product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                  >
+                    <FiHeart size={18} className={favorites.includes(product.id) ? 'fill-white' : ''} />
                   </button>
                 </div>
             </div>
