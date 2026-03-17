@@ -62,8 +62,18 @@ export function ProductProvider({ children }) {
         try {
           let data, error;
           if (apiFetch) {
-            const res = await apiFetch();
-            data = res.data;
+            try {
+              const res = await apiFetch();
+              data = res.data;
+              console.log(`[MakeToBe] Loaded ${name} from Node.js Backend`);
+            } catch (apiErr) {
+              console.warn(`[MakeToBe] Node.js backend unavailable for ${name}, falling back to Supabase direct...`);
+              // FALLBACK: Use Supabase directly if Node.js is down
+              const fallbackQuery = supabaseData.from(name).select('*').order('created_at', { ascending: false });
+              const res = await fallbackQuery;
+              data = res.data;
+              error = res.error;
+            }
           } else {
             const res = await query;
             data = res.data;
