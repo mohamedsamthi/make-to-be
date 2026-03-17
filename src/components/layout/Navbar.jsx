@@ -9,7 +9,8 @@ import {
   FiLogOut,
   FiPackage,
   FiChevronRight,
-  FiPlay
+  FiPlay,
+  FiHeart
 } from 'react-icons/fi'
 import { MdDashboard, MdVideoLibrary } from 'react-icons/md'
 import { useAuth } from '../../context/AuthContext'
@@ -291,6 +292,26 @@ export default function Navbar() {
                   Sign In
                 </Link>
               )}
+
+              {/* Wishlist Link */}
+              <Link
+                to="/wishlist"
+                className="relative flex items-center gap-2.5 p-2 sm:px-4 sm:py-2.5 hover:bg-white/5 rounded-xl transition-colors group border border-transparent hover:border-white/10"
+                title="Your Wishlist"
+              >
+                <div className="relative">
+                  <FiHeart size={22} className={`transition-colors ${favorites.length > 0 ? 'text-rose-500 fill-rose-500' : 'text-gray-300 group-hover:text-rose-500'}`} />
+                  {favorites.length > 0 && (
+                    <span className="absolute -top-1.5 -right-2 min-w-[20px] h-[20px] bg-rose-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1.5 shadow-lg shadow-rose-500/50 border border-[#151230]">
+                      {favorites.length}
+                    </span>
+                  )}
+                </div>
+                <div className="hidden sm:block text-left ml-1">
+                  <span className="text-[10px] uppercase font-bold tracking-widest text-rose-500 block leading-none mb-0.5">Saved</span>
+                  <span className="text-sm font-bold text-white leading-none block">Wishlist</span>
+                </div>
+              </Link>
 
               {/* Cart Link */}
               <Link

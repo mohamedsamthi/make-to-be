@@ -19,6 +19,7 @@ import OrderTrackingPage from './pages/customer/OrderTrackingPage'
 import PaymentNotification from './components/common/PaymentNotification'
 import AboutPage from './pages/customer/AboutPage'
 import PromoVideoPage from './pages/customer/PromoVideoPage'
+import WishlistPage from './pages/customer/WishlistPage'
 
 // Auth Pages
 import LoginPage from './pages/auth/LoginPage'
@@ -38,6 +39,8 @@ import AdminPromotionsPage from './pages/admin/AdminPromotionsPage'
 import AdminSalesPage from './pages/admin/AdminSalesPage'
 import AdminMessagesPage from './pages/admin/AdminMessagesPage'
 import AdminVideoManagePage from './pages/admin/AdminVideoManagePage'
+import AdminProfilePage from './pages/admin/AdminProfilePage'
+import AdminSettingsPage from './pages/admin/AdminSettingsPage'
 
 function CustomerLayout({ children }) {
   return (
@@ -132,6 +135,7 @@ function App() {
                 <Route path="/orders" element={<CustomerLayout><OrderTrackingPage /></CustomerLayout>} />
                 <Route path="/about" element={<CustomerLayout><AboutPage /></CustomerLayout>} />
                 <Route path="/promo-video" element={<CustomerLayout><PromoVideoPage /></CustomerLayout>} />
+                <Route path="/wishlist" element={<CustomerLayout><WishlistPage /></CustomerLayout>} />
 
                 {/* Auth Routes */}
                 <Route path="/login" element={<AuthLayout><LoginPage /></AuthLayout>} />
@@ -153,6 +157,8 @@ function App() {
                   <Route path="sales" element={<AdminSalesPage />} />
                   <Route path="messages" element={<AdminMessagesPage />} />
                   <Route path="promo-video" element={<AdminVideoManagePage />} />
+                  <Route path="profile" element={<AdminProfilePage />} />
+                  <Route path="settings" element={<AdminSettingsPage />} />
                 </Route>
 
                 {/* 404 */}
