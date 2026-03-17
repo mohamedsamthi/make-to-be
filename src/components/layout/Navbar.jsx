@@ -19,6 +19,8 @@ import { FiMessageSquare } from 'react-icons/fi'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
+  const [visible, setVisible] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
   const [menuOpen, setMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
@@ -57,18 +59,43 @@ export default function Navbar() {
   const isAdminPage = location.pathname.startsWith('/admin') || location.pathname === '/admin-login'
   if (isAdminPage) return null
 
-  // Scroll shadow effect
+  // Scroll visibility logic
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 0)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      setScrolled(currentScrollY > 20)
+      
+      if (currentScrollY > lastScrollY && currentScrollY > 150) {
+        // Scrolling down
+        setVisible(false)
+      } else {
+        // Scrolling up
+        setVisible(true)
+      }
+      setLastScrollY(currentScrollY)
+    }
+
+    const handleMouseMove = (e) => {
+      if (e.clientY < 50) {
+        setVisible(true)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.addEventListener('mousemove', handleMouseMove)
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('mousemove', handleMouseMove)
+    }
+  }, [lastScrollY])
 
   // Close menus when route changes
   useEffect(() => {
     setMenuOpen(false)
     setUserMenuOpen(false)
     setMobileSearchOpen(false)
+    setVisible(true) // Ensure visible on route change
   }, [location.pathname, location.search])
 
   // Close user dropdown on outside click
@@ -138,7 +165,9 @@ export default function Navbar() {
       </div>
 
       <header
-        className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+        className={`sticky top-0 z-50 w-full transition-all duration-500 transform ${
+          visible ? 'translate-y-0' : '-translate-y-full'
+        } ${
           scrolled 
             ? 'bg-[#151230]/90 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)]' 
             : 'bg-[#151230] border-b border-white/5'

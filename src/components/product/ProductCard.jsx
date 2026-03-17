@@ -1,10 +1,15 @@
 import { Link } from 'react-router-dom'
-import { FiShoppingCart, FiEye } from 'react-icons/fi'
-import { FaStar } from 'react-icons/fa'
+import { FiShoppingCart, FiEye, FiHeart } from 'react-icons/fi'
+import { FaStar, FaHeart } from 'react-icons/fa'
 import { useCart } from '../../context/CartContext'
+import { useProducts } from '../../context/ProductContext'
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart()
+  const { favorites, toggleFavorite } = useProducts()
+  
+  const isFavorite = favorites.includes(product.id)
+
   const hasDiscount = product.discount_price && product.discount_price < product.price
   const discountPercent = hasDiscount
     ? Math.round(((product.price - product.discount_price) / product.price) * 100)
@@ -14,6 +19,12 @@ export default function ProductCard({ product }) {
     e.preventDefault()
     e.stopPropagation()
     addToCart(product, 1, product.sizes?.[0] || '', product.colors?.[0] || '')
+  }
+
+  const handleFavorite = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    toggleFavorite(product.id)
   }
 
   return (
@@ -30,6 +41,19 @@ export default function ProductCard({ product }) {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
         />
+
+        {/* Favorite Button (Visible on Hover or if Active) */}
+        <button
+          onClick={handleFavorite}
+          className={`absolute top-3 right-3 w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 z-10 ${
+            isFavorite 
+              ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/30' 
+              : 'bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 opacity-0 group-hover:opacity-100'
+          }`}
+          title={isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+        >
+          {isFavorite ? <FaHeart size={16} /> : <FiHeart size={16} />}
+        </button>
 
         {/* Hover overlay */}
         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-3">

@@ -18,7 +18,23 @@ export function ProductProvider({ children }) {
   const [profiles, setProfiles] = useState([])
   const [messages, setMessages] = useState([])
   const [promotionalVideos, setPromotionalVideos] = useState([])
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem('make_to_be_favorites')
+    return saved ? JSON.parse(saved) : []
+  })
   const updateTimeouts = useRef({})
+
+  useEffect(() => {
+    localStorage.setItem('make_to_be_favorites', JSON.stringify(favorites))
+  }, [favorites])
+
+  const toggleFavorite = (productId) => {
+    setFavorites(prev => 
+      prev.includes(productId) 
+        ? prev.filter(id => id !== productId) 
+        : [...prev, productId]
+    )
+  }
 
   // Fetch from Supabase on mount + set up realtime
   useEffect(() => {
@@ -575,6 +591,8 @@ export function ProductProvider({ children }) {
     replyToMessage,
     customerReply,
     messages,
+    favorites,
+    toggleFavorite,
     promotionalVideos,
     setPromotionalVideos,
     deleteMessage
