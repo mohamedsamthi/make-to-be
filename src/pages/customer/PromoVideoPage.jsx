@@ -13,7 +13,7 @@ const getYoutubeVideoId = (url) => {
 
 export default function PromoVideoPage() {
   const { promotionalVideos } = useProducts()
-  const activeVideos = promotionalVideos.filter(v => v.active !== false)
+  const activeVideos = promotionalVideos.filter(v => v.is_active !== false)
   const [selectedVideo, setSelectedVideo] = useState(activeVideos[0] || null)
 
   useEffect(() => {
@@ -39,8 +39,8 @@ export default function PromoVideoPage() {
     )
   }
 
-  const mainVideoId = getYoutubeVideoId(selectedVideo?.video_url)
-  const isDirectVideo = selectedVideo?.video_url?.match(/\.(mp4|webm|ogg)$/i)
+  const mainVideoId = getYoutubeVideoId(selectedVideo?.url)
+  const isDirectVideo = selectedVideo?.url?.match(/\.(mp4|webm|ogg)$/i)
 
   return (
     <div className="min-h-screen bg-[#151230] pt-8 pb-20">
@@ -77,7 +77,7 @@ export default function PromoVideoPage() {
                 />
               ) : isDirectVideo ? (
                 <video 
-                  src={selectedVideo.video_url} 
+                  src={selectedVideo.url} 
                   controls 
                   autoPlay 
                   className="w-full h-full object-contain"
@@ -86,7 +86,7 @@ export default function PromoVideoPage() {
                 <div className="w-full h-full flex items-center justify-center flex-col p-10 text-center">
                   <FiYoutube size={64} className="text-red-500 mb-4" />
                   <p className="text-white font-bold text-lg">Unable to play this video format directly.</p>
-                  <a href={selectedVideo.video_url} target="_blank" rel="noreferrer" className="mt-4 btn-primary">
+                  <a href={selectedVideo.url} target="_blank" rel="noreferrer" className="mt-4 btn-primary">
                     Watch on Provider
                   </a>
                 </div>
@@ -120,8 +120,8 @@ export default function PromoVideoPage() {
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 max-h-[700px] overflow-y-auto pr-2 custom-scrollbar">
               {activeVideos.map((video) => {
-                const vidId = getYoutubeVideoId(video.video_url)
-                const thumb = vidId ? `https://img.youtube.com/vi/${vidId}/mqdefault.jpg` : '/placeholder-video.jpg'
+                const vidId = getYoutubeVideoId(video.url)
+                const thumb = vidId ? `https://img.youtube.com/vi/${vidId}/mqdefault.jpg` : (video.thumbnail_url || '/placeholder-video.jpg')
                 const isSelected = selectedVideo?.id === video.id
 
                 return (
