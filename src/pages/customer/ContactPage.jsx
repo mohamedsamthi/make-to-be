@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { FaWhatsapp, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa'
 import { FiSend, FiUser, FiMail, FiSmartphone, FiMessageSquare, FiClock, FiExternalLink, FiShield } from 'react-icons/fi'
@@ -6,6 +6,9 @@ import { shopInfo } from '../../data/demoData'
 import toast from 'react-hot-toast'
 import Swal from 'sweetalert2'
 import { useProducts } from '../../context/ProductContext'
+
+import { useAuth } from '../../context/AuthContext'
+import { supabaseData } from '../../lib/supabase'
 
 // Verification Code Generator
 const generateCode = () => Math.floor(1000 + Math.random() * 9000).toString()

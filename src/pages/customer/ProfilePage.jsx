@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useProducts } from '../../context/ProductContext'
-import { Link, Navigate } from 'react-router-dom'
-import { FiUser, FiMail, FiPhone, FiLogOut, FiPackage, FiSettings, FiImage, FiLock, FiCheck, FiArrowRight } from 'react-icons/fi'
+import { supabaseData } from '../../lib/supabase'
+import { Link, Navigate, useLocation } from 'react-router-dom'
+import { FiUser, FiMail, FiPhone, FiLogOut, FiPackage, FiSettings, FiImage, FiLock, FiCheck, FiArrowRight, FiMessageSquare } from 'react-icons/fi'
 import { MdDashboard } from 'react-icons/md'
 import toast from 'react-hot-toast'
 
 export default function ProfilePage() {
   const { user, profile, isAdmin, signOut, loading, updateProfile } = useAuth()
-  const { orders } = useProducts()
+  const { orders, messages, replyToMessage, updateOrder } = useProducts()
+  
   const location = useLocation()
   const [activeTab, setActiveTab] = useState(new URLSearchParams(location.search).get('tab') || 'orders')
   const [isUpdating, setIsUpdating] = useState(false)
@@ -18,8 +20,6 @@ export default function ProfilePage() {
     avatarUrl: profile?.avatar_url || '',
     password: ''
   })
-
-  const { messages, replyToMessage, updateOrder } = useProducts()
 
   // Sync formData with profile when profile changes
   useEffect(() => {
