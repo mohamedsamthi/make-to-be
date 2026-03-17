@@ -302,7 +302,7 @@ export default function Navbar() {
 
               {/* Theme Toggle */}
               <button
-                onClick={toggleTheme}
+                onClick={(e) => toggleTheme(e)}
                 className="p-2.5 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-light)] rounded-xl transition-all"
                 title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
               >

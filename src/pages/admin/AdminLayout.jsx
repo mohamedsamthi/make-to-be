@@ -213,7 +213,7 @@ export default function AdminLayout() {
             <div className="flex items-center gap-3">
               {/* Theme Toggle */}
               <button
-                onClick={toggleTheme}
+                onClick={(e) => toggleTheme(e)}
                 className="w-10 h-10 rounded-xl glass-light flex items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-all"
                 title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
               >
