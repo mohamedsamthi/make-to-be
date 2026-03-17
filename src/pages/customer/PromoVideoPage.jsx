@@ -3,6 +3,7 @@ import { FiPlay, FiShare2, FiArrowLeft, FiYoutube, FiMessageCircle } from 'react
 import { MdVideoLibrary } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 import { useProducts } from '../../context/ProductContext'
+import { shopInfo } from '../../data/demoData'
 
 const getYoutubeVideoId = (url) => {
   if (!url) return null;
