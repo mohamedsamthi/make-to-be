@@ -398,9 +398,11 @@ export function ProductProvider({ children }) {
   const replyToMessage = async (id, reply) => {
     try {
       const status = reply ? 'replied' : 'read'
-      const { error } = await supabaseData.from('messages').update({ admin_reply: reply, status }).eq('id', id)
+      const updateData = { admin_reply: reply, status }
+      if (reply) updateData.readByUser = false // New reply is unread by customer
+      const { error } = await supabaseData.from('messages').update(updateData).eq('id', id)
       if (error) throw error
-      setMessages(prev => prev.map(m => m.id === id ? { ...m, admin_reply: reply, status } : m))
+      setMessages(prev => prev.map(m => m.id === id ? { ...m, ...updateData } : m))
     } catch (err) {
       console.error('Error replying to message:', err)
     }

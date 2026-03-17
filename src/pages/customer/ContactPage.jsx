@@ -11,12 +11,27 @@ import { useProducts } from '../../context/ProductContext'
 const generateCode = () => Math.floor(1000 + Math.random() * 9000).toString()
 
 export default function ContactPage() {
+  const { profile } = useAuth()
   const { sendMessage } = useProducts()
   const [targetCode, setTargetCode] = useState(generateCode)
   const [formData, setFormData] = useState({
     firstName: '', lastName: '', mobile: '', email: '', message: '', captcha: ''
   })
   const [loading, setLoading] = useState(false)
+
+  // Pre-fill user data
+  useEffect(() => {
+    if (profile) {
+      const names = profile.full_name?.split(' ') || []
+      setFormData(prev => ({
+        ...prev,
+        firstName: names[0] || '',
+        lastName: names.slice(1).join(' ') || '',
+        email: profile.email || '',
+        mobile: profile.phone || ''
+      }))
+    }
+  }, [profile])
 
   const update = (key) => (e) => setFormData(p => ({ ...p, [key]: e.target.value }))
 

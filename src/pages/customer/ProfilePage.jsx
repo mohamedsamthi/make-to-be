@@ -9,7 +9,8 @@ import toast from 'react-hot-toast'
 export default function ProfilePage() {
   const { user, profile, isAdmin, signOut, loading, updateProfile } = useAuth()
   const { orders } = useProducts()
-  const [activeTab, setActiveTab] = useState('orders')
+  const location = useLocation()
+  const [activeTab, setActiveTab] = useState(new URLSearchParams(location.search).get('tab') || 'orders')
   const [isUpdating, setIsUpdating] = useState(false)
   const [formData, setFormData] = useState({
     fullName: profile?.full_name || '',
@@ -17,6 +18,8 @@ export default function ProfilePage() {
     avatarUrl: profile?.avatar_url || '',
     password: ''
   })
+
+  const { messages, replyToMessage, updateOrder } = useProducts()
 
   // Sync formData with profile when profile changes
   useEffect(() => {
@@ -29,6 +32,19 @@ export default function ProfilePage() {
       }))
     }
   }, [profile])
+
+  // Mark support messages as read
+  useEffect(() => {
+    if (activeTab === 'support') {
+      const myMsgs = messages.filter(m => (m.email === user?.email || m.phone === profile?.phone) && m.status === 'replied' && !m.readByUser)
+      myMsgs.forEach(m => {
+        // We use replyToMessage but with a flag to mark as read by user
+        supabaseData.from('messages').update({ readByUser: true }).eq('id', m.id).then(() => {
+          // No need for local update as realtime will handle it, but we can if we want speed
+        })
+      })
+    }
+  }, [activeTab, messages, user?.email, profile?.phone])
 
   const handleImageSelect = (e) => {
     const file = e.target.files[0]
@@ -154,6 +170,19 @@ export default function ProfilePage() {
                 >
                   <FiPackage size={18} /> My Orders
                 </button>
+                 <button 
+                  onClick={() => setActiveTab('support')} 
+                  className={`w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all font-bold text-sm ${
+                    activeTab === 'support' 
+                    ? 'bg-violet-600 text-white shadow-lg shadow-violet-600/20' 
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <FiMessageSquare size={18} /> Support Details
+                  {messages.filter(m => m.email === user?.email && m.status === 'replied' && !m.readByUser).length > 0 && (
+                    <span className="w-2 h-2 rounded-full bg-red-500 ml-auto animate-pulse" />
+                  )}
+                </button>
                 <button 
                   onClick={() => setActiveTab('settings')} 
                   className={`w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all font-bold text-sm ${
@@ -262,6 +291,61 @@ export default function ProfilePage() {
                         <Link to="/products" className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white px-8 py-3.5 rounded-xl font-black text-sm uppercase tracking-widest hover:scale-105 transition-transform inline-block">
                           Start Shopping
                         </Link>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : activeTab === 'support' ? (
+                <div className="p-8 sm:p-10">
+                  <h3 className="text-2xl font-black text-white mb-8 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-violet-600/20 flex items-center justify-center text-violet-400">
+                      <FiMessageSquare size={22} />
+                    </div>
+                    Support History
+                  </h3>
+                  <div className="space-y-6">
+                    {messages.filter(m => m.email === user?.email || m.phone === profile?.phone).length > 0 ? (
+                      messages.filter(m => m.email === user?.email || m.phone === profile?.phone).map(msg => (
+                        <div key={msg.id} className="p-6 rounded-2xl bg-black/40 border border-white/5 space-y-4">
+                          <div className="flex justify-between items-start">
+                             <div>
+                               <p className="text-[10px] font-black uppercase text-gray-500 tracking-widest mb-1">Your Message</p>
+                               <div className="bg-white/5 p-4 rounded-2xl rounded-tl-sm text-sm text-gray-200">
+                                 {msg.message}
+                               </div>
+                             </div>
+                             <span className="text-[10px] text-gray-500 font-bold whitespace-nowrap ml-4">
+                               {new Date(msg.created_at).toLocaleDateString()}
+                             </span>
+                          </div>
+
+                          {msg.admin_reply && (
+                            <div className="flex flex-col items-end">
+                               <p className="text-[10px] font-black uppercase text-violet-400 tracking-widest mb-1">Admin Response</p>
+                               <div className="bg-gradient-to-br from-violet-600/20 to-fuchsia-600/20 border border-violet-500/30 p-4 rounded-2xl rounded-tr-sm text-sm text-white">
+                                 {msg.admin_reply}
+                                 <div className="flex justify-end mt-2">
+                                     <div className="flex -space-x-1.5 opacity-60">
+                                       <FiCheck size={12} className="text-emerald-400" />
+                                       <FiCheck size={12} className="text-emerald-400" />
+                                     </div>
+                                 </div>
+                               </div>
+                            </div>
+                          )}
+
+                          {!msg.admin_reply && (
+                            <div className="flex items-center gap-2 text-[10px] font-bold text-amber-500/60 uppercase tracking-widest">
+                               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                               Waiting for response
+                            </div>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-20 text-gray-500">
+                        <p>No support messages yet.</p>
+                        <Link to="/contact" className="text-violet-400 font-bold hover:underline mt-2 inline-block">Contact Support</Link>
                       </div>
                     )}
                   </div>

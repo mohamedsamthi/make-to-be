@@ -28,23 +28,29 @@ export default function Navbar() {
   const { promotions } = useProducts()
 
   const activePromo = promotions?.find(p => p.active)
-  const { orders } = useProducts()
+  const { orders, messages } = useProducts()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const userMenuRef = useRef(null)
 
-  // Calculate incoming messages from admin
-  const incomingMessages = orders.filter(o => {
-    const isOwner = (o.customer_email === user?.email || (user?.user_metadata?.phone && o.customer_phone === user.user_metadata.phone))
+  // Calculate incoming messages from admin (Order Chat)
+  const incomingOrderMessages = orders.filter(o => {
+    const isOwner = (o.customer_email === user?.email || (o.customer_phone === profile?.phone))
     if (!isOwner) return false
     
     const meta = o.items.find(i => i.is_sales_data)
     const chat = meta?.chat_history || []
-    return chat.length > 0 && chat[chat.length - 1].sender === 'admin'
+    return chat.length > 0 && chat[chat.length - 1].sender === 'admin' && !chat[chat.length - 1].readByUser
   })
 
-  const latestMessageOrder = incomingMessages[0]
+  // Calculate incoming messages from admin (Contact Support)
+  const incomingSupportMessages = messages.filter(m => {
+    return (m.email === user?.email || m.phone === profile?.phone) && m.status === 'replied' && !m.readByUser
+  })
 
-  const navigate = useNavigate()
-  const location = useLocation()
-  const userMenuRef = useRef(null)
+  const hasNewMsgs = incomingOrderMessages.length > 0 || incomingSupportMessages.length > 0
+  const latestMessageOrder = incomingOrderMessages[0]
+  const latestMessageSupport = incomingSupportMessages[0]
 
   // Hide navbar on admin pages
   const isAdminPage = location.pathname.startsWith('/admin') || location.pathname === '/admin-login'
@@ -275,9 +281,9 @@ export default function Navbar() {
               </Link>
 
               {/* Unread Message Notification */}
-              {latestMessageOrder && (
+              {hasNewMsgs && (
                 <Link
-                  to={`/orders?id=${latestMessageOrder.id}&tab=chat`}
+                  to={latestMessageOrder ? `/orders?id=${latestMessageOrder.id}&tab=chat` : `/profile?tab=support`}
                   className="relative flex items-center gap-2.5 p-2 sm:px-4 sm:py-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl transition-all hover:bg-amber-500 hover:text-white group animate-pulse"
                   title="New message from Admin"
                 >
