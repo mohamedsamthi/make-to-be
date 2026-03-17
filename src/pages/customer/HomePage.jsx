@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { FiArrowRight, FiShoppingBag, FiTruck, FiShield, FiStar, FiChevronLeft, FiChevronRight } from 'react-icons/fi'
-import { FaWhatsapp, FaStar, FaQuoteLeft } from 'react-icons/fa'
-import { MdLocalOffer, MdVerified } from 'react-icons/md'
+import { FiArrowRight, FiShoppingBag, FiTruck, FiShield, FiStar, FiChevronLeft, FiChevronRight, FiWatch } from 'react-icons/fi'
+import { FaWhatsapp, FaStar, FaQuoteLeft, FaShoePrints } from 'react-icons/fa'
+import { MdLocalOffer, MdVerified, MdCheckroom, MdLayers } from 'react-icons/md'
 import ProductCard from '../../components/product/ProductCard'
 import FeaturedVideo from '../../components/home/FeaturedVideo'
 import { shopInfo } from '../../data/demoData'
@@ -201,30 +201,43 @@ export default function HomePage() {
       {/* ===== CATEGORIES ===== */}
       <section className="section-padding">
         <div className="container-custom">
-          <div className="text-center mb-12">
-            <p className="text-[var(--color-accent)] text-sm font-semibold uppercase tracking-widest mb-2">Browse</p>
-            <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)]">Shop by Category</h2>
+          <div className="text-center mb-16">
+            <p className="text-[var(--color-accent)] text-xs font-black uppercase tracking-[0.2em] mb-3">Curated Collections</p>
+            <h2 className="text-3xl sm:text-5xl font-black font-[var(--font-family-heading)] tracking-tight">Shop by Category</h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {categories.map((cat, i) => (
-              <Link
-                key={cat.id}
-                to={`/products?category=${cat.slug}`}
-                className="group relative overflow-hidden rounded-2xl bg-[var(--color-surface-card)] border border-[var(--color-border)] hover:border-[var(--color-accent)]/30 card-hover p-8 text-center"
-                style={{ animationDelay: `${i * 0.1}s` }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-accent)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative">
-                  <span className="text-5xl mb-4 block">{cat.icon}</span>
-                  <h3 className="text-xl font-bold mb-1">{cat.name}</h3>
-                  <p className="text-sm text-[var(--color-text-muted)]">{cat.product_count} Products</p>
-                  <span className="inline-flex items-center gap-1 mt-4 text-sm text-[var(--color-accent)] font-medium opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
-                    Explore <FiArrowRight size={14} />
-                  </span>
-                </div>
-              </Link>
-            ))}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {categories.map((cat, i) => {
+              // Icon mapping
+              const Icon = {
+                watches: FiWatch,
+                dresses: MdCheckroom,
+                accessories: MdLayers,
+                shoes: FaShoePrints
+              }[cat.slug] || FiShoppingBag;
+
+              return (
+                <Link
+                  key={cat.id}
+                  to={`/products?category=${cat.slug}`}
+                  className="group relative overflow-hidden rounded-2xl bg-[var(--color-surface-card)] border border-[var(--color-border)] hover:border-[var(--color-accent)]/80 transition-all duration-500 p-8 text-center flex flex-col items-center"
+                  style={{ animationDelay: `${i * 0.15}s` }}
+                >
+                  <div className="absolute inset-x-0 bottom-0 h-1 bg-[var(--color-accent)] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                  
+                  <div className="w-20 h-20 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-border)] flex items-center justify-center mb-6 group-hover:bg-[var(--color-accent)] group-hover:border-transparent transition-all duration-500">
+                    <Icon size={32} className="text-[var(--color-accent)] group-hover:text-black transition-colors duration-500" />
+                  </div>
+
+                  <h3 className="text-xl font-black mb-1 text-[var(--color-text-primary)] uppercase tracking-tight">{cat.name}</h3>
+                  <p className="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest">{cat.product_count} Collections</p>
+                  
+                  <div className="mt-4 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-[var(--color-accent)] opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                    Discover Now <FiArrowRight size={12} />
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>

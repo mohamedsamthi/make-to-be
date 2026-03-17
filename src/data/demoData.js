@@ -232,9 +232,10 @@ export const demoProducts = [
 ]
 
 export const demoCategories = [
-  { id: '1', name: 'Watches', slug: 'watches', icon: '⌚', product_count: 4 },
-  { id: '2', name: 'Dresses', slug: 'dresses', icon: '👗', product_count: 4 },
-  { id: '3', name: 'Accessories', slug: 'accessories', icon: '💎', product_count: 4 }
+  { id: '1', name: 'Watches', slug: 'watches', icon: 'watches', product_count: 12 },
+  { id: '2', name: 'Dresses', slug: 'dresses', icon: 'dresses', product_count: 8 },
+  { id: '3', name: 'Shoes', slug: 'shoes', icon: 'shoes', product_count: 6 },
+  { id: '4', name: 'Accessories', slug: 'accessories', icon: 'accessories', product_count: 15 }
 ]
 
 export const demoReviews = [
