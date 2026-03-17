@@ -235,7 +235,6 @@ export function ProductProvider({ children }) {
     try {
       const { error } = await supabaseData.from('orders').update(updatedData).eq('id', id)
       if (error) throw error
-      toast.success('Order synchronized with database')
     } catch (err) {
       console.error('Failed to update order in db:', err)
       toast.error('Sync failed. Please check connection.')

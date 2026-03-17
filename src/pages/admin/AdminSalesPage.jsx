@@ -19,12 +19,27 @@ export default function AdminSalesPage() {
     o.customer_name.toLowerCase().includes(search.toLowerCase())
   ).sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
 
-  // Auto-scroll chat
+  // Auto-scroll chat and mark as read when opened
   useEffect(() => {
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [selectedOrder])
+
+    if (selectedOrderId && selectedOrder) {
+      const sales = getSalesData(selectedOrder)
+      const lastMsg = sales.chat_history.slice(-1)[0]
+      // If last message is from user and not yet marked as read, mark it as read
+      if (lastMsg && lastMsg.sender === 'user' && !lastMsg.readByAdmin) {
+        const newChat = sales.chat_history.map((m, i) => 
+          (i === sales.chat_history.length - 1) ? { ...m, readByAdmin: true } : m
+        )
+        // Delay slightly to ensure state is stable
+        setTimeout(() => {
+          updateOrderSalesData(selectedOrderId, { ...sales, chat_history: newChat })
+        }, 500)
+      }
+    }
+  }, [selectedOrderId, selectedOrder?.items])
 
   const getSalesData = (order) => {
     const meta = order?.items?.find(i => i.is_sales_data) || { amount_paid: 0, chat_history: [] }
@@ -144,12 +159,15 @@ export default function AdminSalesPage() {
               <div className="flex justify-between items-start mb-3 relative">
                 <div className="flex flex-col">
                   <h3 className="text-lg font-bold font-mono text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">{order.id}</h3>
-                  {getSalesData(order).chat_history.slice(-1)[0]?.sender === 'user' && (
-                    <span className="flex items-center gap-1.5 text-[10px] text-rose-400 font-bold uppercase tracking-widest mt-1 animate-pulse">
-                      <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]" />
-                      New Message
-                    </span>
-                  )}
+                  {(() => {
+                    const lastMsg = getSalesData(order).chat_history.slice(-1)[0];
+                    return lastMsg?.sender === 'user' && !lastMsg?.readByAdmin && (
+                      <span className="flex items-center gap-1.5 text-[10px] text-rose-400 font-bold uppercase tracking-widest mt-1 animate-pulse">
+                        <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]" />
+                        New Message
+                      </span>
+                    );
+                  })()}
                 </div>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest ${isFullyPaid ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
                   {isFullyPaid ? 'Settled' : 'Pending'}
