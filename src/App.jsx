@@ -161,16 +161,38 @@ function App() {
 
               {/* Toast Notifications */}
               <Toaster
-                position="bottom-right"
+                position="top-right"
                 toastOptions={{
-                  duration: 3000,
+                  duration: 4000,
                   style: {
-                    background: '#1e1e3a',
+                    background: '#1a1835',
                     color: '#fff',
-                    border: '1px solid #2a2a4a',
-                    borderRadius: '14px',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '16px',
                     fontSize: '14px',
+                    fontWeight: '600',
+                    padding: '12px 20px',
+                    boxShadow: '0 10px 30px -5px rgba(0, 0, 0, 0.5)',
+                    backdropFilter: 'blur(8px)',
                   },
+                  success: {
+                    iconTheme: {
+                      primary: '#10b981',
+                      secondary: '#fff',
+                    },
+                    style: {
+                      borderLeft: '4px solid #10b981',
+                    }
+                  },
+                  error: {
+                    iconTheme: {
+                      primary: '#ef4444',
+                      secondary: '#fff',
+                    },
+                    style: {
+                      borderLeft: '4px solid #ef4444',
+                    }
+                  }
                 }}
               />
 
