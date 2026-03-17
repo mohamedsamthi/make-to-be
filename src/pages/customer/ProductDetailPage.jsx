@@ -93,9 +93,9 @@ export default function ProductDetailPage() {
   const whatsappMessage = `Hi! I'm interested in "${product.name}" (LKR ${(hasDiscount ? product.discount_price : product.price).toLocaleString()}). Can you provide more details?`
 
   return (
-    <div className="pt-20 min-h-screen">
+    <div className="min-h-screen">
       {/* Breadcrumb & Background Effects */}
-      <div className="relative overflow-hidden pt-6 pb-4 lg:pt-8 bg-[#151230]">
+      <div className="relative overflow-hidden pt-4 pb-3 bg-[#151230]">
         <div className="absolute -top-24 -left-20 w-64 h-64 bg-violet-600/10 rounded-full blur-[100px] pointer-events-none" />
         <div className="container-custom relative z-10">
           <nav className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.15em] text-gray-500 flex items-center gap-2 flex-wrap">
@@ -110,7 +110,7 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      <div className="container-custom py-6 lg:py-8">
+      <div className="container-custom py-4 lg:py-6">
         {/* Product Section */}
         <div className="grid lg:grid-cols-12 gap-6 lg:gap-10 mb-12">
           {/* Images Gallery - Compact 5-col width on desktop */}
