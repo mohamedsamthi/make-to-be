@@ -64,12 +64,12 @@ export default function ContactPage() {
         text: "We have received your message and will get back to you within 24 hours.",
         icon: 'success',
         confirmButtonText: 'Great!',
-        confirmButtonColor: '#8b5cf6',
-        background: '#1e1c3a',
-        color: '#fff',
+        confirmButtonColor: 'var(--color-accent)',
+        background: 'var(--color-surface-card)',
+        color: 'var(--color-text-primary)',
         customClass: {
-          popup: 'border border-white/10 rounded-2xl',
-          confirmButton: 'rounded-xl font-bold tracking-wide'
+          popup: 'border border-[var(--color-border)] rounded-2xl',
+          confirmButton: 'rounded-xl font-bold tracking-wide text-black'
         }
       })
 
@@ -91,7 +91,6 @@ export default function ContactPage() {
       value: shopInfo.phone,
       sub: 'Call us anytime',
       href: `tel:${shopInfo.phone}`,
-      color: 'bg-blue-500/15 text-blue-400',
     },
     {
       icon: <FaEnvelope size={20} />,
@@ -99,7 +98,6 @@ export default function ContactPage() {
       value: shopInfo.email,
       sub: 'We reply within 24 hrs',
       href: `mailto:${shopInfo.email}`,
-      color: 'bg-[var(--color-accent)]/15 text-[var(--color-accent-light)]',
     },
     {
       icon: <FaMapMarkerAlt size={20} />,
@@ -107,7 +105,6 @@ export default function ContactPage() {
       value: shopInfo.address,
       sub: 'Visit our store',
       href: shopInfo.location?.mapUrl,
-      color: 'bg-amber-500/15 text-amber-400',
     },
     {
       icon: <FiClock size={20} />,
@@ -115,34 +112,28 @@ export default function ContactPage() {
       value: 'Mon–Sat: 9AM – 8PM',
       sub: 'Sun: 10AM – 5PM',
       href: null,
-      color: 'bg-emerald-500/15 text-emerald-400',
     },
   ]
 
   return (
     <div className="min-h-screen bg-[var(--color-surface)] pb-20">
       
-      {/* ── HEADER WITH MODERN GRADIENT ── */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-[#151230] to-[var(--color-surface)] border-b border-white/5 pt-4 pb-8 lg:pt-8 lg:pb-16">
+      {/* ── HEADER WITH MINIMAL STYLING ── */}
+      <div className="relative overflow-hidden bg-[var(--color-surface)] border-b border-[var(--color-border)] pt-8 pb-12 lg:pt-16 lg:pb-24">
         {/* Abstract Backgrounds */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-10 w-72 h-72 bg-amber-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[var(--color-accent)]/5 rounded-full blur-[120px] opacity-70" />
+        <div className="absolute bottom-0 left-10 w-72 h-72 bg-[var(--color-accent)]/5 rounded-full blur-[100px] opacity-70" />
         
-        <div className="container-custom relative z-10">
-          <nav className="text-xs text-gray-400 flex items-center gap-2 mb-6">
-            <Link to="/" className="hover:text-violet-400 transition-colors">Home</Link>
-            <span>/</span>
-            <span className="text-gray-100 font-medium">Contact Support</span>
-          </nav>
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-[10px] font-bold uppercase tracking-widest mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" /> Always here to help
+        <div className="container-custom relative z-10 text-center">
+          <div className="max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-surface-light)] border border-[var(--color-border)] text-[var(--color-text-primary)] text-[10px] font-black uppercase tracking-widest mb-6">
+              <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] animate-pulse" /> Always here to help
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-5xl font-black font-[var(--font-family-heading)] text-white mb-4 leading-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black font-[var(--font-family-heading)] text-[var(--color-text-primary)] mb-6 tracking-tight uppercase">
               Let's Start a <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">Conversation</span>
+              <span className="text-[var(--color-accent)]">Conversation</span>
             </h1>
-            <p className="text-base sm:text-lg text-gray-400 max-w-xl leading-relaxed">
+            <p className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[var(--color-text-muted)] max-w-xl mx-auto leading-relaxed">
               Have a question about a product, need help with an order, or just want to say hi? We'd love to hear from you. We respond to all inquiries within 24 hours.
             </p>
           </div>
@@ -150,7 +141,7 @@ export default function ContactPage() {
       </div>
 
       {/* ── MAIN CONTENT ── */}
-      <div className="container-custom -mt-12 relative z-20">
+      <div className="container-custom mt-12 relative z-20">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
           {/* ── LEFT: CONTACT INFO (5 columns on LG) ── */}
@@ -163,17 +154,15 @@ export default function ContactPage() {
                   key={i}
                   role={item.href ? 'link' : 'article'}
                   onClick={() => item.href && window.open(item.href, '_blank')}
-                  className={`group relative flex flex-col gap-4 p-5 rounded-2xl bg-[#1e1c3a]/80 backdrop-blur-md border border-white/5 transition-all overflow-hidden ${item.href ? 'cursor-pointer hover:-translate-y-1 hover:border-white/20 hover:shadow-xl hover:shadow-black/20 hover:bg-[#25224a]' : ''}`}
+                  className={`group relative flex flex-col gap-4 p-6 rounded-2xl bg-[var(--color-surface-card)] border border-[var(--color-border)] transition-all overflow-hidden ${item.href ? 'cursor-pointer hover:-translate-y-1 hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-surface-light)] hover:shadow-2xl' : ''}`}
                 >
-                  <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-10 transition-opacity group-hover:opacity-30 ${item.color.split(' ')[0]}`} />
-                  
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border border-white/10 shadow-inner ${item.color} relative z-10`}>
-                    {item.icon}
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border border-[var(--color-border)] bg-[var(--color-surface-light)] group-hover:bg-[var(--color-accent)] group-hover:border-[var(--color-accent)] transition-all`}>
+                    <span className="text-[var(--color-text-primary)] group-hover:text-black transition-colors">{item.icon}</span>
                   </div>
                   <div className="relative z-10 min-w-0 flex-1">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">{item.title}</p>
-                    <p className="text-sm font-semibold text-white leading-snug break-all">{item.value}</p>
-                    <p className="text-[11px] text-gray-500 mt-1">{item.sub}</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-text-muted)] mb-1.5">{item.title}</p>
+                    <p className="text-sm font-black text-[var(--color-text-primary)] leading-snug break-all uppercase tracking-tight">{item.value}</p>
+                    <p className="text-[10px] font-bold text-[var(--color-text-muted)] mt-1 uppercase tracking-widest opacity-80">{item.sub}</p>
                   </div>
                 </div>
               ))}
@@ -184,54 +173,50 @@ export default function ContactPage() {
               href={shopInfo.socialMedia.whatsapp}
               target="_blank"
               rel="noreferrer"
-              className="relative p-6 rounded-2xl bg-gradient-to-br from-emerald-600/20 to-emerald-900/10 border border-emerald-500/20 overflow-hidden group hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-lg hover:shadow-emerald-500/10 transition-all"
+              className="relative p-6 rounded-2xl bg-[var(--color-surface-card)] border border-[var(--color-border)] hover:border-[var(--color-accent)]/80 transition-all group flex items-center gap-4 mt-2 hover:-translate-y-1 hover:shadow-2xl"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-colors" />
-              <div className="relative z-10 flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/40 shrink-0 group-hover:scale-110 transition-transform">
-                  <FaWhatsapp size={28} className="text-white" />
-                </div>
-                <div>
-                  <p className="font-bold text-base text-white">Chat on WhatsApp</p>
-                  <p className="text-xs text-emerald-400/80 mt-1">Get an instant response ⚡</p>
-                </div>
-                <div className="ml-auto w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-white/10 transition-colors">
-                  <FiExternalLink size={16} className="text-emerald-300" />
-                </div>
+              <div className="w-14 h-14 rounded-2xl bg-[var(--color-surface-light)] group-hover:bg-[var(--color-accent)] border border-[var(--color-border)] group-hover:border-[var(--color-accent)] flex items-center justify-center shrink-0 transition-all">
+                <FaWhatsapp size={24} className="text-[var(--color-text-primary)] group-hover:text-black transition-colors" />
+              </div>
+              <div>
+                <p className="font-black text-sm uppercase tracking-tight text-[var(--color-text-primary)]">Chat on WhatsApp</p>
+                <p className="text-[10px] font-bold text-[var(--color-text-muted)] mt-1 uppercase tracking-widest">Fast Response ⚡</p>
+              </div>
+              <div className="ml-auto w-10 h-10 rounded-xl bg-[var(--color-surface-light)] group-hover:bg-black/10 text-[var(--color-text-muted)] group-hover:text-black flex items-center justify-center border border-[var(--color-border)] group-hover:border-transparent transition-all">
+                <FiExternalLink size={16} />
               </div>
             </a>
 
             {/* Payment card */}
-            <div className="p-6 rounded-2xl bg-[#1e1c3a]/80 backdrop-blur-md border border-white/5 overflow-hidden relative">
-              <div className="absolute -right-6 -top-6 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl" />
-              <div className="flex justify-between items-center mb-5 relative z-10">
-                <p className="text-xs font-bold uppercase tracking-widest text-gray-400">💳 Bank Transfer</p>
-                <div className="px-2 py-1 rounded bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-bold uppercase">
+            <div className="p-6 rounded-2xl bg-[var(--color-surface-card)] border border-[var(--color-border)] relative mt-2">
+              <div className="flex justify-between items-center mb-6">
+                <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-text-muted)]">Bank Transfer</p>
+                <div className="px-3 py-1 rounded bg-[var(--color-surface-light)] border border-[var(--color-border)] text-[var(--color-text-primary)] text-[10px] font-black uppercase tracking-widest">
                   Secure
                 </div>
               </div>
               
-              <div className="space-y-3 relative z-10">
+              <div className="space-y-4">
                 {[
                   { label: 'Bank',    value: shopInfo.bankDetails.bankName },
                   { label: 'Name',    value: shopInfo.bankDetails.accountName },
                   { label: 'Branch',  value: shopInfo.bankDetails.branch },
                 ].map(row => (
-                  <div key={row.label} className="flex items-center justify-between text-sm py-1 border-b border-white/5 last:border-0 last:pb-0">
-                    <span className="text-gray-400">{row.label}</span>
-                    <span className="font-medium text-gray-200">{row.value}</span>
+                  <div key={row.label} className="flex items-center justify-between text-sm py-2 border-b border-[var(--color-border)] last:border-0 last:pb-0">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-muted)]">{row.label}</span>
+                    <span className="font-black text-[var(--color-text-primary)] uppercase tracking-tight">{row.value}</span>
                   </div>
                 ))}
-                <div className="mt-4 pt-4 border-t border-white/10 bg-black/20 -mx-6 -mb-6 p-6">
-                  <p className="text-xs text-gray-400 mb-1">Account Number</p>
+                <div className="mt-4 pt-4 border-t border-[var(--color-border)] bg-[var(--color-surface-light)] rounded-xl p-5 border border-transparent">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-2">Account Number</p>
                   <div className="flex items-center justify-between gap-4">
-                    <p className="font-mono font-bold text-amber-400 text-lg tracking-widest">{shopInfo.bankDetails.accountNumber}</p>
+                    <p className="font-mono font-black text-[var(--color-text-primary)] text-sm sm:text-lg tracking-widest">{shopInfo.bankDetails.accountNumber}</p>
                     <button 
                       onClick={() => {
                         navigator.clipboard.writeText(shopInfo.bankDetails.accountNumber)
                         toast.success('Account number copied to clipboard!')
                       }}
-                      className="text-[10px] text-gray-400 hover:text-white uppercase font-bold tracking-wider px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-all"
+                      className="text-[10px] text-[var(--color-text-primary)] hover:text-black uppercase font-black tracking-widest px-4 py-2 rounded-lg bg-[var(--color-surface-card)] hover:bg-[var(--color-accent)] border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-all"
                     >
                       Copy
                     </button>
@@ -246,161 +231,157 @@ export default function ContactPage() {
           <div className="lg:col-span-7">
             <form
               onSubmit={handleSubmit}
-              className="bg-[#151230] border border-white/10 rounded-2xl lg:rounded-3xl shadow-2xl relative overflow-hidden"
+              className="bg-[var(--color-surface-card)] border border-[var(--color-border)] rounded-2xl lg:rounded-3xl p-6 sm:p-8 lg:p-10"
             >
-              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-violet-500 to-fuchsia-500" />
-              
-              <div className="p-6 sm:p-8 lg:p-10">
-                <div className="mb-8">
-                  <h2 className="text-2xl font-bold text-white mb-2">Send us a direct message</h2>
-                  <p className="text-sm text-gray-400">Fill out the form below and our team will get back to you within 24 hours.</p>
-                </div>
+              <div className="mb-10">
+                <h2 className="text-2xl font-black font-[var(--font-family-heading)] text-[var(--color-text-primary)] uppercase tracking-tight mb-2">Send a Message</h2>
+                <p className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest">Fill out the form below and our team will get back to you within 24 hours.</p>
+              </div>
 
-                <div className="space-y-6">
-                  {/* First + Last Name */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
-                    <div>
-                      <label className="text-xs font-semibold text-gray-300 uppercase tracking-widest mb-2 block">
-                        First Name <span className="text-violet-500">*</span>
-                      </label>
-                      <div className="relative group/input">
-                        <FiUser size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within/input:text-violet-500 transition-colors" />
-                        <input
-                          type="text"
-                          value={formData.firstName}
-                          onChange={update('firstName')}
-                          placeholder="John"
-                          className="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
-                          required
-                          id="contact-firstname"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-gray-300 uppercase tracking-widest mb-2 block">
-                        Last Name <span className="text-violet-500">*</span>
-                      </label>
-                      <div className="relative group/input">
-                        <FiUser size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within/input:text-violet-500 transition-colors" />
-                        <input
-                          type="text"
-                          value={formData.lastName}
-                          onChange={update('lastName')}
-                          placeholder="Doe"
-                          className="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
-                          required
-                          id="contact-lastname"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Mobile + Email */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
-                    <div>
-                      <label className="text-xs font-semibold text-gray-300 uppercase tracking-widest mb-2 block">
-                        Mobile Number <span className="text-violet-500">*</span>
-                      </label>
-                      <div className="relative group/input">
-                        <FiSmartphone size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within/input:text-violet-500 transition-colors" />
-                        <input
-                          type="tel"
-                          value={formData.mobile}
-                          onChange={update('mobile')}
-                          placeholder="+94 7X XXX XXXX"
-                          className="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
-                          required
-                          id="contact-mobile"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-gray-300 uppercase tracking-widest mb-2 block">
-                        Email Address <span className="text-violet-500">*</span>
-                      </label>
-                      <div className="relative group/input">
-                        <FiMail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within/input:text-violet-500 transition-colors" />
-                        <input
-                          type="email"
-                          value={formData.email}
-                          onChange={update('email')}
-                          placeholder="contact@maketobe.com"
-                          className="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
-                          required
-                          id="contact-email"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Message */}
+              <div className="space-y-6">
+                {/* First + Last Name */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
                   <div>
-                    <label className="text-xs font-semibold text-gray-300 uppercase tracking-widest mb-2 block">
-                      Your Message <span className="text-violet-500">*</span>
+                    <label className="text-[10px] font-black text-[var(--color-text-primary)] uppercase tracking-widest mb-2 block">
+                      First Name <span className="text-[var(--color-accent)]">*</span>
                     </label>
                     <div className="relative group/input">
-                      <FiMessageSquare size={18} className="absolute left-4 top-4 text-gray-500 group-focus-within/input:text-violet-500 transition-colors" />
-                      <textarea
-                        value={formData.message}
-                        onChange={update('message')}
-                        placeholder="Tell us what you need help with..."
-                        className="w-full bg-black/40 border border-white/10 rounded-xl py-3.5 pl-12 pr-4 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all resize-none min-h-[140px]"
-                        required
-                        id="contact-message"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Anti-spam */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-xl bg-white/5 border border-white/10">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center shrink-0">
-                        <FiShield size={20} className="text-violet-400" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-gray-300 uppercase tracking-widest mb-1">Security Check</p>
-                        <p className="text-sm text-gray-400">
-                          Type the code: <span className="text-white font-black tracking-widest mx-1 bg-white/5 px-2 py-0.5 rounded border border-white/10">{targetCode}</span>
-                        </p>
-                      </div>
-                    </div>
-                    <div className="relative shrink-0">
+                      <FiUser size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] group-focus-within/input:text-[var(--color-accent)] transition-colors" />
                       <input
                         type="text"
-                        value={formData.captcha}
-                        onChange={update('captcha')}
-                        placeholder="Type Code"
-                        className="w-full sm:w-32 bg-black/40 border border-white/10 rounded-xl py-2.5 px-3 text-sm text-center text-white placeholder-gray-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all font-mono tracking-widest"
+                        value={formData.firstName}
+                        onChange={update('firstName')}
+                        placeholder="John"
+                        className="w-full bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-xl py-3.5 pl-12 pr-4 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]/30 transition-all font-bold"
                         required
-                        id="contact-captcha"
+                        id="contact-firstname"
                       />
                     </div>
                   </div>
-
-                  {/* Submit */}
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white font-bold text-sm sm:text-base py-4 rounded-xl shadow-lg shadow-violet-500/25 transition-all flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed"
-                    id="contact-submit"
-                  >
-                    {loading ? (
-                      <span className="flex items-center gap-2">
-                        <svg className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" viewBox="0 0 24 24"></svg>
-                        Sending your message...
-                      </span>
-                    ) : (
-                      <>
-                        Send Message 
-                        <FiSend size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                      </>
-                    )}
-                  </button>
-                  
-                  <p className="text-[11px] text-center text-gray-500 max-w-sm mx-auto">
-                    By submitting this form, you acknowledge our Privacy Policy. Your details are safe and never shared.
-                  </p>
+                  <div>
+                    <label className="text-[10px] font-black text-[var(--color-text-primary)] uppercase tracking-widest mb-2 block">
+                      Last Name <span className="text-[var(--color-accent)]">*</span>
+                    </label>
+                    <div className="relative group/input">
+                      <FiUser size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] group-focus-within/input:text-[var(--color-accent)] transition-colors" />
+                      <input
+                        type="text"
+                        value={formData.lastName}
+                        onChange={update('lastName')}
+                        placeholder="Doe"
+                        className="w-full bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-xl py-3.5 pl-12 pr-4 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]/30 transition-all font-bold"
+                        required
+                        id="contact-lastname"
+                      />
+                    </div>
+                  </div>
                 </div>
+
+                {/* Mobile + Email */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                  <div>
+                    <label className="text-[10px] font-black text-[var(--color-text-primary)] uppercase tracking-widest mb-2 block">
+                      Mobile Number <span className="text-[var(--color-accent)]">*</span>
+                    </label>
+                    <div className="relative group/input">
+                      <FiSmartphone size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] group-focus-within/input:text-[var(--color-accent)] transition-colors" />
+                      <input
+                        type="tel"
+                        value={formData.mobile}
+                        onChange={update('mobile')}
+                        placeholder="+94 7X XXX XXXX"
+                        className="w-full bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-xl py-3.5 pl-12 pr-4 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]/30 transition-all font-bold"
+                        required
+                        id="contact-mobile"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-[var(--color-text-primary)] uppercase tracking-widest mb-2 block">
+                      Email Address <span className="text-[var(--color-accent)]">*</span>
+                    </label>
+                    <div className="relative group/input">
+                      <FiMail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] group-focus-within/input:text-[var(--color-accent)] transition-colors" />
+                      <input
+                        type="email"
+                        value={formData.email}
+                        onChange={update('email')}
+                        placeholder="contact@example.com"
+                        className="w-full bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-xl py-3.5 pl-12 pr-4 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]/30 transition-all font-bold"
+                        required
+                        id="contact-email"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Message */}
+                <div>
+                  <label className="text-[10px] font-black text-[var(--color-text-primary)] uppercase tracking-widest mb-2 block">
+                    Your Message <span className="text-[var(--color-accent)]">*</span>
+                  </label>
+                  <div className="relative group/input">
+                    <FiMessageSquare size={18} className="absolute left-4 top-4 text-[var(--color-text-muted)] group-focus-within/input:text-[var(--color-accent)] transition-colors" />
+                    <textarea
+                      value={formData.message}
+                      onChange={update('message')}
+                      placeholder="Tell us what you need help with..."
+                      className="w-full bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-xl py-3.5 pl-12 pr-4 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]/30 transition-all font-bold resize-none min-h-[140px]"
+                      required
+                      id="contact-message"
+                    />
+                  </div>
+                </div>
+
+                {/* Anti-spam */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-xl bg-[var(--color-surface-light)] border border-[var(--color-border)]">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center shrink-0">
+                      <FiShield size={20} className="text-[var(--color-text-primary)]" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black text-[var(--color-text-primary)] uppercase tracking-widest mb-1">Security Check</p>
+                      <p className="text-xs font-bold text-[var(--color-text-muted)]">
+                        Enter code: <span className="text-[var(--color-text-primary)] font-black tracking-widest mx-1 bg-[var(--color-surface-card)] px-2 py-1 rounded border border-[var(--color-border)]">{targetCode}</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="relative shrink-0">
+                    <input
+                      type="text"
+                      value={formData.captcha}
+                      onChange={update('captcha')}
+                      placeholder="Type Code"
+                      className="w-full sm:w-32 bg-[var(--color-surface-card)] border border-[var(--color-border)] rounded-xl py-3 px-3 text-sm text-center text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]/30 transition-all font-mono font-black tracking-widest"
+                      required
+                      id="contact-captcha"
+                    />
+                  </div>
+                </div>
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-[var(--color-accent)] hover:bg-[var(--color-accent-dark)] text-black font-black text-sm sm:text-base py-4 rounded-xl transition-all flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed uppercase tracking-widest"
+                  id="contact-submit"
+                >
+                  {loading ? (
+                    <span className="flex items-center gap-2">
+                      <svg className="animate-spin h-5 w-5 border-2 border-black/30 border-t-black rounded-full" viewBox="0 0 24 24"></svg>
+                      Sending...
+                    </span>
+                  ) : (
+                    <>
+                      Send Message 
+                      <FiSend size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                    </>
+                  )}
+                </button>
+                
+                <p className="text-[10px] text-center font-bold uppercase tracking-widest text-[var(--color-text-muted)] opacity-70 max-w-sm mx-auto">
+                  By submitting this form, you acknowledge our Privacy Policy.
+                </p>
               </div>
             </form>
           </div>
