@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase'
+import { supabase, supabaseData } from '../lib/supabase'
 
 const AuthContext = createContext({})
 
@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
   const loadProfile = async (authUser) => {
     if (!authUser) return null
     try {
-      const { data: prof, error } = await supabase
+      const { data: prof, error } = await supabaseData
         .from('profiles')
         .select('*')
         .eq('id', authUser.id)
@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
           role: 'customer',
           status: 'active'
         }
-        await supabase.from('profiles').upsert([newProfile])
+        await supabaseData.from('profiles').upsert([newProfile])
         setProfile(newProfile)
         setIsAdmin(localStorage.getItem('adminAuth') === 'true')
         return newProfile
@@ -56,7 +56,11 @@ export function AuthProvider({ children }) {
     // Check active session
     const getSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession()
+        // Safety timeout of 5 seconds
+        const sessionPromise = supabase.auth.getSession()
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Auth Timeout')), 5000))
+        
+        const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise])
         if (!mounted) return
         
         if (session?.user) {
@@ -137,7 +141,7 @@ export function AuthProvider({ children }) {
     if (!error && data?.user) {
       setUser(data.user)
       if (user?.id) {
-        await supabase.from('profiles').update(metaDataToUpdate).eq('id', user.id)
+        await supabaseData.from('profiles').update(metaDataToUpdate).eq('id', user.id)
       }
       await loadProfile(data.user)
     }
