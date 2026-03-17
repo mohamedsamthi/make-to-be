@@ -24,20 +24,20 @@
 }
 
 [data-theme="light"] {
-  --color-primary: #f8fafc;
-  --color-primary-light: #f1f5f9;
+  --color-primary: #f1f5f9;
+  --color-primary-light: #e2e8f0;
   --color-accent: #4f46e5;
   --color-accent-light: #6366f1;
   --color-accent-dark: #3730a3;
-  --color-gold: #d97706;
-  --color-gold-light: #f59e0b;
+  --color-gold: #b45309;
+  --color-gold-light: #d97706;
   --color-surface: #ffffff;
   --color-surface-light: #f8fafc;
-  --color-surface-card: #f1f5f9;
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #334155;
-  --color-text-muted: #64748b;
-  --color-border: rgba(0, 0, 0, 0.08);
+  --color-surface-card: #ffffff;
+  --color-text-primary: #020617;
+  --color-text-secondary: #1e293b;
+  --color-text-muted: #475569;
+  --color-border: rgba(15, 23, 42, 0.08);
 }
 
 @theme {

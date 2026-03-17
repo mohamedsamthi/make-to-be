@@ -94,7 +94,7 @@ export default function ProductsPage() {
     searchQuery || categoryFilter || discountOnly || sortBy !== 'newest'
 
   return (
-    <div className="min-h-screen bg-[#0a0a1a] text-gray-200 selection:bg-violet-500/30">
+    <div className="min-h-screen bg-[var(--color-surface)] text-[var(--color-text-primary)] selection:bg-[var(--color-accent)]/30">
       {/* Background Ambience */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
         <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-violet-600/5 rounded-full blur-[120px]" />
@@ -105,14 +105,14 @@ export default function ProductsPage() {
       <div className="relative z-10 pt-10 pb-6">
         <div className="container-custom">
           {/* Detailed Breadcrumb */}
-          <nav className="mb-6 flex items-center gap-2 text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-[0.2em]">
-            <Link to="/" className="hover:text-white transition-colors">Home</Link>
-            <span className="w-1 h-1 rounded-full bg-gray-700 mx-1" />
-            <span className={categoryFilter ? 'hover:text-white transition-colors cursor-pointer' : 'text-violet-400'}>Catalog</span>
+          <nav className="mb-6 flex items-center gap-2 text-[10px] sm:text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-[0.2em]">
+            <Link to="/" className="hover:text-[var(--color-text-primary)] transition-colors">Home</Link>
+            <span className="w-1 h-1 rounded-full bg-[var(--color-border)] mx-1" />
+            <span className={categoryFilter ? 'hover:text-[var(--color-text-primary)] transition-colors cursor-pointer' : 'text-[var(--color-accent)]'}>Catalog</span>
             {categoryFilter && (
               <>
-                <span className="w-1 h-1 rounded-full bg-gray-700 mx-1" />
-                <span className="text-violet-400">{categoryFilter}</span>
+                <span className="w-1 h-1 rounded-full bg-[var(--color-border)] mx-1" />
+                <span className="text-[var(--color-accent)]">{categoryFilter}</span>
               </>
             )}
           </nav>
@@ -120,18 +120,18 @@ export default function ProductsPage() {
           {/* Title and Stats Row */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
             <div className="max-w-2xl">
-              <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tighter leading-none mb-3">
+              <h1 className="text-4xl sm:text-6xl font-black text-[var(--color-text-primary)] tracking-tighter leading-none mb-3">
                 {categoryFilter ? (
                   <span className="capitalize">{categoryFilter}</span>
                 ) : searchQuery ? (
-                  <span>Results for <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">"{searchQuery}"</span></span>
+                  <span>Results for <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent-light)]">"{searchQuery}"</span></span>
                 ) : (
-                  <span>Curated <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">Collections</span></span>
+                  <span>Curated <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent-light)]">Collections</span></span>
                 )}
               </h1>
-              <div className="flex items-center gap-4 text-xs sm:text-sm font-medium text-gray-500">
+              <div className="flex items-center gap-4 text-xs sm:text-sm font-medium text-[var(--color-text-muted)]">
                 <p>Showing {filteredProducts.length} premium pieces</p>
-                <span className="w-1.5 h-1.5 rounded-full bg-gray-800" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-border)]" />
                 <p className="flex items-center gap-1.5"><FiTrendingUp className="text-emerald-500" /> Currently Trending</p>
               </div>
             </div>
@@ -140,25 +140,25 @@ export default function ProductsPage() {
       </div>
 
       {/* Control Bar: Search & Filters Unified */}
-      <div className="sticky top-[108px] sm:top-[128px] z-30 bg-[#0a0a1a]/80 backdrop-blur-2xl border-y border-white/5 py-4">
+      <div className="sticky top-[108px] sm:top-[128px] z-30 bg-[var(--color-surface)]/80 backdrop-blur-2xl border-y border-[var(--color-border)] py-4">
         <div className="container-custom">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             
             {/* Search Input - Left side */}
             <form onSubmit={handleSearch} className="relative flex-1 group">
-              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-violet-400 transition-colors" size={16} />
+              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] group-focus-within:text-[var(--color-accent)] transition-colors" size={16} />
               <input
                 type="text"
                 value={localSearch}
                 onChange={(e) => setLocalSearch(e.target.value)}
                 placeholder="Search collection..."
-                className="w-full bg-white/5 border border-white/5 rounded-xl py-2.5 pl-11 pr-4 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/30 focus:ring-1 focus:ring-violet-500/20 transition-all"
+                className="w-full bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-xl py-2.5 pl-11 pr-4 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)]/50 focus:ring-1 focus:ring-[var(--color-accent)]/20 transition-all"
               />
               {localSearch && (
                 <button 
                   type="button" 
                   onClick={() => { setLocalSearch(''); updateFilter('search', ''); }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
                 >
                   <FiX size={14} />
                 </button>
@@ -169,20 +169,20 @@ export default function ProductsPage() {
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               {/* Category Select */}
               <div className="relative group">
-                <FiFilter className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
+                <FiFilter className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none" size={14} />
                 <select
                   value={categoryFilter}
                   onChange={(e) => updateFilter('category', e.target.value)}
-                  className="appearance-none bg-white/5 border border-white/5 text-xs font-bold uppercase tracking-wider text-gray-300 rounded-xl pl-9 pr-10 py-2.5 hover:bg-white/10 hover:border-white/10 transition-all cursor-pointer outline-none"
+                  className="appearance-none bg-[var(--color-surface-light)] border border-[var(--color-border)] text-xs font-bold uppercase tracking-wider text-[var(--color-text-primary)] rounded-xl pl-9 pr-10 py-2.5 hover:border-[var(--color-accent)]/50 transition-all cursor-pointer outline-none"
                 >
-                  <option value="" className="bg-[#0f111a]">Categories</option>
+                  <option value="" className="bg-[var(--color-surface)]">Categories</option>
                   {categories.map((cat) => (
-                    <option key={cat.slug} value={cat.slug} className="bg-[#0f111a]">
+                    <option key={cat.slug} value={cat.slug} className="bg-[var(--color-surface)]">
                       {cat.name}
                     </option>
                   ))}
                 </select>
-                <FiChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none group-hover:text-white transition-colors" size={12} />
+                <FiChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none group-hover:text-[var(--color-text-primary)] transition-colors" size={12} />
               </div>
 
               {/* Sort Select */}
@@ -190,15 +190,15 @@ export default function ProductsPage() {
                 <select
                   value={sortBy}
                   onChange={(e) => updateFilter('sort', e.target.value)}
-                  className="appearance-none bg-white/5 border border-white/5 text-xs font-bold uppercase tracking-wider text-gray-300 rounded-xl px-4 py-2.5 pr-10 hover:bg-white/10 hover:border-white/10 transition-all cursor-pointer outline-none"
+                  className="appearance-none bg-[var(--color-surface-light)] border border-[var(--color-border)] text-xs font-bold uppercase tracking-wider text-[var(--color-text-primary)] rounded-xl px-4 py-2.5 pr-10 hover:border-[var(--color-accent)]/50 transition-all cursor-pointer outline-none"
                 >
-                  <option value="newest" className="bg-[#0f111a]">New Arrival</option>
-                  <option value="price-low" className="bg-[#0f111a]">Price: Low</option>
-                  <option value="price-high" className="bg-[#0f111a]">Price: High</option>
-                  <option value="rating" className="bg-[#0f111a]">Top Rated</option>
-                  <option value="popular" className="bg-[#0f111a]">Popularity</option>
+                  <option value="newest" className="bg-[var(--color-surface)]">New Arrival</option>
+                  <option value="price-low" className="bg-[var(--color-surface)]">Price: Low</option>
+                  <option value="price-high" className="bg-[var(--color-surface)]">Price: High</option>
+                  <option value="rating" className="bg-[var(--color-surface)]">Top Rated</option>
+                  <option value="popular" className="bg-[var(--color-surface)]">Popularity</option>
                 </select>
-                <FiChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none group-hover:text-white transition-colors" size={12} />
+                <FiChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none group-hover:text-[var(--color-text-primary)] transition-colors" size={12} />
               </div>
 
               {/* Sales Toggle */}
@@ -206,11 +206,11 @@ export default function ProductsPage() {
                 onClick={() => updateFilter('discount', discountOnly ? '' : 'true')}
                 className={`h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] transition-all flex items-center gap-2 ${
                   discountOnly
-                    ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20'
-                    : 'bg-white/5 text-amber-500 border border-amber-500/10 hover:bg-amber-500/10'
+                    ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20'
+                    : 'bg-[var(--color-surface-light)] text-amber-600 border border-amber-600/10 hover:bg-amber-600/10'
                 }`}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+                <FiTrendingUp size={14} className={discountOnly ? 'text-white' : 'text-amber-600'} />
                 Special Offers
               </button>
 
@@ -246,11 +246,11 @@ export default function ProductsPage() {
         ) : (
           /* Empty State */
           <div className="py-24 text-center max-w-md mx-auto">
-            <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/5">
-              <FiSearch size={40} className="text-gray-600" />
+            <div className="w-24 h-24 bg-[var(--color-surface-light)] rounded-full flex items-center justify-center mx-auto mb-6 border border-[var(--color-border)]">
+              <FiSearch size={40} className="text-[var(--color-text-muted)]" />
             </div>
-            <h3 className="text-2xl font-black text-white mb-2 tracking-tight">No results matched</h3>
-            <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">
+            <h3 className="text-2xl font-black text-[var(--color-text-primary)] mb-2 tracking-tight">No results matched</h3>
+            <p className="text-[var(--color-text-muted)] text-sm mb-8 leading-relaxed font-medium">
               Try adjusting your search terms or filters. We're sure there's something you'll love.
             </p>
             <button 

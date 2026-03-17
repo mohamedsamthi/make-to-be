@@ -174,8 +174,8 @@ export default function Navbar() {
           visible ? 'translate-y-0' : '-translate-y-[calc(100%+40px)]'
         } ${
           scrolled 
-            ? 'bg-[var(--color-surface)]/95 backdrop-blur-xl border-b border-[var(--color-border)] shadow-2xl' 
-            : 'bg-[var(--color-surface)] border-b border-white/5'
+            ? 'bg-[var(--color-surface)]/98 backdrop-blur-2xl border-b border-[var(--color-border)] shadow-xl' 
+            : 'bg-[var(--color-surface)] border-b border-[var(--color-border)]'
         }`}
       >
         {/* Main Header Row */}
@@ -191,11 +191,11 @@ export default function Navbar() {
               </button>
 
               <Link to="/" className="flex items-center gap-2 group">
-                <div className="w-9 h-9 sm:w-11 sm:h-11 bg-white text-[var(--color-surface)] rounded-xl flex items-center justify-center font-black text-xl sm:text-2xl shadow-xl transition-all">
+                <div className="w-9 h-9 sm:w-11 sm:h-11 bg-[var(--color-accent)] text-white rounded-xl flex items-center justify-center font-black text-xl sm:text-2xl shadow-lg transition-all">
                   M
                 </div>
-                <span className="font-black text-xl sm:text-2xl tracking-tighter text-white hidden sm:block font-[var(--font-family-heading)]">
-                   MAKE <span className="text-[var(--color-accent-light)]">TO BE</span>
+                <span className="font-black text-xl sm:text-2xl tracking-tighter text-[var(--color-text-primary)] hidden sm:block font-[var(--font-family-heading)]">
+                   MAKE <span className="text-[var(--color-accent)]">TO BE</span>
                 </span>
               </Link>
             </div>
@@ -210,11 +210,11 @@ export default function Navbar() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search premium pieces..."
-                className="w-full bg-white/5 border border-white/10 rounded-l-xl py-3 pl-5 pr-4 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[var(--color-accent)] transition-all z-10"
+                className="w-full bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-l-xl py-3 pl-5 pr-4 text-xs text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)] transition-all z-10"
               />
               <button
                 type="submit"
-                className="bg-white text-[var(--color-surface)] hover:bg-gray-200 px-7 rounded-r-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2 shadow-xl"
+                className="bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-dark)] px-7 rounded-r-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg"
               >
                 <FiSearch size={16} /> Search
               </button>
@@ -258,13 +258,13 @@ export default function Navbar() {
                       <div className="p-2">
                         <Link
                           to="/profile"
-                          className="flex items-center gap-3 px-4 py-3 text-[10px] uppercase tracking-widest font-black text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
+                          className="flex items-center gap-3 px-4 py-3 text-[10px] uppercase tracking-widest font-black text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-accent)]/10 rounded-xl transition-colors"
                         >
                           <FiUser size={16} /> My Profile
                         </Link>
                         <Link
                           to="/orders"
-                          className="flex items-center gap-3 px-4 py-3 text-[10px] uppercase tracking-widest font-black text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
+                          className="flex items-center gap-3 px-4 py-3 text-[10px] uppercase tracking-widest font-black text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-accent)]/10 rounded-xl transition-colors"
                         >
                           <FiPackage size={16} /> My Orders
                         </Link>
@@ -313,7 +313,7 @@ export default function Navbar() {
                 title="Your Wishlist"
               >
                 <div className="relative">
-                  <FiHeart size={20} className={`transition-colors ${favorites.length > 0 ? 'text-rose-500 fill-rose-500' : 'text-gray-400 group-hover:text-rose-400'}`} />
+                  <FiHeart size={20} className={`transition-colors ${favorites.length > 0 ? 'text-rose-500 fill-rose-500' : 'text-[var(--color-text-muted)] group-hover:text-rose-500'}`} />
                   {favorites.length > 0 && (
                     <span className="absolute -top-1.5 -right-2 min-w-[18px] h-[18px] bg-rose-600 text-white text-[9px] font-black rounded-full flex items-center justify-center px-1 shadow-lg border-2 border-[var(--color-surface)]">
                       {favorites.length}
@@ -322,7 +322,7 @@ export default function Navbar() {
                 </div>
                 <div className="hidden sm:block text-left ml-1">
                   <span className="text-[8px] uppercase font-black tracking-widest text-rose-500 block leading-none mb-0.5">Saved</span>
-                  <span className="text-xs font-black text-white leading-none block">Wishlist</span>
+                  <span className="text-xs font-black text-[var(--color-text-primary)] leading-none block">Wishlist</span>
                 </div>
               </Link>
 
@@ -332,7 +332,7 @@ export default function Navbar() {
                 className="relative flex items-center gap-2.5 p-2 sm:px-4 sm:py-2.5 hover:bg-white/5 rounded-xl transition-all group"
               >
                 <div className="relative">
-                  <FiShoppingCart size={20} className="text-gray-400 group-hover:text-white transition-colors" />
+                  <FiShoppingCart size={20} className="text-[var(--color-text-muted)] group-hover:text-[var(--color-text-primary)] transition-colors" />
                   {cartCount > 0 && (
                     <span className="absolute -top-1.5 -right-2 min-w-[18px] h-[18px] bg-white text-[var(--color-surface)] text-[9px] font-black rounded-full flex items-center justify-center px-1 shadow-lg border-2 border-[var(--color-surface)]">
                       {cartCount > 99 ? '99+' : cartCount}
@@ -340,8 +340,8 @@ export default function Navbar() {
                   )}
                 </div>
                 <div className="hidden sm:block text-left ml-1">
-                  <span className="text-[8px] uppercase font-black tracking-widest text-[var(--color-accent-light)] block leading-none mb-0.5">Bag</span>
-                  <span className="text-xs font-black text-white leading-none block">{cartCount} Items</span>
+                  <span className="text-[8px] uppercase font-black tracking-widest text-[var(--color-accent)] block leading-none mb-0.5">Bag</span>
+                  <span className="text-xs font-black text-[var(--color-text-primary)] leading-none block">{cartCount} Items</span>
                 </div>
               </Link>
 
@@ -354,7 +354,7 @@ export default function Navbar() {
                   <FiMessageSquare size={20} className="text-rose-400 group-hover:text-white transition-colors" />
                   <div className="hidden md:block text-left ml-1">
                     <span className="text-[8px] uppercase font-black tracking-widest text-rose-500 block leading-none mb-0.5">New</span>
-                    <span className="text-xs font-black text-white leading-none block">Alert</span>
+                    <span className="text-xs font-black text-[var(--color-text-primary)] leading-none block">Alert</span>
                   </div>
                 </Link>
               )}
@@ -379,7 +379,7 @@ export default function Navbar() {
                   {link.icon}
                   {link.name}
                   {link.path === '/promo-video' && promotionalVideos.length > 0 && (
-                    <span className="w-1.5 h-1.5 bg-[var(--color-accent-light)] rounded-full animate-pulse" />
+                    <span className="w-1.5 h-1.5 bg-[var(--color-accent)] rounded-full animate-pulse" />
                   )}
                 </Link>
               ))}
@@ -440,9 +440,9 @@ export default function Navbar() {
           menuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex items-center justify-between p-6 border-b border-white/5">
-           <span className="font-black text-2xl tracking-tighter text-white">
-             MAKE <span className="text-[var(--color-accent-light)]">TO BE</span>
+        <div className="flex items-center justify-between p-6 border-b border-[var(--color-border)]">
+           <span className="font-black text-2xl tracking-tighter text-[var(--color-text-primary)]">
+             MAKE <span className="text-[var(--color-accent)]">TO BE</span>
            </span>
           <button
             onClick={() => setMenuOpen(false)}
