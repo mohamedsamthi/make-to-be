@@ -129,6 +129,7 @@ export default function Navbar() {
     { name: 'Products', path: '/products' },
     { name: 'Promo Video', path: '/promo-video', icon: <FiPlay size={14} className="text-[var(--color-accent)]" /> },
     { name: 'About Us', path: '/about' },
+    { name: 'Forms', path: '/forms' },
     { name: 'Contact', path: '/contact' },
   ]
 
@@ -147,7 +148,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Top Announcement Bar */}
       {/* Top Announcement Bar */}
       <div className="fixed top-0 left-0 right-0 h-10 bg-[var(--color-surface-light)] text-[var(--color-text-primary)] text-[10px] sm:text-xs py-2 text-center font-black tracking-widest uppercase z-[60] border-b border-[var(--color-border)] flex items-center justify-center">
         {activePromo ? (

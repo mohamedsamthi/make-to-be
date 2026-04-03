@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import RouteFallback from '../../components/common/RouteFallback'
 import { MdDashboard, MdInventory, MdLocalOffer, MdRateReview } from 'react-icons/md'
 import { FiPackage, FiUsers, FiMenu, FiX, FiArrowLeft, FiLogOut, FiShield, FiChevronLeft, FiChevronRight, FiDollarSign, FiMessageSquare, FiVideo, FiUser, FiSettings, FiSun, FiMoon } from 'react-icons/fi'
 import { useProducts } from '../../context/ProductContext'
@@ -228,9 +229,11 @@ export default function AdminLayout() {
           </div>
         </div>
 
-        {/* Page Content */}
+        {/* Page Content — Suspense keeps shell (sidebars) mounted while lazy admin chunks load */}
         <div className="p-5 lg:p-6">
-          <Outlet />
+          <Suspense fallback={<RouteFallback />}>
+            <Outlet />
+          </Suspense>
         </div>
       </main>
     </div>

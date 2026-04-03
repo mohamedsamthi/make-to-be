@@ -614,7 +614,6 @@ export function ProductProvider({ children }) {
     sendMessage,
     replyToMessage,
     customerReply,
-    messages,
     favorites,
     toggleFavorite,
     promotionalVideos,

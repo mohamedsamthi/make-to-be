@@ -22,6 +22,14 @@ Premium E-commerce Online Shop built with React, Tailwind CSS, and Supabase.
    ```
 5. Run `npm run dev` to start the local development server
 
+## Vercel deployment
+- **Framework:** Vite (auto-detected). **Build:** `npm run build` → output `dist/`.
+- In the Vercel project, add **Environment Variables** for **Production** and **Preview**:
+  - `VITE_SUPABASE_URL`
+  - `VITE_SUPABASE_ANON_KEY`
+- Redeploy after changing env vars (Vite bakes `VITE_*` in at build time).
+- SPA routing uses `vercel.json` rewrites to `index.html`.
+
 ## Admin Demo Login
 `Username:` samthi
 `Password:` 5099

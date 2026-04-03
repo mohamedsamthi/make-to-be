@@ -85,10 +85,13 @@
     font-family: var(--font-family-body);
     background: var(--color-surface);
     color: var(--color-text-primary);
+    /* Mobile-first base size; fluid utilities below scale up on larger viewports */
+    font-size: clamp(0.9375rem, 0.88rem + 0.35vw, 1.0625rem);
     line-height: 1.6;
     overflow-x: hidden;
-    font-size: 15px;
     height: 100%;
+    /* Prevent horizontal overscroll on iOS when drawers are open */
+    overflow-x: clip;
   }
 
   #root {
@@ -105,9 +108,10 @@
     color: var(--color-text-primary);
   }
 
-  h1 { font-size: 2.25rem; }
-  h2 { font-size: 1.75rem; }
-  h3 { font-size: 1.375rem; }
+  /* Fluid headings: min = comfortable on phones, max = desktop; vw bridges tablet sizes */
+  h1 { font-size: clamp(1.75rem, 1.35rem + 1.4vw, 2.75rem); }
+  h2 { font-size: clamp(1.375rem, 1.15rem + 0.9vw, 2rem); }
+  h3 { font-size: clamp(1.125rem, 1rem + 0.45vw, 1.5rem); }
 
   a {
     text-decoration: none;
@@ -119,6 +123,16 @@
     cursor: pointer;
     font-family: var(--font-family-body);
     border: none;
+    outline: none;
+  }
+
+  /* Keyboard focus: visible ring only for keyboard users (not every mouse click) */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  :focus:not(:focus-visible) {
     outline: none;
   }
 
@@ -301,25 +315,61 @@
 /* ============ UTILITY CLASSES ============ */
 @layer utilities {
   .section-padding {
-    padding: 3rem 1.25rem;
+    /* Extra bottom padding on phones for safe-area / home indicator when using fixed nav */
+    padding: clamp(2.5rem, 6vw, 4rem) 1.25rem clamp(3rem, 8vw, 5rem);
   }
 
   @media (min-width: 768px) {
     .section-padding {
-      padding: 4rem 2rem;
+      padding: clamp(3rem, 5vw, 4.5rem) 2rem clamp(3.5rem, 6vw, 5rem);
     }
   }
 
   .container-custom {
+    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1.25rem;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
   }
 
   @media (min-width: 640px) {
     .container-custom {
-      padding: 0 2rem;
+      padding-left: max(2rem, env(safe-area-inset-left));
+      padding-right: max(2rem, env(safe-area-inset-right));
     }
+  }
+
+  /* Fluid type tokens for components without semantic heading tags */
+  .text-fluid-xs {
+    font-size: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  }
+  .text-fluid-sm {
+    font-size: clamp(0.8125rem, 0.76rem + 0.3vw, 0.9375rem);
+  }
+  .text-fluid-base {
+    font-size: clamp(0.9375rem, 0.88rem + 0.35vw, 1.0625rem);
+  }
+  .text-fluid-lg {
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  }
+  .text-fluid-xl {
+    font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  }
+  .text-fluid-2xl {
+    font-size: clamp(1.75rem, 1.35rem + 1.4vw, 2.75rem);
+  }
+}
+
+/* Respect OS “reduce motion”: keeps UI usable without vestibular strain */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

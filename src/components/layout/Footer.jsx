@@ -11,6 +11,7 @@ export default function Footer() {
     { label: 'Hot Deals',     to: '/products?discount=true' },
     { label: 'My Orders',     to: '/orders' },
     { label: 'About Us',      to: '/about' },
+    { label: 'Forms',         to: '/forms' },
     { label: 'Contact',       to: '/contact' },
   ]
 
