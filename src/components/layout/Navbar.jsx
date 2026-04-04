@@ -198,9 +198,9 @@ export default function Navbar() {
       >
         {/* Main Header Row */}
         <div className="container-custom overflow-visible">
-          <div className="flex min-w-0 items-center justify-between gap-3 overflow-visible h-16 sm:h-20 sm:gap-4 lg:gap-8">
+          <div className="flex min-w-0 items-center justify-between gap-2 overflow-visible h-16 sm:h-20 sm:gap-3 lg:gap-8">
             {/* Logo + Mobile Menu Button */}
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex shrink-0 items-center gap-2 sm:gap-3">
               <button
                 onClick={() => setMenuOpen(true)}
                 className="lg:hidden p-2 -ml-2 text-[var(--color-text-primary)] hover:bg-[var(--color-surface-light)] rounded-xl transition-all"
@@ -221,12 +221,12 @@ export default function Navbar() {
               <NavbarSearch variant="desktop" resetToken={location.pathname} />
             </div>
 
-            {/* Right side: Mobile Search, User, Cart */}
-            <div className="flex min-w-0 shrink-0 items-center gap-1 overflow-visible sm:gap-2 lg:gap-3">
+            {/* Right side: scroll on narrow phones so nothing clips */}
+            <div className="flex min-w-0 flex-1 items-center justify-end gap-0.5 overflow-x-auto overflow-y-visible overscroll-x-contain py-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-1 lg:max-w-none lg:flex-none lg:gap-3 lg:overflow-visible [&::-webkit-scrollbar]:hidden">
               {/* Mobile Search Toggle */}
               <button
                 onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-                className="lg:hidden p-2.5 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-light)] rounded-xl transition-colors"
+                className="shrink-0 lg:hidden p-2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-light)] rounded-xl transition-colors sm:p-2.5"
               >
                 <FiSearch size={22} />
               </button>
@@ -239,7 +239,7 @@ export default function Navbar() {
                     onClick={() => setUserMenuOpen((prev) => !prev)}
                     title={profile?.full_name || user?.email || t('userMenu.account')}
                     aria-label={t('userMenu.account')}
-                    className="flex items-center rounded-xl border border-transparent p-1.5 transition-all hover:border-[var(--color-border)] hover:bg-[var(--color-surface-light)] group"
+                    className="group flex shrink-0 items-center rounded-xl border border-transparent p-1.5 transition-all hover:border-[var(--color-border)] hover:bg-[var(--color-surface-light)]"
                   >
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[var(--color-border)] bg-[var(--color-primary-light)] text-xs font-black text-[var(--color-text-primary)] shadow-sm">
                       {profile?.avatar_url ? (
@@ -290,20 +290,20 @@ export default function Navbar() {
                   to="/login"
                   title={t('userMenu.signIn')}
                   aria-label={t('userMenu.signIn')}
-                  className="hidden items-center justify-center rounded-xl p-2.5 text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-light)] hover:text-[var(--color-text-primary)] sm:flex"
+                  className="hidden shrink-0 items-center justify-center rounded-xl p-2.5 text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-light)] hover:text-[var(--color-text-primary)] sm:flex"
                 >
                   <FiUser size={20} />
                 </Link>
               )}
 
-              <div className="max-w-[min(11rem,calc(100vw-8rem))] min-w-0 sm:max-w-[12.5rem]">
+              <div className="min-w-0 shrink-0 lg:max-w-[12.5rem] lg:min-w-[9rem]">
                 <LanguageSwitcher />
               </div>
 
               {/* Theme Toggle */}
               <button
                 onClick={(e) => toggleTheme(e)}
-                className="p-2.5 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-light)] rounded-xl transition-all"
+                className="shrink-0 p-2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-light)] rounded-xl transition-all sm:p-2.5"
                 title={theme === 'dark' ? t('userMenu.themeLight') : t('userMenu.themeDark')}
               >
                 {theme === 'dark' ? <FiSun size={20} /> : <FiMoon size={20} />}
@@ -312,7 +312,7 @@ export default function Navbar() {
               {/* Wishlist Link */}
               <Link
                 to="/wishlist"
-                className="group relative flex items-center justify-center rounded-xl border border-transparent p-2.5 transition-all hover:border-[var(--color-border)] hover:bg-[var(--color-surface-light)]"
+                className="group relative flex shrink-0 items-center justify-center rounded-xl border border-transparent p-2 transition-all hover:border-[var(--color-border)] hover:bg-[var(--color-surface-light)] sm:p-2.5"
                 title={t('userMenu.wishlistTitle')}
                 aria-label={t('userMenu.wishlistTitle')}
               >
@@ -332,7 +332,7 @@ export default function Navbar() {
                 to="/cart"
                 title={`${t('userMenu.bag')} — ${t('userMenu.bagItems', { n: cartCount > 99 ? '99+' : cartCount })}`}
                 aria-label={`${t('userMenu.bag')}, ${t('userMenu.bagItems', { n: cartCount > 99 ? '99+' : cartCount })}`}
-                className="group relative flex items-center justify-center rounded-xl border border-transparent p-2.5 transition-all hover:border-[var(--color-border)] hover:bg-[var(--color-surface-light)]"
+                className="group relative flex shrink-0 items-center justify-center rounded-xl border border-transparent p-2 transition-all hover:border-[var(--color-border)] hover:bg-[var(--color-surface-light)] sm:p-2.5"
               >
                 <FiShoppingCart size={20} className="text-[var(--color-text-muted)] transition-colors group-hover:text-[var(--color-text-primary)]" />
                 {cartCount > 0 && (
@@ -348,7 +348,7 @@ export default function Navbar() {
                   to={latestMessageOrder ? `/orders?id=${latestMessageOrder.id}&tab=chat` : `/profile?tab=support`}
                   title={`${t('userMenu.new')}: ${t('userMenu.alert')}`}
                   aria-label={`${t('userMenu.new')}: ${t('userMenu.alert')}`}
-                  className="group relative flex animate-pulse items-center justify-center rounded-xl border border-rose-500/20 bg-rose-500/10 p-2.5 transition-all"
+                  className="group relative flex shrink-0 animate-pulse items-center justify-center rounded-xl border border-rose-500/20 bg-rose-500/10 p-2 transition-all sm:p-2.5"
                 >
                   <FiMessageSquare size={20} className="text-rose-400 transition-colors group-hover:text-white" />
                 </Link>
@@ -523,6 +523,7 @@ export default function Navbar() {
           <div className="flex justify-center">
             <LanguageSwitcher
               menuPlacement="above"
+              layout="block"
               className="w-full max-w-xs justify-center"
             />
           </div>

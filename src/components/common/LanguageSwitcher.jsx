@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useLayoutEffect, useCallback, useId } from 'react'
 import { createPortal } from 'react-dom'
 import { FiGlobe, FiChevronDown, FiCheck } from 'react-icons/fi'
 import { useLanguage } from '../../context/LanguageContext'
@@ -9,9 +9,11 @@ const Z_MENU = 9999
 /**
  * EN / TA / SI — custom menu (black + brand green) with fixed positioning so it stays on-screen.
  * @param {'auto' | 'above' | 'below'} menuPlacement — `above` for tight footers (e.g. mobile drawer).
+ * @param {'toolbar' | 'block'} layout — `toolbar` = compact globe on small screens (navbar). `block` = full label (drawer/settings).
  */
-export default function LanguageSwitcher({ className = '', menuPlacement = 'auto' }) {
+export default function LanguageSwitcher({ className = '', menuPlacement = 'auto', layout = 'toolbar' }) {
   const { language, setLanguage, t } = useLanguage()
+  const triggerId = useId()
   const [open, setOpen] = useState(false)
   const triggerRef = useRef(null)
   const menuRef = useRef(null)
@@ -113,21 +115,31 @@ export default function LanguageSwitcher({ className = '', menuPlacement = 'auto
       <button
         ref={triggerRef}
         type="button"
-        id="site-language-trigger"
+        id={triggerId}
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label={t('lang.label')}
+        aria-label={`${t('lang.label')}: ${current.label}`}
         title={current.label}
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full max-w-full min-w-0 items-center gap-1.5 rounded-xl border border-[var(--color-accent)]/35 bg-[#050505] py-2 pl-2.5 pr-2 text-left shadow-sm transition-colors hover:border-[var(--color-accent)]/55 hover:bg-[#0a0a0a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-surface)] sm:gap-2 sm:pl-3 sm:pr-2.5"
+        className={`flex min-w-0 max-w-full items-center gap-1.5 rounded-xl border border-[var(--color-accent)]/35 bg-[#050505] py-2 pl-2.5 pr-2 text-left shadow-sm transition-colors hover:border-[var(--color-accent)]/55 hover:bg-[#0a0a0a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-surface)] lg:w-full lg:gap-2 lg:pl-3 lg:pr-2.5 ${
+          layout === 'block'
+            ? ''
+            : 'max-lg:h-10 max-lg:w-10 max-lg:shrink-0 max-lg:justify-center max-lg:gap-0 max-lg:px-0 max-lg:py-0'
+        }`}
       >
         <FiGlobe className="shrink-0 text-[var(--color-accent)]" size={16} aria-hidden />
-        <span className="min-w-0 flex-1 truncate text-[10px] font-black uppercase tracking-wider text-zinc-100 sm:text-[11px]">
+        <span
+          className={`min-w-0 flex-1 truncate text-left text-[10px] font-black uppercase tracking-wider text-zinc-100 sm:text-[11px] ${
+            layout === 'block' ? '' : 'max-lg:sr-only'
+          }`}
+        >
           {current.label}
         </span>
         <FiChevronDown
           size={14}
-          className={`shrink-0 text-[var(--color-accent)] transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`shrink-0 text-[var(--color-accent)] transition-transform ${open ? 'rotate-180' : ''} ${
+            layout === 'block' ? '' : 'max-lg:hidden'
+          }`}
           aria-hidden
         />
       </button>
@@ -137,7 +149,7 @@ export default function LanguageSwitcher({ className = '', menuPlacement = 'auto
           <ul
             ref={menuRef}
             role="listbox"
-            aria-labelledby="site-language-trigger"
+            aria-labelledby={triggerId}
             style={menuStyle}
             className="max-h-[min(50vh,280px)] overflow-y-auto rounded-xl border border-[var(--color-accent)]/40 bg-[#050505] py-1 shadow-[0_12px_40px_rgba(0,0,0,0.65)]"
           >

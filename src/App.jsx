@@ -50,7 +50,7 @@ function CustomerLayout({ children }) {
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      <main className="flex-1 pt-[calc(2.5rem+4rem)] lg:pt-[calc(2.5rem+5rem+3rem)]">
+      <main className="flex-1 pb-20 pt-[calc(2.5rem+4rem)] max-lg:pb-[max(5rem,env(safe-area-inset-bottom,0px))] lg:pb-8 lg:pt-[calc(2.5rem+5rem+3rem)]">
         <Suspense fallback={<RouteFallback />}>{children}</Suspense>
       </main>
       <Footer />
@@ -62,7 +62,7 @@ function AuthLayout({ children }) {
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      <main className="flex-1 pt-[calc(2.5rem+4rem)] lg:pt-[calc(2.5rem+5rem+3rem)]">
+      <main className="flex-1 pb-20 pt-[calc(2.5rem+4rem)] max-lg:pb-[max(5rem,env(safe-area-inset-bottom,0px))] lg:pb-8 lg:pt-[calc(2.5rem+5rem+3rem)]">
         <Suspense fallback={<RouteFallback />}>{children}</Suspense>
       </main>
     </div>
