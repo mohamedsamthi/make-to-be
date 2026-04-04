@@ -71,49 +71,57 @@ export default function AdminOrdersPage() {
   return (
     <div className="max-w-[1440px] mx-auto pb-10">
       {/* Header */}
-      <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <h1 className="text-3xl font-black font-[var(--font-family-heading)] text-white mb-1">Order Management</h1>
-          <p className="text-sm text-gray-400">Manage, track and update customer purchases</p>
+          <h1 className="mb-1 text-3xl font-black text-[var(--color-text-primary)] font-[var(--font-family-heading)]">Order Management</h1>
+          <p className="text-sm text-[var(--color-text-muted)]">Manage, track and update customer purchases</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="relative">
-            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={16} />
-            <input 
-              value={search} 
-              onChange={e => setSearch(e.target.value)} 
-              placeholder="Search orders..." 
-              className="w-full md:w-64 bg-white/5 border border-white/10 rounded-xl py-2.5 pl-11 pr-4 text-sm text-white focus:border-violet-500 transition-all outline-none" 
+          <div className="relative w-full md:w-72">
+            <FiSearch className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-[var(--color-text-muted)]" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search orders..."
+              className="input-field w-full pl-11"
             />
           </div>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: 'Total Orders', value: stats.total, icon: <FiPackage />, color: 'from-blue-500/20' },
-          { label: 'Pending', value: stats.pending, icon: <FiClock />, color: 'from-amber-500/20' },
-          { label: 'Completed', value: stats.completed, icon: <FiCheck />, color: 'from-emerald-500/20' },
-          { label: 'Total Revenue', value: `Rs.${stats.revenue.toLocaleString()}`, icon: <span className="font-bold text-sm">Rs.</span>, color: 'from-violet-500/20' },
+          { label: 'Total Orders', value: stats.total, icon: <FiPackage />, color: 'from-blue-500/15' },
+          { label: 'Pending', value: stats.pending, icon: <FiClock />, color: 'from-amber-500/15' },
+          { label: 'Completed', value: stats.completed, icon: <FiCheck />, color: 'from-emerald-500/15' },
+          { label: 'Total Revenue', value: `Rs.${stats.revenue.toLocaleString()}`, icon: <span className="text-sm font-bold">Rs.</span>, color: 'from-[var(--color-accent)]/15' },
         ].map((s, i) => (
-          <div key={i} className={`p-5 rounded-2xl bg-gradient-to-br ${s.color} to-transparent border border-white/5 animate-fadeInUp shadow-xl`} style={{ animationDelay: `${i * 0.1}s` }}>
-            <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-lg mb-4 text-white/70">{s.icon}</div>
-            <p className="text-2xl font-black text-white">{s.value}</p>
-            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">{s.label}</p>
+          <div
+            key={i}
+            className={`animate-fadeInUp rounded-2xl border border-[var(--color-border)] bg-gradient-to-br ${s.color} to-[var(--color-surface-card)] p-5 shadow-lg`}
+            style={{ animationDelay: `${i * 0.1}s` }}
+          >
+            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-surface-light)] text-lg text-[var(--color-text-secondary)]">
+              {s.icon}
+            </div>
+            <p className="text-2xl font-black text-[var(--color-text-primary)]">{s.value}</p>
+            <p className="mt-1 text-xs font-bold uppercase tracking-widest text-[var(--color-text-muted)]">{s.label}</p>
           </div>
         ))}
       </div>
 
-      {/* Filters & Table */}
-      <div className="bg-[#1e1c3a]/50 border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
-        {/* Tabs */}
-        <div className="p-4 border-b border-white/5 flex flex-wrap items-center gap-2 bg-black/20">
-          {['all', 'pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'].map(t => (
+      <div className="overflow-hidden rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface-card)] shadow-xl">
+        <div className="flex flex-wrap items-center gap-2 border-b border-[var(--color-border)] bg-[var(--color-surface-light)] p-4">
+          {['all', 'pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'].map((t) => (
             <button
               key={t}
+              type="button"
               onClick={() => setFilter(t)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${filter === t ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/20' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}`}
+              className={`rounded-xl px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all ${
+                filter === t
+                  ? 'bg-[var(--color-accent)] text-black shadow-md shadow-[var(--color-accent)]/25'
+                  : 'text-[var(--color-text-muted)] hover:bg-[var(--color-border)]/40 hover:text-[var(--color-text-primary)]'
+              }`}
             >
               {t}
             </button>
@@ -123,40 +131,40 @@ export default function AdminOrdersPage() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1100px] border-collapse">
             <thead>
-              <tr className="bg-white/2 border-b border-white/5">
-                <th className="text-left text-[11px] font-bold text-gray-500 uppercase tracking-widest px-6 py-5">Order Info</th>
-                <th className="text-left text-[11px] font-bold text-gray-500 uppercase tracking-widest px-6 py-5">Customer</th>
-                <th className="text-left text-[11px] font-bold text-gray-500 uppercase tracking-widest px-6 py-5">Items Delivery</th>
-                <th className="text-left text-[11px] font-bold text-gray-500 uppercase tracking-widest px-6 py-5">Total</th>
-                <th className="text-left text-[11px] font-bold text-gray-500 uppercase tracking-widest px-6 py-5">Status Updates</th>
-                <th className="text-right text-[11px] font-bold text-gray-500 uppercase tracking-widest px-6 py-5">Quick Actions</th>
+              <tr className="border-b border-[var(--color-border)] bg-[var(--color-surface-light)]">
+                <th className="px-6 py-5 text-left text-[11px] font-bold uppercase tracking-widest text-[var(--color-text-muted)]">Order Info</th>
+                <th className="px-6 py-5 text-left text-[11px] font-bold uppercase tracking-widest text-[var(--color-text-muted)]">Customer</th>
+                <th className="px-6 py-5 text-left text-[11px] font-bold uppercase tracking-widest text-[var(--color-text-muted)]">Items Delivery</th>
+                <th className="px-6 py-5 text-left text-[11px] font-bold uppercase tracking-widest text-[var(--color-text-muted)]">Total</th>
+                <th className="px-6 py-5 text-left text-[11px] font-bold uppercase tracking-widest text-[var(--color-text-muted)]">Status Updates</th>
+                <th className="px-6 py-5 text-right text-[11px] font-bold uppercase tracking-widest text-[var(--color-text-muted)]">Quick Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-[var(--color-border)]">
               {filtered.length > 0 ? filtered.map((order, idx) => (
-                <tr key={order.id} className="hover:bg-white/[0.03] transition-colors group animate-fadeInUp" style={{ animationDelay: `${idx * 0.05}s` }}>
+                <tr key={order.id} className="group animate-fadeInUp transition-colors hover:bg-[var(--color-surface-light)]" style={{ animationDelay: `${idx * 0.05}s` }}>
                   <td className="px-6 py-6">
                     <div className="flex items-center gap-3">
-                      <div className={`w-2 h-10 rounded-full bg-gradient-to-b ${
+                      <div className={`h-10 w-2 rounded-full bg-gradient-to-b ${
                         order.status === 'delivered' ? 'from-emerald-500 to-teal-500' : 
                         order.status === 'cancelled' ? 'from-red-500 to-pink-500' : 
-                        'from-violet-500 to-fuchsia-500'}`} 
+                        'from-[var(--color-accent)] to-[var(--color-accent-dark)]'}`} 
                       />
                       <div>
-                        <p className="text-sm font-mono font-black text-white">{order.id}</p>
-                        <p className="text-[10px] text-gray-500 mt-0.5">{new Date(order.created_at).toLocaleString()}</p>
+                        <p className="font-mono text-sm font-black text-[var(--color-text-primary)]">{order.id}</p>
+                        <p className="mt-0.5 text-[10px] text-[var(--color-text-muted)]">{new Date(order.created_at).toLocaleString()}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-6">
                     <div className="space-y-1">
-                      <p className="text-sm font-bold text-gray-100">{order.customer_name}</p>
+                      <p className="text-sm font-bold text-[var(--color-text-primary)]">{order.customer_name}</p>
                       <div className="flex items-center gap-2">
-                         <span className="text-[10px] font-mono text-gray-500">{order.customer_phone}</span>
+                         <span className="font-mono text-[10px] text-[var(--color-text-muted)]">{order.customer_phone}</span>
                          <a 
                            href={`https://wa.me/${order.customer_phone.replace(/\D/g,'')}?text=Hello ${order.customer_name}, regarding your order ${order.id}...`}
                            target="_blank" rel="noreferrer"
-                           className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all"
+                           className="rounded-lg bg-emerald-500/10 p-1.5 text-emerald-600 transition-all hover:bg-emerald-500 hover:text-white dark:text-emerald-400"
                          >
                            <FaWhatsapp size={12} />
                          </a>
@@ -167,26 +175,26 @@ export default function AdminOrdersPage() {
                     <div className="max-w-[220px]">
                       <div className="flex flex-wrap gap-1">
                         {(order.items || []).filter(i => i && !i.is_sales_data).map((item, i) => (
-                          <span key={i} className="px-2 py-0.5 rounded-lg bg-white/5 border border-white/5 text-[10px] text-gray-400 whitespace-nowrap">
-                            {item.product_name} <span className="text-violet-400 font-bold">×{item.quantity}</span>
+                          <span key={i} className="whitespace-nowrap rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-light)] px-2 py-0.5 text-[10px] text-[var(--color-text-secondary)]">
+                            {item.product_name} <span className="font-bold text-[var(--color-accent)]">×{item.quantity}</span>
                           </span>
                         ))}
                       </div>
-                      <p className="text-[10px] text-gray-500 mt-2 line-clamp-1 italic">{order.customer_address}</p>
+                      <p className="mt-2 line-clamp-1 text-[10px] italic text-[var(--color-text-muted)]">{order.customer_address}</p>
                     </div>
                   </td>
                   <td className="px-6 py-6">
-                    <p className="text-base font-black text-white">LKR {order.total.toLocaleString()}</p>
+                    <p className="text-base font-black text-[var(--color-text-primary)]">LKR {order.total.toLocaleString()}</p>
                   </td>
                   <td className="px-6 py-6">
                     <div className="flex flex-col gap-2">
                        <select
                         value={order.status}
                         onChange={e => handleStatusChange(order.id, 'status', e.target.value)}
-                        className={`bg-black/40 border border-white/10 rounded-xl text-[11px] font-bold px-3 py-2 outline-none transition-all cursor-pointer ${
-                          order.status === 'delivered' ? 'text-emerald-400 border-emerald-500/30' : 
-                          order.status === 'cancelled' ? 'text-red-400 border-red-500/30' : 
-                          'text-violet-400'
+                        className={`input-field cursor-pointer px-3 py-2 text-[11px] font-bold ${
+                          order.status === 'delivered' ? 'border-emerald-500/40 text-emerald-600 dark:text-emerald-400' : 
+                          order.status === 'cancelled' ? 'border-red-500/40 text-red-600 dark:text-red-400' : 
+                          'text-[var(--color-accent)]'
                         }`}
                       >
                         <option value="pending">⏳ Pending</option>
@@ -199,8 +207,8 @@ export default function AdminOrdersPage() {
                       <select
                         value={order.payment_status}
                         onChange={e => handleStatusChange(order.id, 'payment_status', e.target.value)}
-                        className={`bg-black/40 border border-white/10 rounded-xl text-[11px] font-bold px-3 py-2 outline-none transition-all cursor-pointer ${
-                          order.payment_status === 'paid' ? 'text-emerald-400 border-emerald-500/30' : 'text-amber-400'
+                        className={`input-field cursor-pointer px-3 py-2 text-[11px] font-bold ${
+                          order.payment_status === 'paid' ? 'border-emerald-500/40 text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'
                         }`}
                       >
                         <option value="pending">🚫 Unpaid</option>
@@ -234,8 +242,8 @@ export default function AdminOrdersPage() {
               )) : (
                 <tr>
                   <td colSpan="6" className="py-32 text-center">
-                    <div className="flex flex-col items-center gap-4 text-gray-500">
-                       <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center text-2xl">📦</div>
+                    <div className="flex flex-col items-center gap-4 text-[var(--color-text-muted)]">
+                       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-surface-light)] text-2xl">📦</div>
                        <p className="font-bold italic">No orders found matching your criteria</p>
                     </div>
                   </td>

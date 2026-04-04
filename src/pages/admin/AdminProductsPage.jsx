@@ -172,8 +172,8 @@ export default function AdminProductsPage() {
             onClick={() => setFilterCategory('all')}
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
               filterCategory === 'all'
-                ? 'gradient-accent text-white'
-                : 'glass-light text-[var(--color-text-secondary)] hover:text-white'
+                ? 'gradient-accent text-black'
+                : 'glass-light text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-border)]/30'
             }`}
           >
             All
@@ -184,8 +184,8 @@ export default function AdminProductsPage() {
               onClick={() => setFilterCategory(c.slug)}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 filterCategory === c.slug
-                  ? 'gradient-accent text-white'
-                  : 'glass-light text-[var(--color-text-secondary)] hover:text-white'
+                  ? 'gradient-accent text-black'
+                  : 'glass-light text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-border)]/30'
               }`}
             >
               {c.icon} {c.name}
@@ -250,7 +250,7 @@ export default function AdminProductsPage() {
                     <div className="flex gap-2 justify-end">
                       <button
                         onClick={() => openEdit(p)}
-                        className="w-9 h-9 rounded-xl glass-light flex items-center justify-center hover:bg-blue-500/15 text-blue-400 transition-all opacity-60 group-hover:opacity-100"
+                        className="w-9 h-9 rounded-xl glass-light flex items-center justify-center hover:bg-[var(--color-accent)]/15 text-[var(--color-accent)] transition-all opacity-60 group-hover:opacity-100"
                         title="Edit"
                       >
                         <FiEdit size={15} />
@@ -341,7 +341,7 @@ export default function AdminProductsPage() {
                         onClick={() => setFormData(p => ({...p, category: c.slug}))}
                         className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
                           formData.category === c.slug
-                            ? 'gradient-accent text-white shadow-lg shadow-[var(--color-accent)]/20'
+                            ? 'gradient-accent text-black shadow-lg shadow-[var(--color-accent)]/20'
                             : 'bg-[var(--color-surface-light)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:border-[var(--color-accent)]/30'
                         }`}
                       >

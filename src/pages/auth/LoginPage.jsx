@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiShield } from 'react-icons/fi'
 import { useAuth } from '../../context/AuthContext'
+import { useLanguage } from '../../context/LanguageContext'
 import toast from 'react-hot-toast'
 
 export default function LoginPage() {
+  const { t } = useLanguage()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -15,7 +17,7 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!email || !password) {
-      toast.error('Please fill in all fields')
+      toast.error(t('auth.toastFillFields'))
       return
     }
 
@@ -49,18 +51,18 @@ export default function LoginPage() {
 
       if (error) {
         if (error.message?.toLowerCase().includes('invalid login')) {
-          toast.error('Incorrect email or password.')
+          toast.error(t('auth.toastInvalidLogin'))
         } else if (error.message?.toLowerCase().includes('email not confirmed')) {
-          toast.error('Please check your email to confirm your account.')
+          toast.error(t('auth.toastConfirmEmail'))
         } else {
-          toast.error(error.message || 'Login failed. Please try again.')
+          toast.error(error.message || t('auth.toastLoginFailed'))
         }
       } else {
-        toast.success('Welcome back! 🎉')
+        toast.success(t('auth.toastWelcome'))
         navigate('/')
       }
     } catch (err) {
-      toast.error('Something went wrong. Please try again.')
+      toast.error(t('auth.toastGenericError'))
     } finally {
       setLoading(false)
     }
@@ -94,8 +96,8 @@ export default function LoginPage() {
               MAKE<span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg, #22c55e, #4ade80)' }}>TOBE</span>
             </span>
           </Link>
-          <h1 className="text-3xl font-black text-white mb-2 tracking-tight">Welcome Back</h1>
-          <p className="text-gray-500 text-sm font-medium">Sign in to continue your shopping experience</p>
+          <h1 className="text-3xl font-black text-white mb-2 tracking-tight">{t('auth.welcomeBack')}</h1>
+          <p className="text-gray-500 text-sm font-medium">{t('auth.signInSubtitle')}</p>
         </div>
 
         {/* Form Card */}
@@ -110,7 +112,7 @@ export default function LoginPage() {
               {/* Email */}
               <div>
                 <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2 block">
-                  Email Address
+                  {t('auth.email')}
                 </label>
                 <div className="relative group">
                   <FiMail size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-green-400 transition-colors duration-200" />
@@ -133,10 +135,10 @@ export default function LoginPage() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-                    Password
+                    {t('auth.password')}
                   </label>
                   <Link to="/forgot-password" className="text-[11px] font-bold text-green-400 hover:text-green-300 transition-colors uppercase tracking-wider">
-                    Forgot?
+                    {t('auth.forgot')}
                   </Link>
                 </div>
                 <div className="relative group">
@@ -174,10 +176,10 @@ export default function LoginPage() {
                 {loading ? (
                   <span className="flex items-center gap-3">
                     <svg className="animate-spin h-5 w-5 border-2 border-black/20 border-t-black rounded-full" viewBox="0 0 24 24"></svg>
-                    Signing In...
+                    {t('auth.signingIn')}
                   </span>
                 ) : (
-                  <>Sign In <FiArrowRight size={18} /></>
+                  <>{t('auth.signIn')} <FiArrowRight size={18} /></>
                 )}
               </button>
             </form>
@@ -185,9 +187,9 @@ export default function LoginPage() {
             {/* Divider */}
             <div className="mt-8 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-center text-sm text-gray-500 font-medium">
-                Don't have an account?{' '}
+                {t('auth.noAccount')}{' '}
                 <Link to="/register" className="text-green-400 font-bold hover:text-green-300 transition-colors">
-                  Create Account
+                  {t('auth.createAccount')}
                 </Link>
               </p>
             </div>
@@ -198,12 +200,12 @@ export default function LoginPage() {
         <div className="mt-8 flex items-center justify-center gap-6">
           <div className="flex items-center gap-1.5 text-gray-600">
             <FiShield size={13} />
-            <span className="text-[10px] font-bold uppercase tracking-widest">Encrypted</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest">{t('auth.encrypted')}</span>
           </div>
           <div className="w-1 h-1 rounded-full bg-gray-700" />
-          <span className="text-[10px] font-bold uppercase tracking-widest text-gray-600">256-bit SSL</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-gray-600">{t('auth.ssl')}</span>
           <div className="w-1 h-1 rounded-full bg-gray-700" />
-          <span className="text-[10px] font-bold uppercase tracking-widest text-gray-600">Secure</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-gray-600">{t('auth.secure')}</span>
         </div>
       </div>
     </div>

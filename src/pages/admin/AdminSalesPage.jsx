@@ -277,7 +277,7 @@ export default function AdminSalesPage() {
             <div className="flex-1 flex flex-col bg-[#1e1c3a]">
               <div className="p-5 border-b border-white/5 flex items-center justify-between bg-white/5">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-fuchsia-500 flex items-center justify-center font-bold shadow-lg">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--color-accent)] to-[var(--color-accent-dark)] flex items-center justify-center font-bold shadow-lg">
                     {selectedOrder.customer_name[0].toUpperCase()}
                   </div>
                   <div>
@@ -314,11 +314,11 @@ export default function AdminSalesPage() {
                     <div key={i} className={`flex ${isAdmin ? 'justify-end' : 'justify-start'}`}>
                       <div className={`max-w-[70%] p-3.5 rounded-2xl ${
                         isAdmin 
-                          ? 'bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white rounded-tr-sm shadow-lg shadow-violet-500/20' 
+                          ? 'bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-dark)] text-white rounded-tr-sm shadow-lg shadow-[0_0_25px_rgba(200,230,0,0.2)]' 
                           : 'bg-white/10 border border-white/5 text-gray-200 rounded-tl-sm'
                       }`}>
                         <p className="text-sm font-medium leading-relaxed">{msg.message}</p>
-                        <p className={`text-[9px] mt-1.5 ${isAdmin ? 'text-violet-200 opacity-80 text-right' : 'text-gray-500'}`}>
+                        <p className={`text-[9px] mt-1.5 ${isAdmin ? 'text-[var(--color-accent)] opacity-80 text-right' : 'text-gray-500'}`}>
                           {new Date(msg.time || msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </p>
                       </div>

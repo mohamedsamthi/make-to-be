@@ -1,6 +1,9 @@
 -- Make To Be - E-commerce Supabase Schema
 -- Run this in the Supabase SQL Editor
 
+-- UUID helper (used by this schema and the app)
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- 1. Create Products Table
 CREATE TABLE products (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -56,6 +59,45 @@ CREATE TABLE promotions (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- 4b. Create Promotional Videos Table (used by FeaturedVideo & PromoVideoPage)
+-- NOTE: The frontend expects:
+-- - id, title, url
+-- - is_active boolean
+-- - original_audio boolean
+-- - promoted_products (array of product IDs) for video-wise promotions
+CREATE TABLE promotional_videos (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  title TEXT NOT NULL,
+  url TEXT NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  original_audio BOOLEAN DEFAULT true,
+  promoted_products UUID[] DEFAULT '{}',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 4c. Create Messages Table (used by ContactPage, AdminMessagesPage, ProfilePage)
+-- NOTE: The frontend expects:
+-- - id, name, email, phone, message
+-- - status: unread | replied | read
+-- - chat_history: [{ sender, message, time, ... }]
+-- - admin_reply text
+-- - readbyuser / readbyadmin booleans
+-- - user_id (optional)
+CREATE TABLE messages (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  name TEXT NOT NULL,
+  email TEXT,
+  phone TEXT,
+  message TEXT NOT NULL,
+  status TEXT DEFAULT 'unread',
+  chat_history JSONB DEFAULT '[]'::jsonb,
+  admin_reply TEXT,
+  readbyadmin BOOLEAN DEFAULT false,
+  readbyuser BOOLEAN DEFAULT false,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- 5. Create Profiles Table (linked to Supabase Auth)
 CREATE TABLE profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
@@ -99,7 +141,12 @@ ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
 ALTER TABLE promotions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE promotional_videos ENABLE ROW LEVEL SECURITY;
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+-- Storage uses its own RLS controls
+ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
 
 -- Products Policies
 CREATE POLICY "Public can view active products" ON products FOR SELECT USING (true);
@@ -123,8 +170,40 @@ CREATE POLICY "Admins can delete reviews" ON reviews FOR DELETE USING (true);
 CREATE POLICY "Public can view active promotions" ON promotions FOR SELECT USING (true);
 CREATE POLICY "Admins can manage promotions" ON promotions FOR ALL USING (true);
 
+-- Promotional Videos Policies
+CREATE POLICY "Public can view promotional videos" ON promotional_videos FOR SELECT USING (true);
+CREATE POLICY "Public can manage promotional videos" ON promotional_videos FOR ALL USING (true) WITH CHECK (true);
+
+-- Messages Policies
+CREATE POLICY "Public can view messages" ON messages FOR SELECT USING (true);
+CREATE POLICY "Public can insert messages" ON messages FOR INSERT WITH CHECK (true);
+CREATE POLICY "Public can update messages" ON messages FOR UPDATE USING (true) WITH CHECK (true);
+CREATE POLICY "Public can delete messages" ON messages FOR DELETE USING (true);
+
 -- Profiles Policies
 CREATE POLICY "Users can view own profile" ON profiles FOR SELECT USING (true);
 CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (true);
 CREATE POLICY "Service role can insert profiles" ON profiles FOR INSERT WITH CHECK (true);
 CREATE POLICY "Admins can delete profiles" ON profiles FOR DELETE USING (true);
+
+-- Storage Policies (uploads & reads for the two buckets used by the app)
+-- This app uploads images/videos directly from the frontend admin UI.
+-- The existing project uses very permissive policies (client-side admin auth),
+-- so these policies match that behavior for compatibility.
+-- Buckets themselves are created by server/setup_supabase.js (run once).
+DROP POLICY IF EXISTS "Public can read products bucket" ON storage.objects;
+DROP POLICY IF EXISTS "Public can write products bucket" ON storage.objects;
+DROP POLICY IF EXISTS "Public can read promotions bucket" ON storage.objects;
+DROP POLICY IF EXISTS "Public can write promotions bucket" ON storage.objects;
+
+CREATE POLICY "Public can read products bucket" ON storage.objects
+FOR SELECT USING (bucket_id = 'products');
+
+CREATE POLICY "Public can write products bucket" ON storage.objects
+FOR ALL USING (bucket_id = 'products') WITH CHECK (bucket_id = 'products');
+
+CREATE POLICY "Public can read promotions bucket" ON storage.objects
+FOR SELECT USING (bucket_id = 'promotions');
+
+CREATE POLICY "Public can write promotions bucket" ON storage.objects
+FOR ALL USING (bucket_id = 'promotions') WITH CHECK (bucket_id = 'promotions');

@@ -3,8 +3,10 @@ import { useSearchParams, Link } from 'react-router-dom'
 import { FiSearch, FiX, FiFilter, FiChevronDown, FiTrendingUp } from 'react-icons/fi'
 import ProductCard from '../../components/product/ProductCard'
 import { useProducts } from '../../context/ProductContext'
+import { useLanguage } from '../../context/LanguageContext'
 
 export default function ProductsPage() {
+  const { t } = useLanguage()
   const { products: allProducts, categories } = useProducts()
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -93,6 +95,13 @@ export default function ProductsPage() {
   const hasActiveFilters =
     searchQuery || categoryFilter || discountOnly || sortBy !== 'newest'
 
+  const categoryBreadcrumbLabel = useMemo(() => {
+    if (!categoryFilter) return ''
+    const key = `categories.${categoryFilter}`
+    const label = t(key)
+    return label === key ? categoryFilter : label
+  }, [categoryFilter, t])
+
   return (
     <div className="min-h-screen bg-[var(--color-surface)] text-[var(--color-text-primary)] selection:bg-[var(--color-accent)]/30">
       {/* Minimal Background */}
@@ -103,13 +112,13 @@ export default function ProductsPage() {
         <div className="container-custom">
           {/* Detailed Breadcrumb */}
           <nav className="mb-6 flex items-center gap-2 text-[10px] sm:text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-[0.2em]">
-            <Link to="/" className="hover:text-[var(--color-text-primary)] transition-colors">Home</Link>
+            <Link to="/" className="hover:text-[var(--color-text-primary)] transition-colors">{t('products.breadcrumbHome')}</Link>
             <span className="w-1 h-1 rounded-full bg-[var(--color-border)] mx-1" />
-            <span className={categoryFilter ? 'hover:text-[var(--color-text-primary)] transition-colors cursor-pointer' : 'text-[var(--color-accent)]'}>Catalog</span>
+            <span className={categoryFilter ? 'hover:text-[var(--color-text-primary)] transition-colors cursor-pointer' : 'text-[var(--color-accent)]'}>{t('common.catalog')}</span>
             {categoryFilter && (
               <>
                 <span className="w-1 h-1 rounded-full bg-[var(--color-border)] mx-1" />
-                <span className="text-[var(--color-accent)]">{categoryFilter}</span>
+                <span className="text-[var(--color-accent)]">{categoryBreadcrumbLabel}</span>
               </>
             )}
           </nav>
@@ -119,17 +128,27 @@ export default function ProductsPage() {
             <div className="max-w-2xl">
               <h1 className="text-4xl sm:text-6xl font-black text-[var(--color-text-primary)] tracking-tighter leading-none mb-3">
                 {categoryFilter ? (
-                  <span className="capitalize">{categoryFilter}</span>
+                  <span className="capitalize">{categoryBreadcrumbLabel}</span>
                 ) : searchQuery ? (
-                  <span>Results for <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent-light)]">"{searchQuery}"</span></span>
+                  <span>
+                    {t('products.resultsFor')}{' '}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent-light)]">
+                      &ldquo;{searchQuery}&rdquo;
+                    </span>
+                  </span>
                 ) : (
-                  <span>Curated <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent-light)]">Collections</span></span>
+                  <span>
+                    {t('products.heroCurated')}{' '}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent-light)]">
+                      {t('products.heroCollections')}
+                    </span>
+                  </span>
                 )}
               </h1>
               <div className="flex items-center gap-4 text-xs sm:text-sm font-medium text-[var(--color-text-muted)]">
-                <p>Showing {filteredProducts.length} premium pieces</p>
+                <p>{t('products.showing', { count: filteredProducts.length })}</p>
                 <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-border)]" />
-                <p className="flex items-center gap-1.5"><FiTrendingUp className="text-emerald-500" /> Currently Trending</p>
+                <p className="flex items-center gap-1.5"><FiTrendingUp className="text-emerald-500" /> {t('products.trending')}</p>
               </div>
             </div>
           </div>
@@ -148,7 +167,7 @@ export default function ProductsPage() {
                 type="text"
                 value={localSearch}
                 onChange={(e) => setLocalSearch(e.target.value)}
-                placeholder="Search collection..."
+                placeholder={t('products.searchPlaceholder')}
                 className="w-full bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-xl py-2.5 pl-11 pr-4 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)]/50 focus:ring-1 focus:ring-[var(--color-accent)]/20 transition-all"
               />
               {localSearch && (
@@ -172,7 +191,7 @@ export default function ProductsPage() {
                   onChange={(e) => updateFilter('category', e.target.value)}
                   className="appearance-none bg-[var(--color-surface-light)] border border-[var(--color-border)] text-xs font-bold uppercase tracking-wider text-[var(--color-text-primary)] rounded-xl pl-9 pr-10 py-2.5 hover:border-[var(--color-accent)]/50 focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]/30 transition-all cursor-pointer outline-none"
                 >
-                  <option value="" className="bg-black text-white">Categories</option>
+                  <option value="" className="bg-black text-white">{t('products.categories')}</option>
                   {categories.map((cat) => (
                     <option key={cat.slug} value={cat.slug} className="bg-black text-white">
                       {cat.name}
@@ -189,11 +208,11 @@ export default function ProductsPage() {
                   onChange={(e) => updateFilter('sort', e.target.value)}
                   className="appearance-none bg-[var(--color-surface-light)] border border-[var(--color-border)] text-xs font-bold uppercase tracking-wider text-[var(--color-text-primary)] rounded-xl px-4 py-2.5 pr-10 hover:border-[var(--color-accent)]/50 focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]/30 transition-all cursor-pointer outline-none"
                 >
-                  <option value="newest" className="bg-black text-white">New Arrival</option>
-                  <option value="price-low" className="bg-black text-white">Price: Low</option>
-                  <option value="price-high" className="bg-black text-white">Price: High</option>
-                  <option value="rating" className="bg-black text-white">Top Rated</option>
-                  <option value="popular" className="bg-black text-white">Popularity</option>
+                  <option value="newest" className="bg-black text-white">{t('products.sortNewest')}</option>
+                  <option value="price-low" className="bg-black text-white">{t('products.sortPriceLow')}</option>
+                  <option value="price-high" className="bg-black text-white">{t('products.sortPriceHigh')}</option>
+                  <option value="rating" className="bg-black text-white">{t('products.sortRating')}</option>
+                  <option value="popular" className="bg-black text-white">{t('products.sortPopular')}</option>
                 </select>
                 <FiChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none group-hover:text-[var(--color-text-primary)] transition-colors" size={12} />
               </div>
@@ -208,7 +227,7 @@ export default function ProductsPage() {
                 }`}
               >
                 <FiTrendingUp size={14} className={discountOnly ? 'text-white' : 'text-amber-600'} />
-                Special Offers
+                {t('products.specialOffers')}
               </button>
 
               {/* Clear Button */}
@@ -216,7 +235,7 @@ export default function ProductsPage() {
                 <button
                   onClick={clearFilters}
                   className="w-10 h-10 rounded-xl bg-red-500/10 text-red-400 border border-red-500/10 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center shrink-0"
-                  title="Clear all filters"
+                  title={t('products.clearFiltersTitle')}
                 >
                   <FiX size={18} />
                 </button>
@@ -246,15 +265,15 @@ export default function ProductsPage() {
             <div className="w-24 h-24 bg-[var(--color-surface-light)] rounded-full flex items-center justify-center mx-auto mb-6 border border-[var(--color-border)]">
               <FiSearch size={40} className="text-[var(--color-text-muted)]" />
             </div>
-            <h3 className="text-2xl font-black text-[var(--color-text-primary)] mb-2 tracking-tight">No results matched</h3>
+            <h3 className="text-2xl font-black text-[var(--color-text-primary)] mb-2 tracking-tight">{t('products.emptyTitle')}</h3>
             <p className="text-[var(--color-text-muted)] text-sm mb-8 leading-relaxed font-medium">
-              Try adjusting your search terms or filters. We're sure there's something you'll love.
+              {t('products.emptyDesc')}
             </p>
             <button 
               onClick={clearFilters} 
               className="h-12 px-8 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-dark)] text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-[var(--color-accent)]/20 transition-all active:scale-95"
             >
-              Reset All Filters
+              {t('products.resetFilters')}
             </button>
           </div>
         )}

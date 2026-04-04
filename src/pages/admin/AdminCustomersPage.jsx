@@ -126,7 +126,7 @@ export default function AdminCustomersPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div className="p-5 rounded-2xl bg-[var(--color-surface-card)] border border-[var(--color-border)]">
           <p className="text-xs text-[var(--color-text-muted)] uppercase tracking-widest font-bold mb-1">Total Users</p>
-          <p className="text-3xl font-black">{customers.length}</p>
+          <p className="text-3xl font-black text-[var(--color-text-primary)]">{customers.length}</p>
         </div>
         <div className="p-5 rounded-2xl bg-[var(--color-surface-card)] border border-[var(--color-border)]">
           <p className="text-xs text-emerald-400 uppercase tracking-widest font-bold mb-1">Active Accounts</p>
@@ -147,28 +147,28 @@ export default function AdminCustomersPage() {
         <div className="text-center py-20 rounded-2xl bg-[var(--color-surface-card)] border border-[var(--color-border)]">
           <p className="text-5xl mb-4">👤</p>
           <h3 className="text-xl font-bold mb-2">No Customers Yet</h3>
-          <p className="text-sm text-gray-500">When customers place orders or sign up, they will appear here.</p>
+          <p className="text-sm text-[var(--color-text-muted)]">When customers place orders or sign up, they will appear here.</p>
         </div>
       ) : (
         <div className="rounded-2xl bg-[var(--color-surface-card)] border border-[var(--color-border)] overflow-hidden shadow-xl">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-black/20 border-b border-[var(--color-border)]">
-                  <th className="text-left text-[10px] font-bold text-gray-500 uppercase tracking-widest px-6 py-4">Customer</th>
-                  <th className="text-left text-[10px] font-bold text-gray-500 uppercase tracking-widest px-6 py-4">Contact</th>
-                  <th className="text-right text-[10px] font-bold text-gray-500 uppercase tracking-widest px-6 py-4">Orders</th>
-                  <th className="text-right text-[10px] font-bold text-gray-500 uppercase tracking-widest px-6 py-4">Total Spent</th>
-                  <th className="text-center text-[10px] font-bold text-gray-500 uppercase tracking-widest px-6 py-4">Status</th>
-                  <th className="text-right text-[10px] font-bold text-gray-500 uppercase tracking-widest px-6 py-4">Action</th>
+                <tr className="border-b border-[var(--color-border)] bg-[var(--color-surface-light)]">
+                  <th className="text-left text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest px-6 py-4">Customer</th>
+                  <th className="text-left text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest px-6 py-4">Contact</th>
+                  <th className="text-right text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest px-6 py-4">Orders</th>
+                  <th className="text-right text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest px-6 py-4">Total Spent</th>
+                  <th className="text-center text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest px-6 py-4">Status</th>
+                  <th className="text-right text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest px-6 py-4">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--color-border)]">
                 {customers.map(c => (
-                  <tr key={c.id} className="hover:bg-white/5 transition-colors group">
+                  <tr key={c.id} className="group transition-colors hover:bg-[var(--color-surface-light)]">
                     <td className="px-6 py-5">
                       <div className="flex items-center gap-4">
-                        <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-violet-600 to-fuchsia-600 flex items-center justify-center font-black text-white shadow-lg overflow-hidden shrink-0">
+                        <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-[var(--color-accent)] to-[var(--color-accent-dark)] flex items-center justify-center font-black text-white shadow-lg overflow-hidden shrink-0">
                           {c.avatar_url ? (
                             <img src={c.avatar_url} alt="" className="w-full h-full object-cover" />
                           ) : (
@@ -176,19 +176,19 @@ export default function AdminCustomersPage() {
                           )}
                         </div>
                         <div>
-                          <p className="font-bold text-white group-hover:text-violet-400 transition-colors">{c.name}</p>
-                          <p className="text-[10px] text-gray-500 font-mono">
+                          <p className="font-bold text-[var(--color-text-primary)] transition-colors group-hover:text-[var(--color-accent)]">{c.name}</p>
+                          <p className="text-[10px] font-mono text-[var(--color-text-muted)]">
                             {c.joined ? `Joined ${new Date(c.joined).toLocaleDateString()}` : 'Guest'}
                           </p>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-5">
-                      {c.email && <p className="text-sm text-gray-300 flex items-center gap-2"><FiMail className="text-violet-500" /> {c.email}</p>}
-                      {c.phone && <p className="text-sm text-gray-300 flex items-center gap-2 mt-1"><FiPhone className="text-violet-500" /> {c.phone}</p>}
-                      {!c.email && !c.phone && <p className="text-sm text-gray-500 italic">No contact info</p>}
+                      {c.email && <p className="flex items-center gap-2 text-sm text-[var(--color-text-secondary)]"><FiMail className="text-[var(--color-accent)]" /> {c.email}</p>}
+                      {c.phone && <p className="mt-1 flex items-center gap-2 text-sm text-[var(--color-text-secondary)]"><FiPhone className="text-[var(--color-accent)]" /> {c.phone}</p>}
+                      {!c.email && !c.phone && <p className="text-sm italic text-[var(--color-text-muted)]">No contact info</p>}
                     </td>
-                    <td className="px-6 py-5 text-right font-bold text-lg">{c.orderCount}</td>
+                    <td className="px-6 py-5 text-right text-lg font-bold text-[var(--color-text-primary)]">{c.orderCount}</td>
                     <td className="px-6 py-5 text-right font-black text-amber-400">LKR {c.totalSpent.toLocaleString()}</td>
                     <td className="px-6 py-5 text-center">
                       <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
@@ -214,7 +214,7 @@ export default function AdminCustomersPage() {
                           )}
                         </button>
                       ) : (
-                        <span className="text-[10px] text-gray-500 italic opacity-50">Guest Checkout</span>
+                        <span className="text-[10px] italic text-[var(--color-text-muted)] opacity-70">Guest Checkout</span>
                       )}
                     </td>
                   </tr>

@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
-import { FiPlay, FiShare2, FiArrowLeft, FiYoutube, FiMessageCircle } from 'react-icons/fi'
+import { useState, useEffect, useMemo, useRef, useLayoutEffect, useCallback } from 'react'
+import { FiPlay, FiShare2, FiArrowLeft, FiYoutube, FiMessageCircle, FiVolume2, FiVolumeX } from 'react-icons/fi'
+import { applyMuteState } from '../../utils/mediaMute'
 import { MdVideoLibrary } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 import { useProducts } from '../../context/ProductContext'
@@ -13,15 +14,55 @@ const getYoutubeVideoId = (url) => {
 };
 
 export default function PromoVideoPage() {
-  const { promotionalVideos } = useProducts()
+  const { promotionalVideos, products = [] } = useProducts()
   const activeVideos = promotionalVideos.filter(v => v.is_active !== false)
   const [selectedVideo, setSelectedVideo] = useState(activeVideos[0] || null)
+  const [ytMuted, setYtMuted] = useState(true)
+  const [directMuted, setDirectMuted] = useState(true)
+  const directRef = useRef(null)
+  const directMutedRef = useRef(directMuted)
+  directMutedRef.current = directMuted
 
   useEffect(() => {
     if (!selectedVideo && activeVideos.length > 0) {
       setSelectedVideo(activeVideos[0])
     }
   }, [activeVideos, selectedVideo])
+
+  useEffect(() => {
+    setYtMuted(true)
+    setDirectMuted(true)
+  }, [selectedVideo?.id])
+
+  const promotedProducts = useMemo(() => {
+    if (!selectedVideo || !Array.isArray(selectedVideo.promoted_products)) return []
+    return products.filter((p) => selectedVideo.promoted_products.includes(p.id))
+  }, [products, selectedVideo])
+
+  const mainVideoId = getYoutubeVideoId(selectedVideo?.url)
+  const isDirectVideo = !!(selectedVideo?.url?.match(/\.(mp4|webm|ogg)$/i))
+
+  const syncDirectMutedFromElement = useCallback(() => {
+    const el = directRef.current
+    if (!el) return
+    const next = el.muted || el.volume === 0
+    setDirectMuted((prev) => (prev === next ? prev : next))
+  }, [])
+
+  useLayoutEffect(() => {
+    if (!isDirectVideo) return
+    applyMuteState(directRef.current, directMuted)
+  }, [isDirectVideo, directMuted, selectedVideo?.url])
+
+  const toggleDirectMute = useCallback((e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDirectMuted((prev) => {
+      const next = !prev
+      applyMuteState(directRef.current, next)
+      return next
+    })
+  }, [])
 
   if (activeVideos.length === 0) {
     return (
@@ -39,9 +80,6 @@ export default function PromoVideoPage() {
       </div>
     )
   }
-
-  const mainVideoId = getYoutubeVideoId(selectedVideo?.url)
-  const isDirectVideo = selectedVideo?.url?.match(/\.(mp4|webm|ogg)$/i)
 
   return (
     <div className="bg-[var(--color-surface)] py-8 lg:py-12">
@@ -73,22 +111,62 @@ export default function PromoVideoPage() {
 
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-10">
           {/* Main Video Display */}
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-8 space-y-8">
             <div className="relative aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl border border-[var(--color-border)] group">
               {mainVideoId ? (
-                <iframe
-                  src={`https://www.youtube.com/embed/${mainVideoId}?autoplay=1&rel=0&modestbranding=1`}
-                  className="absolute inset-0 w-full h-full"
-                  allow="autoplay; encrypted-media"
-                  allowFullScreen
-                />
+                <>
+                  <iframe
+                    key={`${mainVideoId}-${ytMuted}`}
+                    title={selectedVideo.title || 'Promo video'}
+                    src={`https://www.youtube.com/embed/${mainVideoId}?autoplay=1&rel=0&modestbranding=1&mute=${ytMuted ? 1 : 0}`}
+                    className="absolute inset-0 h-full w-full"
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                  />
+                  <div className="pointer-events-auto absolute bottom-4 right-4 z-20 flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setYtMuted((m) => !m)}
+                      className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-white/20 bg-black/60 text-white backdrop-blur-md transition-all hover:bg-black/80 active:scale-95"
+                      title={ytMuted ? 'Unmute' : 'Mute'}
+                      aria-label={ytMuted ? 'Unmute video' : 'Mute video'}
+                      aria-pressed={ytMuted}
+                    >
+                      {ytMuted ? <FiVolumeX size={20} aria-hidden /> : <FiVolume2 size={20} aria-hidden />}
+                    </button>
+                  </div>
+                </>
               ) : isDirectVideo ? (
-                <video 
-                  src={selectedVideo.url} 
-                  controls 
-                  autoPlay 
-                  className="w-full h-full object-contain"
-                />
+                <>
+                  <video
+                    ref={directRef}
+                    src={selectedVideo.url}
+                    controls
+                    autoPlay
+                    playsInline
+                    muted={directMuted}
+                    className="h-full w-full object-contain"
+                    onVolumeChange={syncDirectMutedFromElement}
+                    onLoadedMetadata={(e) => applyMuteState(e.currentTarget, directMutedRef.current)}
+                    onPlaying={(e) => applyMuteState(e.currentTarget, directMutedRef.current)}
+                  />
+                  <div className="pointer-events-auto absolute bottom-16 right-4 z-20 sm:bottom-20">
+                    <button
+                      type="button"
+                      onClick={toggleDirectMute}
+                      className={`flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border transition-all active:scale-95 ${
+                        directMuted
+                          ? 'border-white/20 bg-black/60 text-zinc-200 backdrop-blur-md hover:bg-black/80'
+                          : 'border-white bg-white text-black'
+                      }`}
+                      title={directMuted ? 'Unmute' : 'Mute'}
+                      aria-label={directMuted ? 'Unmute video' : 'Mute video'}
+                      aria-pressed={directMuted}
+                    >
+                      {directMuted ? <FiVolumeX size={20} aria-hidden /> : <FiVolume2 size={20} aria-hidden />}
+                    </button>
+                  </div>
+                </>
               ) : (
                 <div className="w-full h-full flex items-center justify-center flex-col p-10 text-center bg-[var(--color-surface-card)]">
                   <FiYoutube size={48} className="text-red-500 mb-4" />
@@ -101,7 +179,7 @@ export default function PromoVideoPage() {
               )}
             </div>
 
-            <div className="mt-8 glass p-6 sm:p-10 rounded-2xl border border-[var(--color-border)] relative overflow-hidden">
+            <div className="glass relative overflow-hidden rounded-2xl border border-[var(--color-border)] p-6 sm:p-10">
               <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-6">
                 <div>
                   <h2 className="text-2xl sm:text-3xl font-black text-[var(--color-text-primary)] tracking-tight mb-1">{selectedVideo.title}</h2>
@@ -122,6 +200,44 @@ export default function PromoVideoPage() {
                 {selectedVideo.description || 'Step into the world of Make To Be. This exclusive showcase highlights our commitment to premium quality and timeless style.'}
               </p>
             </div>
+
+            {promotedProducts.length > 0 && (
+              <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-card)] p-4 sm:p-5">
+                <div className="mb-3 flex items-center justify-between gap-2">
+                  <h2 className="text-xs font-black uppercase tracking-[0.2em] text-[var(--color-text-muted)]">
+                    Products featured in this video
+                  </h2>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-text-muted)]">
+                    {promotedProducts.length} item{promotedProducts.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                <div className="custom-scrollbar -mx-1 flex gap-3 overflow-x-auto pb-1 pt-1 sm:gap-4">
+                  {promotedProducts.map((product) => (
+                    <Link
+                      key={product.id}
+                      to={`/products/${product.id}`}
+                      className="group flex min-w-[170px] max-w-[190px] flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-left transition-transform hover:-translate-y-1 hover:border-[var(--color-accent)]/60"
+                    >
+                      <div className="h-28 w-full overflow-hidden bg-black">
+                        <img
+                          src={product.image_url}
+                          alt={product.name}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </div>
+                      <div className="flex flex-1 flex-col gap-1 p-3">
+                        <p className="line-clamp-2 text-xs font-semibold text-[var(--color-text-primary)]">
+                          {product.name}
+                        </p>
+                        <p className="text-[11px] font-bold text-[var(--color-accent)]">
+                          LKR {Number(product.discount_price || product.price || 0).toLocaleString()}
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
 
           {/* Video List Sidebar */}

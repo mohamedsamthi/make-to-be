@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { FiArrowRight, FiShoppingBag, FiTruck, FiShield, FiStar, FiChevronLeft, FiChevronRight, FiWatch } from 'react-icons/fi'
 import { FaWhatsapp, FaStar, FaQuoteLeft, FaShoePrints } from 'react-icons/fa'
@@ -7,6 +7,8 @@ import ProductCard from '../../components/product/ProductCard'
 import FeaturedVideo from '../../components/home/FeaturedVideo'
 import { shopInfo } from '../../data/demoData'
 import { useProducts } from '../../context/ProductContext'
+import { useLanguage } from '../../context/LanguageContext'
+import { parsePromoDescription } from '../../utils/promoDescription'
 
 const getYoutubeVideoId = (url) => {
   if (!url) return null;
@@ -16,25 +18,54 @@ const getYoutubeVideoId = (url) => {
 };
 
 export default function HomePage() {
+  const { t, messages } = useLanguage()
   const { products, featuredProducts, discountedProducts, categories, reviews, promotions, orders, profiles } = useProducts()
-  
-  // Calculate real stats
-  const stats = [
-    { 
-      value: products.length > 50 ? `${products.length}+` : products.length, 
-      label: 'Products' 
-    },
-    { 
-      value: (profiles.length + orders.length) > 50 ? `${profiles.length + orders.length}+` : (profiles.length + orders.length), 
-      label: 'Happy Customers' 
-    },
-    { 
-      value: reviews.length > 0 
-        ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1) 
-        : '4.8', 
-      label: 'Avg Rating' 
-    }
-  ]
+
+  const stats = useMemo(
+    () => [
+      {
+        value: products.length > 50 ? `${products.length}+` : products.length,
+        label: t('home.statsProducts'),
+      },
+      {
+        value:
+          profiles.length + orders.length > 50
+            ? `${profiles.length + orders.length}+`
+            : profiles.length + orders.length,
+        label: t('home.statsCustomers'),
+      },
+      {
+        value:
+          reviews.length > 0
+            ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)
+            : '4.8',
+        label: t('home.statsRating'),
+      },
+    ],
+    [products.length, profiles.length, orders.length, reviews, t]
+  )
+
+  const categoryQuickLinks = useMemo(
+    () => [
+      { label: t('home.quickWatches'), emoji: '⌚', color: 'from-[var(--color-accent)]/20 to-[var(--color-accent)]/5', path: '/products?category=watches' },
+      { label: t('home.quickDresses'), emoji: '👗', color: 'from-orange-600/20 to-orange-600/5', path: '/products?category=dresses' },
+      { label: t('home.quickShoes'), emoji: '👟', color: 'from-amber-600/20 to-amber-600/5', path: '/products?category=shoes' },
+      { label: t('home.quickAllDeals'), emoji: '🔥', color: 'from-orange-600/20 to-red-600/5', path: '/products?discount=true' },
+    ],
+    [t]
+  )
+
+  const whyItems = useMemo(() => {
+    const list = messages.homeWhy
+    if (!Array.isArray(list)) return []
+    const icons = [
+      <MdVerified key="0" size={28} />,
+      <FiTruck key="1" size={28} />,
+      <FiShield key="2" size={28} />,
+      <FiStar key="3" size={28} />,
+    ]
+    return list.map((item, i) => ({ ...item, icon: icons[i] }))
+  }, [messages.homeWhy])
 
   const [currentPromo, setCurrentPromo] = useState(0)
 
@@ -75,15 +106,11 @@ export default function HomePage() {
   });
 
   const activePromo = sortedPromos[currentPromo]
-  let promoText = activePromo?.description || ''
-  let promoMedia = ''
-  try {
-     const parsed = JSON.parse(promoText)
-     if (parsed && typeof parsed === 'object') {
-        promoText = parsed.text || ''
-        promoMedia = parsed.mediaUrl || ''
-     }
-  } catch(e) {}
+  const { text: promoTextRaw, mediaUrl: promoMediaRaw } = parsePromoDescription(
+    activePromo?.description || ''
+  )
+  let promoText = promoTextRaw
+  let promoMedia = promoMediaRaw
 
   const videoId = getYoutubeVideoId(promoMedia);
   const isDirectVideo = promoMedia?.match(/\.(mp4|webm|ogg)$/i);
@@ -101,29 +128,29 @@ export default function HomePage() {
             <div className="animate-fadeInUp">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-light mb-4">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                <span className="text-[9px] font-black uppercase tracking-widest text-[var(--color-text-secondary)]">Now Open for Online Orders</span>
+                <span className="text-[9px] font-black uppercase tracking-widest text-[var(--color-text-secondary)]">{t('home.badge')}</span>
               </div>
 
               <h1 className="text-3xl sm:text-5xl lg:text-5xl font-black font-[var(--font-family-heading)] leading-tight mb-4 text-[var(--color-text-primary)]">
-                Discover Your
+                {t('home.heroTitle1')}
                 <br />
-                Perfect Style
+                {t('home.heroTitle2')}
                 <br />
-                at <span className="text-[var(--color-accent)]">Make To Be</span>
+                {t('home.heroTitle3')}{' '}
+                <span className="text-[var(--color-accent)]">{t('home.heroBrand')}</span>
               </h1>
 
               <p className="text-base text-[var(--color-text-secondary)] mb-6 max-w-lg leading-relaxed opacity-90">
-                Premium watches, designer dresses, and luxury accessories.
-                Shop from Kalmunai's finest collection with exclusive deals and doorstep delivery.
+                {t('home.heroDesc')}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 mb-8">
                 <Link to="/products" className="btn-primary px-6 py-3 text-sm justify-center sm:justify-start">
-                  <FiShoppingBag size={18} /> Shop Now <FiArrowRight size={16} />
+                  <FiShoppingBag size={18} /> {t('home.shopNow')} <FiArrowRight size={16} />
                 </Link>
                 <a href={shopInfo.socialMedia.whatsapp} target="_blank" rel="noreferrer"
                   className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white border-2 border-white text-black font-black hover:bg-gray-100 transition-all text-sm shadow-xl shadow-white/5">
-                  <FaWhatsapp size={18} /> WhatsApp Us
+                  <FaWhatsapp size={18} /> {t('home.whatsappUs')}
                 </a>
               </div>
 
@@ -202,8 +229,8 @@ export default function HomePage() {
       <section className="section-padding">
         <div className="container-custom">
           <div className="text-center mb-16">
-            <p className="text-[var(--color-accent)] text-xs font-black uppercase tracking-[0.2em] mb-3">Curated Collections</p>
-            <h2 className="text-3xl sm:text-5xl font-black font-[var(--font-family-heading)] tracking-tight">Shop by Category</h2>
+            <p className="text-[var(--color-accent)] text-xs font-black uppercase tracking-[0.2em] mb-3">{t('home.collectionsLabel')}</p>
+            <h2 className="text-3xl sm:text-5xl font-black font-[var(--font-family-heading)] tracking-tight">{t('home.shopByCategory')}</h2>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
@@ -229,11 +256,19 @@ export default function HomePage() {
                     <Icon size={32} className="text-[var(--color-accent)] group-hover:text-black transition-colors duration-500" />
                   </div>
 
-                  <h3 className="text-xl font-black mb-1 text-[var(--color-text-primary)] uppercase tracking-tight">{cat.name}</h3>
-                  <p className="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest">{cat.product_count} Collections</p>
+                  <h3 className="text-xl font-black mb-1 text-[var(--color-text-primary)] uppercase tracking-tight">
+                    {(() => {
+                      const ck = `categories.${cat.slug}`
+                      const lab = t(ck)
+                      return lab === ck ? cat.name : lab
+                    })()}
+                  </h3>
+                  <p className="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest">
+                    {t('home.categoryCollections', { n: cat.product_count })}
+                  </p>
                   
                   <div className="mt-4 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-[var(--color-accent)] opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                    Discover Now <FiArrowRight size={12} />
+                    {t('home.discoverNow')} <FiArrowRight size={12} />
                   </div>
                 </Link>
               );
@@ -247,11 +282,11 @@ export default function HomePage() {
         <div className="container-custom">
           <div className="flex items-end justify-between mb-12">
             <div>
-              <p className="text-[var(--color-gold)] text-sm font-semibold uppercase tracking-widest mb-2">⭐ Handpicked</p>
-              <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)] text-[var(--color-text-primary)]">Featured Products</h2>
+              <p className="text-[var(--color-gold)] text-sm font-semibold uppercase tracking-widest mb-2">⭐ {t('home.handpicked')}</p>
+              <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)] text-[var(--color-text-primary)]">{t('home.featuredProducts')}</h2>
             </div>
             <Link to="/products" className="hidden sm:flex items-center gap-2 text-sm text-[var(--color-accent)] font-medium hover:gap-3 transition-all">
-              View All <FiArrowRight size={16} />
+              {t('home.viewAll')} <FiArrowRight size={16} />
             </Link>
           </div>
 
@@ -265,7 +300,7 @@ export default function HomePage() {
 
           <div className="sm:hidden text-center mt-8">
             <Link to="/products" className="btn-outline">
-              View All Products <FiArrowRight size={16} />
+              {t('home.viewAllProducts')} <FiArrowRight size={16} />
             </Link>
           </div>
         </div>
@@ -276,11 +311,11 @@ export default function HomePage() {
         <div className="container-custom">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <p className="text-[var(--color-accent)] text-xs font-bold uppercase tracking-widest mb-1">🎯 Special Offers</p>
-              <h2 className="text-2xl sm:text-3xl font-bold font-[var(--font-family-heading)]">Today's Best Deals</h2>
+              <p className="text-[var(--color-accent)] text-xs font-bold uppercase tracking-widest mb-1">🎯 {t('home.specialOffers')}</p>
+              <h2 className="text-2xl sm:text-3xl font-bold font-[var(--font-family-heading)]">{t('home.bestDeals')}</h2>
             </div>
             <Link to="/products?discount=true" className="hidden sm:flex items-center gap-1 text-sm text-[var(--color-accent)] font-medium hover:gap-2 transition-all">
-              All Deals <FiArrowRight size={14} />
+              {t('home.allDeals')} <FiArrowRight size={14} />
             </Link>
           </div>
 
@@ -298,11 +333,12 @@ export default function HomePage() {
                     
                     <div className="inline-flex flex-wrap items-center gap-2 mb-4">
                       <span className="px-3 py-1 rounded-full bg-[var(--color-accent)]/20 border border-[var(--color-accent)]/30 text-[var(--color-accent-light)] text-xs font-black tracking-widest uppercase">
-                        Featured Offer
+                        {t('home.featuredOffer')}
                       </span>
                       {activePromo?.discount_percentage > 0 && (
                         <span className="px-3 py-1 rounded-full bg-amber-500 text-white text-xs font-black shadow-lg shadow-amber-500/30">
-                          🔥 {activePromo.discount_percentage}% OFF
+                          🔥{' '}
+                          {t('productCard.percentOff', { n: activePromo.discount_percentage }).replace(/^-/, '')}
                         </span>
                       )}
                     </div>
@@ -348,7 +384,7 @@ export default function HomePage() {
                   <div className="relative z-10 p-6 sm:p-10 w-full max-w-lg">
                     {activePromo?.discount_percentage > 0 && (
                       <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-[var(--color-accent)] text-white text-xs font-bold shadow-lg shadow-[var(--color-accent)]/30">
-                        🔥 {activePromo.discount_percentage}% OFF — LIMITED TIME
+                        🔥 {t('home.promoLimitedPill', { n: activePromo.discount_percentage })}
                       </div>
                     )}
                     <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight mb-3 font-[var(--font-family-heading)]">
@@ -365,7 +401,7 @@ export default function HomePage() {
               <div className={`absolute z-20 ${promoMedia ? 'bottom-6 left-6 md:left-10' : 'bottom-6 left-6 sm:bottom-10 sm:left-10'}`}>
                 <div className="flex flex-wrap gap-3 items-center">
                   <Link to="/products?discount=true" className="bg-white text-gray-900 px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-gray-200 transition-colors shadow-lg shadow-white/20 text-sm">
-                    Shop Offer <FiArrowRight />
+                    {t('home.shopOffer')} <FiArrowRight />
                   </Link>
                 </div>
 
@@ -376,7 +412,7 @@ export default function HomePage() {
                       key={i}
                       onClick={() => setCurrentPromo(i)}
                       className={`h-1.5 rounded-full transition-all duration-500 ${i === currentPromo ? 'bg-white w-8' : 'bg-white/30 w-3'}`}
-                      aria-label={`Promo ${i + 1}`}
+                      aria-label={t('home.promoDot', { n: i + 1 })}
                     />
                   ))}
                 </div>
@@ -395,8 +431,8 @@ export default function HomePage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                 <Link to="/products?category=watches" className="relative z-10 p-4 w-full flex items-end justify-between">
                   <div>
-                    <p className="text-white/70 text-[10px] font-semibold uppercase tracking-widest mb-0.5">Watches</p>
-                    <p className="text-white font-bold text-base leading-tight">Up to 40% Off</p>
+                    <p className="text-white/70 text-[10px] font-semibold uppercase tracking-widest mb-0.5">{t('home.miniWatches')}</p>
+                    <p className="text-white font-bold text-base leading-tight">{t('home.miniWatchesDeal')}</p>
                   </div>
                   <span className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm group-hover:bg-[var(--color-accent)] transition-all">
                     <FiArrowRight size={14} className="text-white" />
@@ -414,8 +450,8 @@ export default function HomePage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                 <Link to="/products?category=shoes" className="relative z-10 p-4 w-full flex items-end justify-between">
                   <div>
-                    <p className="text-white/70 text-[10px] font-semibold uppercase tracking-widest mb-0.5">Footwear</p>
-                    <p className="text-white font-bold text-base leading-tight">New Arrivals</p>
+                    <p className="text-white/70 text-[10px] font-semibold uppercase tracking-widest mb-0.5">{t('home.miniFootwear')}</p>
+                    <p className="text-white font-bold text-base leading-tight">{t('home.miniNewArrivals')}</p>
                   </div>
                   <span className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm group-hover:bg-[var(--color-accent)] transition-all">
                     <FiArrowRight size={14} className="text-white" />
@@ -428,21 +464,16 @@ export default function HomePage() {
 
           {/* Bottom: Mini Category Quick Links */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
-            {[
-              { label: 'Watches', emoji: '⌚', color: 'from-[var(--color-accent)]/20 to-[var(--color-accent)]/5', path: '/products?category=watches' },
-              { label: 'Dresses', emoji: '👗', color: 'from-orange-600/20 to-orange-600/5', path: '/products?category=dresses' },
-              { label: 'Shoes',   emoji: '👟', color: 'from-amber-600/20 to-amber-600/5', path: '/products?category=shoes' },
-              { label: 'All Deals', emoji: '🔥', color: 'from-orange-600/20 to-red-600/5', path: '/products?discount=true' },
-            ].map((item) => (
+            {categoryQuickLinks.map((item) => (
               <Link
-                key={item.label}
+                key={item.path}
                 to={item.path}
                 className={`flex items-center gap-3 p-4 rounded-xl bg-gradient-to-br ${item.color} border border-[var(--color-border)] hover:border-[var(--color-accent)]/30 hover:bg-[var(--color-accent)]/10 transition-all group`}
               >
                 <span className="text-2xl">{item.emoji}</span>
                 <div>
                   <p className="text-sm font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-light)] transition-colors">{item.label}</p>
-                  <p className="text-[10px] text-[var(--color-text-muted)]">Shop now →</p>
+                  <p className="text-[10px] text-[var(--color-text-muted)]">{t('home.shopNowArrow')}</p>
                 </div>
               </Link>
             ))}
@@ -456,11 +487,11 @@ export default function HomePage() {
         <div className="container-custom">
           <div className="flex items-end justify-between mb-12">
             <div>
-              <p className="text-[var(--color-accent)] text-sm font-semibold uppercase tracking-widest mb-2">🔥 Hot Deals</p>
-              <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)] text-[var(--color-text-primary)]">Discounted Products</h2>
+              <p className="text-[var(--color-accent)] text-sm font-semibold uppercase tracking-widest mb-2">🔥 {t('home.hotDeals')}</p>
+              <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)] text-[var(--color-text-primary)]">{t('home.discountedProducts')}</h2>
             </div>
             <Link to="/products?discount=true" className="hidden sm:flex items-center gap-2 text-sm text-[var(--color-accent)] font-medium hover:gap-3 transition-all">
-              View All Deals <FiArrowRight size={16} />
+              {t('home.viewAllDeals')} <FiArrowRight size={16} />
             </Link>
           </div>
 
@@ -478,17 +509,12 @@ export default function HomePage() {
       <section className="section-padding">
         <div className="container-custom">
           <div className="text-center mb-12">
-            <p className="text-[var(--color-accent)] text-sm font-semibold uppercase tracking-widest mb-2">Why Us</p>
-            <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)]">Why Choose Make To Be?</h2>
+            <p className="text-[var(--color-accent)] text-sm font-semibold uppercase tracking-widest mb-2">{t('home.whyUs')}</p>
+            <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)]">{t('home.whyTitle')}</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: <MdVerified size={28} />, title: 'Authentic Products', desc: '100% genuine products with quality guarantee' },
-              { icon: <FiTruck size={28} />, title: 'Fast Delivery', desc: 'Quick delivery across Sri Lanka' },
-              { icon: <FiShield size={28} />, title: 'Secure Payment', desc: 'Safe bank transfer payment method' },
-              { icon: <FiStar size={28} />, title: 'Top Rated', desc: '4.8★ average rating from 2000+ customers' }
-            ].map((item, i) => (
+            {whyItems.map((item, i) => (
               <div
                 key={i}
                 className="flex flex-col items-center text-center p-7 rounded-2xl bg-[var(--color-surface-card)] border border-[var(--color-border)] hover:border-[var(--color-accent)]/40 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-[var(--color-accent)]/10"
@@ -509,8 +535,8 @@ export default function HomePage() {
       <section className="section-padding bg-[var(--color-surface-light)]">
         <div className="container-custom">
           <div className="text-center mb-12">
-            <p className="text-[var(--color-gold)] text-sm font-semibold uppercase tracking-widest mb-2">Testimonials</p>
-            <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)] text-[var(--color-text-primary)]">What Customers Say</h2>
+            <p className="text-[var(--color-gold)] text-sm font-semibold uppercase tracking-widest mb-2">{t('home.testimonials')}</p>
+            <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-family-heading)] text-[var(--color-text-primary)]">{t('home.whatCustomersSay')}</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -528,13 +554,13 @@ export default function HomePage() {
                     {review.user_name ? review.user_name[0].toUpperCase() : 'U'}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold">{review.user_name || 'User'}</p>
-                    <p className="text-xs text-[var(--color-text-muted)]">Verified Buyer</p>
+                    <p className="text-sm font-semibold">{review.user_name || t('common.user')}</p>
+                    <p className="text-xs text-[var(--color-text-muted)]">{t('home.verifiedBuyer')}</p>
                   </div>
                 </div>
                 {review.admin_reply && (
                   <div className="mt-4 pl-4 border-l-2 border-[var(--color-accent)]">
-                    <p className="text-xs text-[var(--color-text-muted)] mb-1">Reply from Make To Be:</p>
+                    <p className="text-xs text-[var(--color-text-muted)] mb-1">{t('home.replyFrom')}</p>
                     <p className="text-sm text-[var(--color-text-secondary)]">{review.admin_reply}</p>
                   </div>
                 )}
@@ -552,19 +578,20 @@ export default function HomePage() {
             <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-[var(--color-gold)]/10 rounded-full blur-3xl" />
             <div className="relative z-10 flex flex-col items-center text-center">
               <h2 className="text-3xl sm:text-4xl font-black mb-4 font-[var(--font-family-heading)]">
-                Ready to Upgrade<br />
-                <span className="gradient-text">Your Style?</span>
+                {t('home.ctaTitle1')}
+                <br />
+                <span className="gradient-text">{t('home.ctaTitle2')}</span>
               </h2>
               <p className="text-[var(--color-text-secondary)] mb-8 max-w-md leading-relaxed">
-                Browse our collection of premium watches, dresses, and accessories. Order now and get free delivery!
+                {t('home.ctaDesc')}
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
                 <Link to="/products" className="btn-primary text-base px-8 py-3.5">
-                  <FiShoppingBag size={20} /> Start Shopping
+                  <FiShoppingBag size={20} /> {t('home.startShopping')}
                 </Link>
                 <a href={shopInfo.socialMedia.whatsapp} target="_blank" rel="noreferrer"
                   className="flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-white text-black font-black hover:bg-gray-100 transition-all text-sm shadow-xl shadow-white/5">
-                  <FaWhatsapp size={20} /> Contact Us
+                  <FaWhatsapp size={20} /> {t('home.contactUs')}
                 </a>
               </div>
             </div>

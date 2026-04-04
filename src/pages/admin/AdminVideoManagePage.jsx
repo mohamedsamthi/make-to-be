@@ -1,13 +1,17 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { FiPlus, FiTrash2, FiVideo, FiX, FiCheck, FiUpload, FiPlay, FiVolume2, FiVolumeX, FiRefreshCw } from 'react-icons/fi'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
+import { useProducts } from '../../context/ProductContext'
 
 export default function AdminVideoManagePage() {
   const [videos, setVideos] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [productSearch, setProductSearch] = useState('')
+  const [promoteEditingId, setPromoteEditingId] = useState(null)
+  const [promoteSelection, setPromoteSelection] = useState({})
   const [editVideo, setEditVideo] = useState(null)
   const [formData, setFormData] = useState({
     title: '',
@@ -15,6 +19,77 @@ export default function AdminVideoManagePage() {
     is_active: true,
     original_audio: true
   })
+
+  const { products = [] } = useProducts() || {}
+
+  const filteredProducts = useMemo(() => {
+    const term = productSearch.trim().toLowerCase()
+    if (!term) return products
+    return products.filter(
+      (p) =>
+        p.name?.toLowerCase().includes(term) ||
+        p.category?.toLowerCase().includes(term)
+    )
+  }, [products, productSearch])
+
+  const parsePromotedProducts = (promoted) => {
+    if (Array.isArray(promoted)) return promoted
+    if (typeof promoted === 'string') {
+      try {
+        const parsed = JSON.parse(promoted)
+        return Array.isArray(parsed) ? parsed : []
+      } catch {
+        return []
+      }
+    }
+    return []
+  }
+
+  const getSelectedIdsForVideo = (videoId, videoRow) => {
+    if (promoteSelection[videoId]) return promoteSelection[videoId]
+    return parsePromotedProducts(videoRow?.promoted_products)
+  }
+
+  const toggleProductForVideo = (videoRow, productId) => {
+    const videoId = videoRow.id
+    setPromoteSelection((prev) => {
+      const current =
+        prev[videoId] ?? parsePromotedProducts(videoRow?.promoted_products)
+      const exists = current.includes(productId)
+      const next = exists
+        ? current.filter((id) => id !== productId)
+        : [...current, productId]
+      return { ...prev, [videoId]: next }
+    })
+  }
+
+  const savePromotedProducts = async (videoRow) => {
+    const videoId = videoRow.id
+    const selection = getSelectedIdsForVideo(videoId, videoRow)
+
+    // optimistic UI
+    setVideos((prev) =>
+      prev.map((v) =>
+        v.id === videoId ? { ...v, promoted_products: selection } : v
+      )
+    )
+
+    try {
+      const { error } = await supabase
+        .from('promotional_videos')
+        .update({ promoted_products: selection })
+        .eq('id', videoId)
+      if (error) throw error
+      toast.success('Promoted products updated')
+      setPromoteEditingId(null)
+      setProductSearch('')
+    } catch (err) {
+      console.error('Failed to save promoted products', err)
+      toast.error(
+        'Could not save promoted products. Ensure column `promoted_products` exists on `promotional_videos`.'
+      )
+    }
+  }
 
   useEffect(() => {
     fetchVideos()
@@ -189,13 +264,13 @@ export default function AdminVideoManagePage() {
 
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 bg-[var(--color-surface-card)] rounded-3xl border border-[var(--color-border)]">
-          <FiRefreshCw className="w-10 h-10 text-violet-500 animate-spin mb-4" />
+          <FiRefreshCw className="w-10 h-10 text-[var(--color-accent)] animate-spin mb-4" />
           <p className="text-gray-400 font-medium">Fetching video assets...</p>
         </div>
       ) : videos.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 bg-[var(--color-surface-card)] rounded-3xl border border-[var(--color-border)] text-center px-6">
-          <div className="w-20 h-20 rounded-full bg-violet-500/10 flex items-center justify-center mb-6">
-            <FiVideo size={32} className="text-violet-500" />
+          <div className="w-20 h-20 rounded-full bg-[var(--color-accent)]/10 flex items-center justify-center mb-6">
+            <FiVideo size={32} className="text-[var(--color-accent)]" />
           </div>
           <h3 className="text-xl font-bold mb-2">No Videos Found</h3>
           <p className="text-gray-400 max-w-sm mb-8">Upload your first promotional video to capture customer attention on the homepage.</p>
@@ -240,17 +315,117 @@ export default function AdminVideoManagePage() {
                     <span className="text-gray-500 font-medium uppercase tracking-wider">Audio Playback</span>
                     <button 
                       onClick={() => toggleAudio(video.id, video.original_audio)}
-                      className={`flex items-center gap-2 font-black uppercase tracking-widest transition-colors ${video.original_audio ? 'text-violet-400 hover:text-violet-300' : 'text-gray-400 hover:text-white'}`}
+                      className={`flex items-center gap-2 font-black uppercase tracking-widest transition-colors ${video.original_audio ? 'text-[var(--color-accent)] hover:text-[var(--color-accent-dark)]' : 'text-gray-400 hover:text-white'}`}
                     >
                       {video.original_audio ? <><FiVolume2 /> ORIGINAL</> : <><FiVolumeX /> MUTED</>}
                     </button>
                   </div>
                 </div>
 
+                {/* Promote Product (per-video mapping) */}
+                <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] p-3">
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--color-text-muted)]">
+                      Promote Product
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPromoteEditingId(
+                          promoteEditingId === video.id ? null : video.id
+                        )
+                      }
+                      className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-accent)] hover:text-[var(--color-accent-light)] transition-colors"
+                    >
+                      {promoteEditingId === video.id ? 'Close' : 'Manage'}
+                    </button>
+                  </div>
+
+                  {promoteEditingId !== video.id && (
+                    <>
+                      {(() => {
+                        const selectedIds = getSelectedIdsForVideo(video.id, video)
+                        const selectedProducts = products.filter((p) =>
+                          selectedIds.includes(p.id)
+                        )
+                        if (selectedProducts.length === 0) {
+                          return (
+                            <p className="text-[11px] text-[var(--color-text-muted)]">
+                              No products promoted for this video.
+                            </p>
+                          )
+                        }
+                        return (
+                          <div className="flex flex-wrap gap-1.5">
+                            {selectedProducts.slice(0, 3).map((p) => (
+                              <span key={p.id} className="badge badge-accent text-[9px]">
+                                {p.name}
+                              </span>
+                            ))}
+                            {selectedProducts.length > 3 && (
+                              <span className="text-[10px] text-[var(--color-text-muted)]">
+                                +{selectedProducts.length - 3} more
+                              </span>
+                            )}
+                          </div>
+                        )
+                      })()}
+                    </>
+                  )}
+
+                  {promoteEditingId === video.id && (
+                    <div className="space-y-2">
+                      <input
+                        value={productSearch}
+                        onChange={(e) => setProductSearch(e.target.value)}
+                        placeholder="Search products..."
+                        className="input-field h-9 text-xs"
+                      />
+
+                      <div className="custom-scrollbar max-h-48 overflow-y-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-2">
+                        {filteredProducts.length === 0 ? (
+                          <p className="py-4 text-center text-[11px] text-[var(--color-text-muted)]">
+                            No products match this search.
+                          </p>
+                        ) : (
+                          (() => {
+                            const selectedIds = getSelectedIdsForVideo(video.id, video)
+                            return filteredProducts.map((p) => (
+                              <label
+                                key={p.id}
+                                className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-xs text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-light)]"
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={selectedIds.includes(p.id)}
+                                  onChange={() => toggleProductForVideo(video, p.id)}
+                                  className="h-3.5 w-3.5 rounded border-[var(--color-border)] bg-[var(--color-surface)] accent-[var(--color-accent)]"
+                                />
+                                <span className="truncate">{p.name}</span>
+                                <span className="ml-auto text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
+                                  {p.category}
+                                </span>
+                              </label>
+                            ))
+                          })()
+                        )}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => savePromotedProducts(video)}
+                        className="mt-1 flex h-9 w-full items-center justify-center gap-2 rounded-lg bg-[var(--color-accent)] text-black text-[10px] font-black uppercase tracking-widest shadow-sm shadow-[var(--color-accent)]/30 transition-transform hover:brightness-95 active:scale-[0.98] disabled:opacity-50"
+                      >
+                        <FiCheck size={12} /> Save promoted products
+                      </button>
+                    </div>
+                  )}
+                </div>
+
                 <div className="mt-auto pt-4 border-t border-white/5 flex gap-3">
                   <button 
                     onClick={() => openEdit(video)}
-                    className="flex-1 h-10 rounded-xl bg-violet-500/10 text-violet-500 hover:bg-violet-500 hover:text-white transition-all text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2"
+                    className="flex-1 h-10 rounded-xl bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:text-black transition-all text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2"
                   >
                     <FiUpload size={14} /> Edit
                   </button>
@@ -273,7 +448,7 @@ export default function AdminVideoManagePage() {
           <div className="w-full max-w-lg bg-[#151230] border border-white/10 rounded-3xl overflow-hidden shadow-2xl animate-fadeInUp">
             <div className="flex items-center justify-between px-8 py-6 border-b border-white/10">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-violet-600/20 flex items-center justify-center text-violet-400">
+                <div className="w-10 h-10 rounded-xl bg-[var(--color-accent)]/20 flex items-center justify-center text-[var(--color-accent)]">
                   <FiUpload size={20} />
                 </div>
                 <h3 className="text-xl font-bold font-[var(--font-family-heading)]">
@@ -296,7 +471,7 @@ export default function AdminVideoManagePage() {
                 <input 
                   value={formData.title} 
                   onChange={e => setFormData(p => ({...p, title: e.target.value}))} 
-                  className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-5 text-sm outline-none focus:border-violet-500/50 transition-all font-medium" 
+                  className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-5 text-sm outline-none focus:border-[var(--color-accent)]/50 transition-all font-medium" 
                   placeholder="e.g. Summer Collection 2024" 
                   required 
                 />
@@ -313,7 +488,7 @@ export default function AdminVideoManagePage() {
                     onChange={e => setFormData(p => ({...p, videoFile: e.target.files[0]}))}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                   />
-                  <div className="w-full py-10 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center group-hover:bg-white/2 group-hover:border-violet-500/30 transition-all">
+                  <div className="w-full py-10 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center group-hover:bg-white/2 group-hover:border-[var(--color-accent)]/30 transition-all">
                     {formData.videoFile ? (
                       <div className="text-center">
                         <FiVideo className="mx-auto text-emerald-500 mb-3" size={32} />
@@ -333,12 +508,12 @@ export default function AdminVideoManagePage() {
 
               <div className="grid grid-cols-2 gap-4 pt-4">
                 <div 
-                  className={`p-4 rounded-2xl border transition-all cursor-pointer ${formData.original_audio ? 'bg-violet-600/10 border-violet-500/30 ring-1 ring-violet-500/20' : 'bg-white/2 border-white/5 opacity-60'}`}
+                  className={`p-4 rounded-2xl border transition-all cursor-pointer ${formData.original_audio ? 'bg-[var(--color-accent)]/10 border-[var(--color-accent)]/30 ring-1 ring-[var(--color-accent)]/20' : 'bg-white/2 border-white/5 opacity-60'}`}
                   onClick={() => setFormData(p => ({...p, original_audio: !p.original_audio}))}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <FiVolume2 className={formData.original_audio ? 'text-violet-400' : 'text-gray-500'} />
-                    <div className={`w-3 h-3 rounded-full ${formData.original_audio ? 'bg-violet-500' : 'bg-gray-700'}`} />
+                    <FiVolume2 className={formData.original_audio ? 'text-[var(--color-accent)]' : 'text-gray-500'} />
+                    <div className={`w-3 h-3 rounded-full ${formData.original_audio ? 'bg-[var(--color-accent)]' : 'bg-gray-700'}`} />
                   </div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-gray-300">Play Audio</p>
                 </div>
@@ -366,7 +541,7 @@ export default function AdminVideoManagePage() {
                 <button 
                   type="submit" 
                   disabled={uploading}
-                  className="flex-1 h-12 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-violet-500/20 transition-all hover:scale-[1.02] flex items-center justify-center gap-3 disabled:opacity-50"
+                  className="flex-1 h-12 rounded-xl bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent-dark)] text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-[0_0_30px_rgba(200,230,0,0.2)] transition-all hover:scale-[1.02] flex items-center justify-center gap-3 disabled:opacity-50"
                 >
                   {uploading ? (
                     <>

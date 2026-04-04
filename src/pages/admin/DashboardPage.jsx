@@ -47,10 +47,12 @@ export default function DashboardPage() {
   ]
 
   return (
-    <div className="max-w-[1400px] mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold font-[var(--font-family-heading)] mb-1">Dashboard Overview</h1>
-        <p className="text-sm text-[var(--color-text-secondary)]">Here's what's happening with your store</p>
+    <div className="mx-auto w-full max-w-[1400px]">
+      <div className="mb-6 md:mb-8">
+        <h1 className="mb-1 font-[var(--font-family-heading)] text-xl font-bold tracking-tight text-[var(--color-text-primary)] md:text-2xl">
+          Dashboard overview
+        </h1>
+        <p className="text-sm text-[var(--color-text-secondary)]">Here&apos;s what&apos;s happening with your store</p>
       </div>
 
       {/* Stats */}
@@ -125,8 +127,15 @@ export default function DashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {(safeOrders || []).map(order => (
-                <tr key={order.id} className="border-b border-[var(--color-border)] hover:bg-white/3 transition-colors">
+              {safeOrders.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-5 py-12 text-center text-sm text-[var(--color-text-muted)]">
+                    No orders yet. New orders will appear here.
+                  </td>
+                </tr>
+              )}
+              {safeOrders.map((order) => (
+                <tr key={order.id} className="border-b border-[var(--color-border)] transition-colors hover:bg-white/3">
                   <td className="px-5 py-3.5 text-sm font-mono font-bold text-[var(--color-accent)]">{order.id}</td>
                   <td className="px-5 py-3.5">
                     <p className="text-sm font-medium">{order.customer_name || 'Generic Customer'}</p>
@@ -213,9 +222,9 @@ export default function DashboardPage() {
             })}
             
             {safeOrders.length === 0 && (
-               <div className="text-center py-8">
-                 <p className="text-xs text-gray-400">No recent activity detected.</p>
-               </div>
+              <div className="py-10 text-center">
+                <p className="text-sm text-[var(--color-text-muted)]">No recent activity yet.</p>
+              </div>
             )}
           </div>
         </div>

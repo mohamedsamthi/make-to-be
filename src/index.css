@@ -113,6 +113,20 @@
   h2 { font-size: clamp(1.375rem, 1.15rem + 0.9vw, 2rem); }
   h3 { font-size: clamp(1.125rem, 1rem + 0.45vw, 1.5rem); }
 
+  /* Tamil / Sinhala UI: script-capable fonts when language is switched */
+  html[lang="ta"] body {
+    font-family: 'Noto Sans Tamil', var(--font-family-body), system-ui, sans-serif;
+  }
+  html[lang="si"] body {
+    font-family: 'Noto Sans Sinhala', var(--font-family-body), system-ui, sans-serif;
+  }
+  html[lang="ta"] h1, html[lang="ta"] h2, html[lang="ta"] h3, html[lang="ta"] h4, html[lang="ta"] h5, html[lang="ta"] h6 {
+    font-family: 'Noto Sans Tamil', var(--font-family-heading), system-ui, sans-serif;
+  }
+  html[lang="si"] h1, html[lang="si"] h2, html[lang="si"] h3, html[lang="si"] h4, html[lang="si"] h5, html[lang="si"] h6 {
+    font-family: 'Noto Sans Sinhala', var(--font-family-heading), system-ui, sans-serif;
+  }
+
   a {
     text-decoration: none;
     color: inherit;
@@ -446,6 +460,56 @@
 .btn-gold:hover {
   background: var(--color-gold-light);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+/* ============ ADMIN UI — badges & form fields (used across admin pages) ============ */
+@layer components {
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+  .badge-success {
+    background: color-mix(in srgb, var(--color-success) 18%, transparent);
+    color: var(--color-success);
+    border: 1px solid color-mix(in srgb, var(--color-success) 35%, transparent);
+  }
+  .badge-accent {
+    background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+    color: var(--color-accent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 28%, transparent);
+  }
+  .badge-gold {
+    background: color-mix(in srgb, var(--color-gold) 14%, transparent);
+    color: var(--color-gold);
+    border: 1px solid color-mix(in srgb, var(--color-gold) 25%, transparent);
+  }
+  .input-field {
+    width: 100%;
+    min-height: 2.75rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-light);
+    color: var(--color-text-primary);
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .input-field::placeholder {
+    color: var(--color-text-muted);
+  }
+  .input-field:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 22%, transparent);
+  }
 }
 
 /* ============ CUSTOM SELECT STYLING ============ */

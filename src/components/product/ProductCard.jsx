@@ -1,14 +1,23 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { FiShoppingCart, FiEye, FiHeart } from 'react-icons/fi'
 import { FaStar, FaHeart } from 'react-icons/fa'
 import { useCart } from '../../context/CartContext'
 import { useProducts } from '../../context/ProductContext'
+import { useLanguage } from '../../context/LanguageContext'
 
 export default function ProductCard({ product }) {
+  const { t } = useLanguage()
   const { addToCart } = useCart()
   const { favorites, toggleFavorite } = useProducts()
   
   const isFavorite = favorites.includes(product.id)
+
+  const categoryDisplay = useMemo(() => {
+    const catKey = `categories.${product.category}`
+    const label = t(catKey)
+    return label === catKey ? product.category : label
+  }, [product.category, t])
 
   const hasDiscount = product.discount_price && product.discount_price < product.price
   const discountPercent = hasDiscount
@@ -50,7 +59,7 @@ export default function ProductCard({ product }) {
               ? 'bg-[var(--color-surface-light)] text-[var(--color-accent)] border border-[var(--color-border)]' 
               : 'bg-[var(--color-surface-light)] text-[var(--color-text-primary)] border border-[var(--color-border)] opacity-0 group-hover:opacity-100'
           }`}
-          title={isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+          title={isFavorite ? t('productCard.removeFavorite') : t('productCard.addFavorite')}
         >
           {isFavorite ? <FaHeart size={16} /> : <FiHeart size={16} />}
         </button>
@@ -60,11 +69,11 @@ export default function ProductCard({ product }) {
           <button
             onClick={handleAddToCart}
             className="w-10 h-10 rounded-md bg-[var(--color-accent)] text-white flex items-center justify-center hover:bg-[var(--color-accent-dark)] transition-colors"
-            title="Add to Cart"
+            title={t('productCard.addToCart')}
           >
             <FiShoppingCart size={18} />
           </button>
-          <div className="w-10 h-10 rounded-md bg-[var(--color-surface-light)] text-[var(--color-text-primary)] flex items-center justify-center hover:bg-[var(--color-border)] transition-colors border border-[var(--color-border)]" title="View Details">
+          <div className="w-10 h-10 rounded-md bg-[var(--color-surface-light)] text-[var(--color-text-primary)] flex items-center justify-center hover:bg-[var(--color-border)] transition-colors border border-[var(--color-border)]" title={t('productCard.viewDetails')}>
             <FiEye size={18} />
           </div>
         </div>
@@ -73,24 +82,24 @@ export default function ProductCard({ product }) {
         <div className="absolute top-3 left-3 flex flex-col gap-1.5">
           {hasDiscount && (
             <span className="bg-[var(--color-surface-light)] text-[var(--color-accent)] border border-[var(--color-border)] text-[9px] font-bold px-2 py-0.5 rounded-sm">
-              -{discountPercent}% OFF
+              {t('productCard.percentOff', { n: discountPercent })}
             </span>
           )}
           {product.featured && (
             <span className="bg-[var(--color-surface-light)] text-[var(--color-text-primary)] border border-[var(--color-border)] text-[9px] font-bold px-2 py-0.5 rounded-sm">
-              ⭐ Featured
+              ⭐ {t('productCard.featured')}
             </span>
           )}
         </div>
 
         {product.stock <= 5 && product.stock > 0 && (
           <span className="absolute top-3 right-3 bg-[var(--color-surface-light)] border border-red-500/50 text-red-500 text-[9px] font-bold px-2 py-0.5 rounded-sm">
-            Low Stock ({product.stock})
+            {t('productCard.lowStock', { n: product.stock })}
           </span>
         )}
         {product.stock === 0 && (
           <div className="absolute inset-0 bg-[var(--color-surface)]/80 flex items-center justify-center">
-            <span className="bg-[var(--color-surface-light)] text-[var(--color-text-primary)] border border-[var(--color-border)] text-[9px] font-bold px-3 py-1 rounded-sm">Out of Stock</span>
+            <span className="bg-[var(--color-surface-light)] text-[var(--color-text-primary)] border border-[var(--color-border)] text-[9px] font-bold px-3 py-1 rounded-sm">{t('productCard.outOfStock')}</span>
           </div>
         )}
       </div>
@@ -98,7 +107,7 @@ export default function ProductCard({ product }) {
       {/* Content */}
       <div className="flex flex-col flex-1 p-4 gap-2">
         <p className="text-[10px] text-[var(--color-accent)] font-semibold uppercase tracking-widest">
-          {product.category}
+          {categoryDisplay}
         </p>
         <h3 className="text-sm font-semibold line-clamp-2 leading-snug group-hover:text-[var(--color-accent)] transition-colors min-h-[2.5rem]">
           {product.name}

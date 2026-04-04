@@ -56,56 +56,63 @@ export default function AdminMessagesPage() {
   }
 
   return (
-    <div className="max-w-[1400px] mx-auto pb-10 flex flex-col lg:flex-row gap-6 h-[calc(100vh-140px)]">
-      
+    <div className="mx-auto flex max-w-[1400px] flex-col gap-6 pb-6 lg:min-h-[calc(100dvh-10rem)] lg:flex-row lg:pb-10">
       {/* Messages List (Left Sidebar) */}
-      <div className="w-full lg:w-96 flex flex-col bg-[var(--color-surface-card)] border border-[var(--color-border)] rounded-2xl overflow-hidden shrink-0 shadow-xl">
-        <div className="p-4 border-b border-[var(--color-border)] bg-black/20">
-          <h1 className="text-lg font-bold font-[var(--font-family-heading)] flex items-center gap-2 mb-4">
-            <FiMessageSquare /> Support Messages
+      <div className="flex w-full shrink-0 flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-card)] shadow-xl lg:w-96 lg:max-w-md">
+        <div className="border-b border-[var(--color-border)] bg-[var(--color-surface-light)] p-4">
+          <h1 className="mb-4 flex items-center gap-2 text-lg font-bold font-[var(--font-family-heading)] text-[var(--color-text-primary)]">
+            <FiMessageSquare className="shrink-0" aria-hidden /> Support messages
           </h1>
           <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={14} />
-            <input 
-              value={search} 
-              onChange={e => setSearch(e.target.value)} 
-              placeholder="Search by name, email..." 
-              className="w-full bg-black/40 border border-white/10 rounded-xl py-2 pl-9 pr-3 text-sm focus:border-violet-500 transition-all outline-none text-white" 
+            <FiSearch
+              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-muted)]"
+              size={14}
+              aria-hidden
+            />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by name, email..."
+              className="input-field w-full py-2.5 pl-10 pr-3 text-sm"
             />
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto custom-scrollbar">
+        <div className="custom-scrollbar max-h-[50vh] flex-1 overflow-y-auto lg:max-h-none">
           {filtered.length === 0 ? (
-            <div className="p-8 text-center text-gray-500 text-sm">No messages found</div>
+            <div className="p-8 text-center text-sm text-[var(--color-text-muted)]">No messages found</div>
           ) : (
             <div className="divide-y divide-[var(--color-border)]">
               {filtered.map(msg => (
                 <div 
                   key={msg.id}
                   onClick={() => { setActiveMessageId(msg.id); markAsRead(msg.id); }}
-                  className={`p-4 cursor-pointer transition-colors relative hover:bg-white/5 ${activeMessageId === msg.id ? 'bg-violet-500/10 border-l-4 border-violet-500' : 'border-l-4 border-transparent'}`}
+                  className={`relative cursor-pointer p-4 transition-colors hover:bg-[var(--color-surface-light)]/80 ${activeMessageId === msg.id ? 'border-l-4 border-[var(--color-accent)] bg-[var(--color-accent)]/10' : 'border-l-4 border-transparent'}`}
                 >
-                  <div className="flex justify-between items-start mb-1">
-                    <h3 className={`text-sm font-bold truncate pr-3 ${msg.status === 'unread' ? 'text-white' : 'text-gray-300'}`}>
+                  <div className="mb-1 flex items-start justify-between">
+                    <h3
+                      className={`truncate pr-3 text-sm font-bold ${msg.status === 'unread' ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'}`}
+                    >
                       {msg.name}
                     </h3>
-                    <span className="text-[10px] text-gray-500 whitespace-nowrap">
+                    <span className="whitespace-nowrap text-[10px] text-[var(--color-text-muted)]">
                       {new Date(msg.created_at).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className={`text-xs line-clamp-2 ${msg.status === 'unread' ? 'text-gray-300 font-medium' : 'text-gray-500'}`}>
+                  <p
+                    className={`line-clamp-2 text-xs ${msg.status === 'unread' ? 'font-medium text-[var(--color-text-secondary)]' : 'text-[var(--color-text-muted)]'}`}
+                  >
                     {msg.message}
                   </p>
                   
                   <div className="flex items-center justify-between mt-3">
                     <div className="flex gap-0.5 items-center">
                        {msg.status === 'unread' ? (
-                         <FiCheck size={14} className="text-gray-500" title="Sent (Unread)" />
+                         <FiCheck size={14} className="text-[var(--color-text-muted)]" title="Sent (Unread)" />
                        ) : msg.status === 'read' ? (
                          <div className="flex -space-x-2">
-                           <FiCheck size={14} className="text-gray-400" />
-                           <FiCheck size={14} className="text-gray-400" />
+                           <FiCheck size={14} className="text-[var(--color-text-muted)]" />
+                           <FiCheck size={14} className="text-[var(--color-text-muted)]" />
                          </div>
                        ) : (
                          <div className="flex -space-x-2" title="Replied">
@@ -113,13 +120,14 @@ export default function AdminMessagesPage() {
                            <FiCheck size={14} className="text-emerald-500" />
                          </div>
                        )}
-                       <span className={`text-[10px] ml-2 ${msg.status === 'unread' ? 'text-violet-400 font-bold' : 'text-gray-500'}`}>
+                       <span className={`ml-2 text-[10px] ${msg.status === 'unread' ? 'font-bold text-[var(--color-accent)]' : 'text-[var(--color-text-muted)]'}`}>
                          {msg.status === 'unread' ? 'New' : msg.status.charAt(0).toUpperCase() + msg.status.slice(1)}
                        </span>
                     </div>
-                    <button 
+                    <button
+                      type="button"
                       onClick={(e) => handleDelete(msg.id, e)}
-                      className="text-gray-500 hover:text-red-400 p-1"
+                      className="p-1 text-[var(--color-text-muted)] hover:text-red-400"
                     >
                       <FiTrash2 size={12} />
                     </button>
@@ -132,39 +140,47 @@ export default function AdminMessagesPage() {
       </div>
 
       {/* Message Details (Right Content) */}
-      <div className="flex-1 bg-[var(--color-surface-card)] border border-[var(--color-border)] rounded-2xl overflow-hidden shadow-xl flex flex-col">
+      <div className="flex min-h-[320px] flex-1 flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-card)] shadow-xl lg:min-h-0">
         {activeMessage ? (
           <>
-            <div className="p-6 border-b border-[var(--color-border)] bg-black/20">
-              <h2 className="text-xl font-bold text-white mb-4">{activeMessage.name}</h2>
-              <div className="flex flex-wrap gap-4 text-xs">
-                <a href={`mailto:${activeMessage.email}`} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 transition-colors">
-                  <FiMail className="text-violet-400" /> {activeMessage.email}
+            <div className="border-b border-[var(--color-border)] bg-[var(--color-surface-light)] p-5 sm:p-6">
+              <h2 className="mb-4 text-xl font-bold text-[var(--color-text-primary)]">{activeMessage.name}</h2>
+              <div className="flex flex-wrap gap-3 text-xs">
+                <a
+                  href={`mailto:${activeMessage.email}`}
+                  className="flex items-center gap-2 rounded-lg bg-[var(--color-surface)] px-3 py-2 text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-border)]"
+                >
+                  <FiMail className="text-[var(--color-accent)]" /> {activeMessage.email}
                 </a>
-                <a href={`tel:${activeMessage.phone}`} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 transition-colors">
+                <a
+                  href={`tel:${activeMessage.phone}`}
+                  className="flex items-center gap-2 rounded-lg bg-[var(--color-surface)] px-3 py-2 text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-border)]"
+                >
                   <FiPhone className="text-emerald-400" /> {activeMessage.phone}
                 </a>
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 text-gray-300">
-                  <FiClock className="text-blue-400" /> {new Date(activeMessage.created_at).toLocaleString()}
+                <div className="flex items-center gap-2 rounded-lg bg-[var(--color-surface)] px-3 py-2 text-[var(--color-text-secondary)]">
+                  <FiClock className="text-[var(--color-accent)]" /> {new Date(activeMessage.created_at).toLocaleString()}
                 </div>
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 bg-[#151230]/50 space-y-6 custom-scrollbar">
+            <div className="custom-scrollbar flex-1 space-y-6 overflow-y-auto bg-[var(--color-surface)]/50 p-5 sm:p-6">
               {/* If no chat history, show the single legacy message */}
               {!activeMessage.chat_history || activeMessage.chat_history.length === 0 ? (
                 <>
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2 pl-3">Message from {activeMessage.name}</p>
-                    <div className="bg-[#1e1c3a] border border-white/10 p-5 rounded-2xl rounded-tl-sm text-sm text-gray-200 shadow-sm w-fit max-w-[85%] leading-relaxed">
+                    <p className="mb-2 pl-3 text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-muted)]">
+                      Message from {activeMessage.name}
+                    </p>
+                    <div className="w-fit max-w-[85%] rounded-2xl rounded-tl-sm border border-[var(--color-border)] bg-[var(--color-surface-card)] p-5 text-sm leading-relaxed text-[var(--color-text-primary)] shadow-sm">
                       {activeMessage.message}
                     </div>
                   </div>
 
                   {activeMessage.admin_reply && (
                     <div className="flex flex-col items-end">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2 pr-3">Your Answer / Note</p>
-                      <div className="bg-violet-600 p-5 rounded-2xl rounded-tr-sm text-sm text-white shadow-lg shadow-violet-500/20 w-fit max-w-[85%] leading-relaxed">
+                      <p className="mb-2 pr-3 text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-muted)]">Your answer / note</p>
+                      <div className="bg-[var(--color-accent)] p-5 rounded-2xl rounded-tr-sm text-sm text-white shadow-lg shadow-[0_0_25px_rgba(200,230,0,0.25)] w-fit max-w-[85%] leading-relaxed">
                         {activeMessage.admin_reply}
                       </div>
                     </div>
@@ -174,13 +190,13 @@ export default function AdminMessagesPage() {
                 <>
                   {activeMessage.chat_history.map((chat, idx) => (
                     <div key={idx} className={`flex flex-col ${chat.sender === 'admin' ? 'items-end' : 'items-start'}`}>
-                      <p className="text-[9px] font-bold tracking-widest text-gray-500 mb-1 px-3">
+                      <p className="mb-1 px-3 text-[9px] font-bold tracking-widest text-[var(--color-text-muted)]">
                         {chat.sender === 'admin' ? 'YOU' : activeMessage.name.toUpperCase()} • {new Date(chat.time).toLocaleString([], {hour: '2-digit', minute:'2-digit'})}
                       </p>
                       <div className={`p-4 rounded-2xl text-sm leading-relaxed max-w-[85%] ${
                         chat.sender === 'admin' 
-                        ? 'bg-violet-600 text-white rounded-tr-sm shadow-lg shadow-violet-500/10' 
-                        : 'bg-[#1e1c3a] border border-white/10 text-gray-200 rounded-tl-sm'
+                        ? 'bg-[var(--color-accent)] text-white rounded-tr-sm shadow-lg shadow-[0_0_20px_rgba(200,230,0,0.2)]' 
+                        : 'rounded-tl-sm border border-[var(--color-border)] bg-[var(--color-surface-card)] text-[var(--color-text-primary)]'
                       }`}>
                         {chat.message}
                       </div>
@@ -191,19 +207,20 @@ export default function AdminMessagesPage() {
             </div>
 
             {/* Reply Box */}
-            <div className="p-4 border-t border-[var(--color-border)] bg-black/20">
-              <div className="flex gap-3">
+            <div className="border-t border-[var(--color-border)] bg-[var(--color-surface-light)] p-4">
+              <div className="flex flex-col gap-3 sm:flex-row">
                 <textarea
                   value={replyText}
-                  onChange={e => setReplyText(e.target.value)}
+                  onChange={(e) => setReplyText(e.target.value)}
                   placeholder="Record note or reply here..."
-                  className="flex-1 bg-black/40 border border-white/10 rounded-xl p-3 text-sm focus:border-violet-500 outline-none resize-none h-[60px]"
+                  className="input-field min-h-[60px] flex-1 resize-none py-3 text-sm"
                 />
-                <div className="flex flex-col gap-2 shrink-0">
-                  <button 
+                <div className="flex shrink-0 flex-col gap-2 sm:w-40">
+                  <button
+                    type="button"
                     onClick={handleReply}
                     disabled={!replyText.trim()}
-                    className="flex-1 px-4 rounded-lg bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors"
+                    className="flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-lg bg-[var(--color-accent)] px-4 text-xs font-bold text-black transition-colors hover:bg-[var(--color-accent-dark)] disabled:opacity-50"
                   >
                     <FiSend size={14} /> Save Note
                   </button>
@@ -220,12 +237,12 @@ export default function AdminMessagesPage() {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-gray-500">
-            <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-4">
-              <FiMessageSquare size={32} className="opacity-50" />
+          <div className="flex flex-1 flex-col items-center justify-center px-6 py-16 text-center text-[var(--color-text-muted)]">
+            <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-surface-light)]">
+              <FiMessageSquare size={32} className="opacity-50" aria-hidden />
             </div>
-            <p className="font-medium text-lg text-gray-400">Select a message</p>
-            <p className="text-sm">Choose a message from the list to read or reply.</p>
+            <p className="text-lg font-medium text-[var(--color-text-secondary)]">Select a message</p>
+            <p className="mt-1 max-w-xs text-sm">Choose a conversation from the list to read or reply.</p>
           </div>
         )}
       </div>

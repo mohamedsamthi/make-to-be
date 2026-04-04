@@ -1,29 +1,46 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { FiMinus, FiPlus, FiTrash2, FiShoppingBag, FiArrowLeft, FiTruck, FiArrowRight, FiShield } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa'
+import { useMemo } from 'react'
 import { useCart } from '../../context/CartContext'
 import { useAuth } from '../../context/AuthContext'
 import { shopInfo } from '../../data/demoData'
+import { useLanguage } from '../../context/LanguageContext'
 import toast from 'react-hot-toast'
 
 export default function CartPage() {
+  const { t } = useLanguage()
   const { cartItems, removeFromCart, updateQuantity, clearCart, cartTotal, cartCount } = useCart()
   const { user } = useAuth()
   const navigate = useNavigate()
 
   const handleCheckout = () => {
     if (!user) {
-      toast.error('Please login to place an order')
+      toast.error(t('cart.loginToOrder'))
       navigate('/login')
       return
     }
     navigate('/checkout')
   }
 
-  const whatsappOrderMessage = cartItems.map(item =>
-    `• ${item.name} (${item.selectedSize || '-'}, ${item.selectedColor || '-'}) x${item.quantity} = LKR ${((item.discount_price || item.price) * item.quantity).toLocaleString()}`
-  ).join('\n')
-  const whatsappUrl = `${shopInfo.socialMedia.whatsapp}?text=${encodeURIComponent(`Hi! I'd like to order:\n\n${whatsappOrderMessage}\n\nTotal: LKR ${cartTotal.toLocaleString()}\n\nPlease confirm my order.`)}`
+  const whatsappUrl = useMemo(() => {
+    const lines = cartItems
+      .map((item) =>
+        t('cart.whatsappLine', {
+          name: item.name,
+          size: item.selectedSize || '-',
+          color: item.selectedColor || '-',
+          qty: item.quantity,
+          lineTotal: ((item.discount_price || item.price) * item.quantity).toLocaleString(),
+        })
+      )
+      .join('\n')
+    const body = t('cart.whatsappOrderBody', {
+      lines,
+      total: cartTotal.toLocaleString(),
+    })
+    return `${shopInfo.socialMedia.whatsapp}?text=${encodeURIComponent(body)}`
+  }, [cartItems, cartTotal, t])
 
   const deliveryFee = cartTotal >= 10000 ? 0 : 500
   const grandTotal = cartTotal + deliveryFee
@@ -39,10 +56,10 @@ export default function CartPage() {
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[var(--color-accent)]/10 flex items-center justify-center border border-[var(--color-accent)]/20 shadow-lg shadow-[var(--color-accent)]/10">
             <FiShoppingBag size={32} className="text-[var(--color-accent)]" />
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black mb-3 text-white tracking-tight">Your Cart is Empty</h2>
-          <p className="text-gray-400 mb-8 max-w-xs mx-auto text-sm leading-relaxed">Looks like you haven't added any premium items to your collection yet.</p>
+          <h2 className="text-2xl sm:text-3xl font-black mb-3 text-white tracking-tight">{t('cart.emptyTitle')}</h2>
+          <p className="text-gray-400 mb-8 max-w-xs mx-auto text-sm leading-relaxed">{t('cart.emptyDesc')}</p>
           <Link to="/products" className="inline-flex items-center gap-2 bg-[var(--color-accent)] hover:bg-[var(--color-accent-light)] text-black font-bold py-3 px-8 rounded-xl transition-all hover:scale-105 active:scale-95 shadow-lg shadow-[var(--color-accent)]/20">
-             Start Shopping <FiArrowRight size={18} />
+             {t('cart.startShopping')} <FiArrowRight size={18} />
           </Link>
         </div>
       </div>
@@ -55,10 +72,14 @@ export default function CartPage() {
       <div className="bg-[var(--color-primary)] py-5 relative overflow-hidden">
         <div className="container-custom relative z-10">
           <Link to="/products" className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest text-[var(--color-accent-light)] hover:text-white transition-all mb-2 font-black">
-            <FiArrowLeft size={14} /> Continue Shopping
+            <FiArrowLeft size={14} /> {t('cart.continueShopping')}
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-1">Shopping Bag</h1>
-          <p className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)] font-black opacity-60">{cartCount} premium item{cartCount !== 1 ? 's' : ''} reserved</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-1">{t('cart.shoppingBag')}</h1>
+          <p className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)] font-black opacity-60">
+            {cartCount === 1
+              ? t('cart.itemsReservedOne', { n: cartCount })
+              : t('cart.itemsReservedOther', { n: cartCount })}
+          </p>
         </div>
       </div>
 
@@ -88,7 +109,7 @@ export default function CartPage() {
                       <button
                         onClick={() => removeFromCart(item.id, item.selectedSize, item.selectedColor)}
                         className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/5 hover:bg-red-500/20 text-[var(--color-text-muted)] hover:text-red-400 transition-all shrink-0 border border-white/5"
-                        title="Remove item"
+                        title={t('cart.removeItem')}
                       >
                         <FiTrash2 size={16} />
                       </button>
@@ -97,12 +118,12 @@ export default function CartPage() {
                     <div className="flex flex-wrap gap-2 mt-4">
                       {item.selectedSize && (
                         <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg bg-black/20 text-[var(--color-text-muted)] border border-white/5">
-                          Size: <span className="text-white ml-1">{item.selectedSize}</span>
+                          {t('cart.size')} <span className="text-white ml-1">{item.selectedSize}</span>
                         </span>
                       )}
                       {item.selectedColor && (
                         <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg bg-black/20 text-[var(--color-text-muted)] border border-white/5">
-                          Color: <span className="text-white ml-1">{item.selectedColor}</span>
+                          {t('cart.color')} <span className="text-white ml-1">{item.selectedColor}</span>
                         </span>
                       )}
                     </div>
@@ -135,7 +156,8 @@ export default function CartPage() {
                       </p>
                       {item.quantity > 1 && (
                         <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest">
-                          LKR {(item.discount_price || item.price).toLocaleString()} / unit
+                          LKR {(item.discount_price || item.price).toLocaleString()}
+                          {t('cart.perUnit')}
                         </p>
                       )}
                     </div>
@@ -150,7 +172,7 @@ export default function CartPage() {
                 onClick={clearCart}
                 className="text-[10px] font-black uppercase tracking-widest text-[var(--color-text-muted)] hover:text-red-400 transition-all flex items-center gap-2 px-5 py-2.5 rounded-xl hover:bg-red-500/10 border border-transparent hover:border-red-500/20"
               >
-                <FiTrash2 size={16} /> Discard Bag
+                <FiTrash2 size={16} /> {t('cart.discardBag')}
               </button>
             </div>
           </div>
@@ -161,20 +183,20 @@ export default function CartPage() {
               <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent-dark)]" />
               
               <div className="p-8 border-b border-white/5">
-                <h3 className="text-xl font-black text-white tracking-tight font-[var(--font-family-heading)] uppercase tracking-widest text-xs">Summary</h3>
+                <h3 className="text-xl font-black text-white tracking-tight font-[var(--font-family-heading)] uppercase tracking-widest text-xs">{t('cart.summary')}</h3>
               </div>
 
               <div className="p-8 space-y-6">
                 {/* Line items */}
                 <div className="space-y-4">
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-[var(--color-text-muted)] font-black uppercase tracking-widest">Subtotal</span>
+                    <span className="text-[var(--color-text-muted)] font-black uppercase tracking-widest">{t('cart.subtotal')}</span>
                     <span className="text-white font-black">LKR {cartTotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-[var(--color-text-muted)] font-black uppercase tracking-widest">Delivery</span>
+                    <span className="text-[var(--color-text-muted)] font-black uppercase tracking-widest">{t('cart.delivery')}</span>
                     <span className={deliveryFee === 0 ? 'text-emerald-400 font-black' : 'text-white font-black'}>
-                      {deliveryFee === 0 ? 'FREE' : `LKR ${deliveryFee.toLocaleString()}`}
+                      {deliveryFee === 0 ? t('cart.free') : `LKR ${deliveryFee.toLocaleString()}`}
                     </span>
                   </div>
                 </div>
@@ -187,7 +209,9 @@ export default function CartPage() {
                         <FiTruck size={14} />
                       </div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-amber-200/60 leading-relaxed pt-1">
-                        Add <span className="text-amber-400">LKR {(10000 - cartTotal).toLocaleString()}</span> more to unlock <span className="text-amber-400">FREE DELIVERY</span>
+                        {t('cart.freeDeliveryNudge', {
+                          amount: `LKR ${(10000 - cartTotal).toLocaleString()}`,
+                        })}
                       </p>
                     </div>
                   </div>
@@ -196,7 +220,7 @@ export default function CartPage() {
                 {/* Total */}
                 <div className="border-t border-white/5 pt-6">
                   <div className="flex justify-between items-end">
-                    <span className="text-[var(--color-text-muted)] font-black uppercase tracking-widest text-[9px] pb-1">Total Amount</span>
+                    <span className="text-[var(--color-text-muted)] font-black uppercase tracking-widest text-[9px] pb-1">{t('cart.totalAmount')}</span>
                     <span className="text-3xl font-black text-white tracking-tighter">
                       LKR {grandTotal.toLocaleString()}
                     </span>
@@ -206,7 +230,7 @@ export default function CartPage() {
                 {/* Buttons */}
                 <div className="space-y-3 pt-6">
                   <button onClick={handleCheckout} className="w-full py-4 rounded-xl bg-white text-[var(--color-surface)] font-black text-xs uppercase tracking-widest hover:bg-gray-200 transition-all shadow-xl active:scale-95">
-                    Proceed to Checkout
+                    {t('cart.proceedCheckout')}
                   </button>
 
                   <a
@@ -215,7 +239,7 @@ export default function CartPage() {
                     rel="noreferrer"
                     className="flex items-center justify-center gap-2 w-full py-4 rounded-xl bg-white text-black font-black text-xs uppercase tracking-widest hover:bg-gray-100 transition-all shadow-xl shadow-white/5"
                   >
-                    <FaWhatsapp size={18} /> WhatsApp Order
+                    <FaWhatsapp size={18} /> {t('cart.whatsappOrder')}
                   </a>
                 </div>
 
@@ -224,7 +248,7 @@ export default function CartPage() {
                    <FiShield size={24} className="text-white" />
                    <FiTruck size={24} className="text-white" />
                    <div className="h-6 w-px bg-white/20" />
-                   <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white">Verified</span>
+                   <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white">{t('cart.verified')}</span>
                 </div>
               </div>
             </div>
