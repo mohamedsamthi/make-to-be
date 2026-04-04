@@ -169,26 +169,26 @@ export default function Navbar() {
   return (
     <>
       {/* Top Announcement Bar */}
-      <div className="fixed top-0 left-0 right-0 h-10 bg-[var(--color-surface-light)] text-[var(--color-text-primary)] text-[10px] sm:text-xs py-2 text-center font-black tracking-widest uppercase z-[60] border-b border-[var(--color-border)] flex items-center justify-center">
+      <div className="fixed top-0 left-0 right-0 z-[60] flex h-10 max-w-full items-center justify-center overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-surface-light)] px-2 text-center text-[10px] font-black uppercase tracking-widest text-[var(--color-text-primary)] sm:text-xs">
         {activePromo ? (
-          <div className="flex max-w-[100vw] items-center justify-center gap-2 px-3">
-            <span className="truncate">{activePromo.title}</span>
-            <span className="hidden w-1 h-1 shrink-0 rounded-full bg-[var(--color-accent)] opacity-40 sm:block" />
-            <span className="truncate text-[var(--color-text-muted)]">
+          <div className="flex min-w-0 max-w-full items-center justify-center gap-2">
+            <span className="min-w-0 truncate">{activePromo.title}</span>
+            <span className="hidden h-1 w-1 shrink-0 rounded-full bg-[var(--color-accent)] opacity-40 sm:block" />
+            <span className="min-w-0 truncate text-[var(--color-text-muted)]">
               {announcementPromoSubtitle(activePromo.description, t('announcement.ownerName'))}
             </span>
           </div>
         ) : (
-          <div className="flex items-center gap-2">
-            <span>{t('announcement.islandWide')}</span>
-            <span className="w-1 h-1 rounded-full bg-[var(--color-accent)] opacity-40" />
-            <span className="text-[var(--color-text-muted)]">{t('announcement.freeShip')}</span>
+          <div className="flex min-w-0 max-w-full items-center justify-center gap-2">
+            <span className="min-w-0 truncate">{t('announcement.islandWide')}</span>
+            <span className="h-1 w-1 shrink-0 rounded-full bg-[var(--color-accent)] opacity-40" />
+            <span className="min-w-0 truncate text-[var(--color-text-muted)]">{t('announcement.freeShip')}</span>
           </div>
         )}
       </div>
 
       <header
-        className={`fixed top-10 left-0 right-0 z-50 w-full transition-all duration-500 transform ${
+        className={`fixed top-10 left-0 right-0 z-50 w-full max-w-full transition-all duration-500 transform ${
           visible ? 'translate-y-0' : '-translate-y-[calc(100%+40px)]'
         } ${
           scrolled 
@@ -196,9 +196,9 @@ export default function Navbar() {
             : 'bg-[var(--color-surface)] border-b border-[var(--color-border)]'
         }`}
       >
-        {/* Main Header Row */}
-        <div className="container-custom overflow-visible">
-          <div className="flex min-w-0 items-center justify-between gap-2 overflow-visible h-16 sm:h-20 sm:gap-3 lg:gap-8">
+        {/* Main Header Row — w-0+flex-1 on toolbar prevents flex min-content width blowing past 100vw */}
+        <div className="container-custom min-w-0 max-w-full">
+          <div className="flex h-16 min-w-0 max-w-full items-center justify-between gap-2 sm:h-20 sm:gap-3 lg:gap-8">
             {/* Logo + Mobile Menu Button */}
             <div className="flex shrink-0 items-center gap-2 sm:gap-3">
               <button
@@ -221,8 +221,8 @@ export default function Navbar() {
               <NavbarSearch variant="desktop" resetToken={location.pathname} />
             </div>
 
-            {/* Right side: scroll on narrow phones so nothing clips */}
-            <div className="flex min-w-0 flex-1 items-center justify-end gap-0.5 overflow-x-auto overflow-y-visible overscroll-x-contain py-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-1 lg:max-w-none lg:flex-none lg:gap-3 lg:overflow-visible [&::-webkit-scrollbar]:hidden">
+            {/* Right side: w-0 forces flex basis 0 so row cannot exceed viewport; inner scroll for icons */}
+            <div className="flex min-w-0 w-0 flex-1 max-w-full items-center justify-end gap-0.5 overflow-x-auto overflow-y-visible overscroll-x-contain py-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-1 lg:w-auto lg:max-w-none lg:flex-none lg:gap-3 lg:overflow-visible [&::-webkit-scrollbar]:hidden">
               {/* Mobile Search Toggle */}
               <button
                 onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
@@ -440,7 +440,7 @@ export default function Navbar() {
       )}
 
       <div
-        className={`fixed inset-y-0 left-0 w-[300px] bg-[var(--color-surface)] z-[70] transform transition-transform duration-300 lg:hidden shadow-2xl flex flex-col border-r border-[var(--color-border)] ${
+        className={`fixed inset-y-0 left-0 z-[70] flex w-[min(100vw,300px)] max-w-full transform flex-col border-r border-[var(--color-border)] bg-[var(--color-surface)] shadow-2xl transition-transform duration-300 lg:hidden ${
           menuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >

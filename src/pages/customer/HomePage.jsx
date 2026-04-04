@@ -116,9 +116,9 @@ export default function HomePage() {
   const isDirectVideo = promoMedia?.match(/\.(mp4|webm|ogg)$/i);
 
   return (
-    <div>
+    <div className="min-w-0 max-w-full overflow-x-clip">
       {/* ===== HERO SECTION ===== */}
-      <section className="relative pt-4 pb-10 lg:pt-10 lg:pb-16 overflow-hidden">
+      <section className="relative overflow-hidden pt-4 pb-10 lg:pt-10 lg:pb-16">
         {/* Background */}
         <div className="absolute inset-0 bg-[var(--color-surface)]" />
 

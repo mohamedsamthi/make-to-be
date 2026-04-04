@@ -173,7 +173,7 @@ export default function FeaturedVideo() {
                 {t('home.featuredInThisVideo')}
               </p>
             </div>
-            <div className="custom-scrollbar -mx-2 flex gap-4 overflow-x-auto px-2 pb-1 pt-1">
+            <div className="custom-scrollbar flex gap-4 overflow-x-auto pb-1 pt-1">
               {promotedProducts.map((product) => (
                 <Link
                   key={product.id}

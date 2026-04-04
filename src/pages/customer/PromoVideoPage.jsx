@@ -211,7 +211,7 @@ export default function PromoVideoPage() {
                     {promotedProducts.length} item{promotedProducts.length !== 1 ? 's' : ''}
                   </span>
                 </div>
-                <div className="custom-scrollbar -mx-1 flex gap-3 overflow-x-auto pb-1 pt-1 sm:gap-4">
+                <div className="custom-scrollbar flex gap-3 overflow-x-auto pb-1 pt-1 sm:gap-4">
                   {promotedProducts.map((product) => (
                     <Link
                       key={product.id}

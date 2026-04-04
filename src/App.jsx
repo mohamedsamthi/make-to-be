@@ -48,9 +48,9 @@ const AdminSettingsPage = lazy(() => import('./pages/admin/AdminSettingsPage'))
 function CustomerLayout({ children }) {
   /* Offset matches fixed announcement (2.5rem) + header rows; scales at lg for category bar */
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen min-w-0 flex-col">
       <Navbar />
-      <main className="flex-1 pb-20 pt-[calc(2.5rem+4rem)] max-lg:pb-[max(5rem,env(safe-area-inset-bottom,0px))] lg:pb-8 lg:pt-[calc(2.5rem+5rem+3rem)]">
+      <main className="min-w-0 flex-1 pb-20 pt-[calc(2.5rem+4rem)] max-lg:pb-[max(5rem,env(safe-area-inset-bottom,0px))] lg:pb-8 lg:pt-[calc(2.5rem+5rem+3rem)]">
         <Suspense fallback={<RouteFallback />}>{children}</Suspense>
       </main>
       <Footer />
@@ -60,9 +60,9 @@ function CustomerLayout({ children }) {
 
 function AuthLayout({ children }) {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen min-w-0 flex-col">
       <Navbar />
-      <main className="flex-1 pb-20 pt-[calc(2.5rem+4rem)] max-lg:pb-[max(5rem,env(safe-area-inset-bottom,0px))] lg:pb-8 lg:pt-[calc(2.5rem+5rem+3rem)]">
+      <main className="min-w-0 flex-1 pb-20 pt-[calc(2.5rem+4rem)] max-lg:pb-[max(5rem,env(safe-area-inset-bottom,0px))] lg:pb-8 lg:pt-[calc(2.5rem+5rem+3rem)]">
         <Suspense fallback={<RouteFallback />}>{children}</Suspense>
       </main>
     </div>
@@ -111,7 +111,7 @@ function App() {
         <CartProvider>
           <ProductProvider>
             <Router>
-              <div className="min-h-screen bg-[var(--color-surface)] text-[var(--color-text-primary)]">
+              <div className="min-h-screen min-w-0 max-w-full overflow-x-clip bg-[var(--color-surface)] text-[var(--color-text-primary)]">
                 <Routes>
                     <Route path="/" element={<CustomerLayout><HomePage /></CustomerLayout>} />
                     <Route path="/products" element={<CustomerLayout><ProductsPage /></CustomerLayout>} />

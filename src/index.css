@@ -79,6 +79,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     height: 100%;
+    max-width: 100%;
+    overflow-x: clip;
   }
 
   body {
@@ -88,16 +90,18 @@
     /* Mobile-first base size; fluid utilities below scale up on larger viewports */
     font-size: clamp(0.9375rem, 0.88rem + 0.35vw, 1.0625rem);
     line-height: 1.6;
-    overflow-x: hidden;
     height: 100%;
-    /* Prevent horizontal overscroll on iOS when drawers are open */
+    max-width: 100%;
     overflow-x: clip;
   }
 
   #root {
     min-height: 100%;
+    min-width: 0;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
+    overflow-x: clip;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -342,6 +346,7 @@
   .container-custom {
     width: 100%;
     max-width: 1200px;
+    min-width: 0;
     margin: 0 auto;
     padding-left: max(1.25rem, env(safe-area-inset-left));
     padding-right: max(1.25rem, env(safe-area-inset-right));
